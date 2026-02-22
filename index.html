@@ -1,0 +1,26 @@
+<div id="suggestion-box" style="display:none; background-color: #fff3cd; padding: 15px; border-radius: 8px;">
+  </div>
+
+<script>
+// 登録されたサブスクのデータ例（実際は入力フォームから取得）
+const subscriptions = [
+  { name: "Amazon Prime", category: "動画・総合", price: 600 },
+  { name: "Netflix", category: "動画・総合", price: 1490 },
+  { name: "Hulu", category: "動画・総合", price: 1026 },
+  { name: "Spotify", category: "音楽", price: 980 }
+];
+
+// 動画カテゴリの数をカウント
+const videoSubs = subscriptions.filter(sub => sub.category === "動画・総合");
+
+// 2つ以上ある場合にコメントを促す
+if (videoSubs.length >= 2) {
+  const suggestionBox = document.getElementById("suggestion-box");
+  suggestionBox.style.display = "block";
+  suggestionBox.innerHTML = `
+    <strong>💡 節約のヒント</strong><br>
+    動画配信サービスが ${videoSubs.length} つ（${videoSubs.map(s => s.name).join('、')}）登録されています。<br>
+    利用頻度の低いものを解約して、一つにまとめられませんか？
+  `;
+}
+</script>
