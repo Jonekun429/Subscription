@@ -7,7 +7,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      var(--primary): #005D4D; /* 念のため再定義を避ける記述 */
       --primary: #005D4D;
       --primary-light: #e6f0ef;
       --bg: #F5F7FA;
@@ -170,6 +169,15 @@
     }
 
     /* === リスト表示 === */
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .list-header h2 {
+      margin-bottom: 0;
+    }
     .sub-item {
       display: flex;
       justify-content: space-between;
@@ -242,11 +250,9 @@
       <div class="quick-add-container">
         <div style="margin-bottom: 12px; font-size: 14px; font-weight: bold;">定番サブスクをクイック追加：</div>
         
-        <div class="category-tabs" id="quick-add-tabs">
-          </div>
+        <div class="category-tabs" id="quick-add-tabs"></div>
         
-        <div class="quick-add-items" id="quick-add-items">
-          </div>
+        <div class="quick-add-items" id="quick-add-items"></div>
       </div>
 
       <form id="add-form">
@@ -286,7 +292,9 @@
     </div>
 
     <div class="card">
-      <h2>登録済みサブスク一覧</h2>
+      <div class="list-header">
+        <h2 id="list-title">登録済みサブスク一覧</h2>
+      </div>
       <div id="sub-list"></div>
     </div>
   </div>
@@ -295,9 +303,9 @@
     // Local Storageからデータを取得
     let subscriptions = JSON.parse(localStorage.getItem('subsData')) || [];
     let myChart = null;
+    const MAX_SUBS = 200; // 登録上限件数
 
     // === 定番サブスクのデータ ===
-    // ※価格や名称は必要に応じて自由に追加・変更できます
     const quickAddData = {
       "動画・配信": [
         { name: "Amazon Prime", price: 600, freq: "月額" },
@@ -333,36 +341,29 @@
       const tabsContainer = document.getElementById('quick-add-tabs');
       const categories = Object.keys(quickAddData);
 
-      // タブの生成
       categories.forEach((category, index) => {
         const tab = document.createElement('div');
         tab.className = 'category-tab';
-        if (index === 0) tab.classList.add('active'); // 最初をアクティブに
+        if (index === 0) tab.classList.add('active');
         tab.innerText = category;
         tab.onclick = () => selectCategory(category, tab);
         tabsContainer.appendChild(tab);
       });
 
-      // 初期のアイテムを表示
       if (categories.length > 0) {
         renderQuickAddItems(categories[0]);
       }
     }
 
-    // カテゴリ選択時の処理
     function selectCategory(category, tabElement) {
-      // タブのアクティブ状態を切り替え
       document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
       tabElement.classList.add('active');
-      
-      // アイテムを再描画
       renderQuickAddItems(category);
     }
 
-    // クイック追加ボタンの描画
     function renderQuickAddItems(category) {
       const itemsContainer = document.getElementById('quick-add-items');
-      itemsContainer.innerHTML = ''; // クリア
+      itemsContainer.innerHTML = '';
 
       const items = quickAddData[category];
       items.forEach(item => {
@@ -373,7 +374,6 @@
           <span>+ ${item.name}</span>
           <span class="price">¥${item.price.toLocaleString()}/${item.freq}</span>
         `;
-        // クリック時にフォームへセット
         btn.onclick = () => {
           document.getElementById('sub-name').value = item.name;
           document.getElementById('sub-price').value = item.price;
@@ -384,20 +384,38 @@
           today.setMonth(today.getMonth() + 1);
           document.getElementById('sub-date').value = today.toISOString().split('T')[0];
           
-          // スクロールしてボタンを目立たせる（UX向上）
           document.getElementById('sub-name').focus();
         };
         itemsContainer.appendChild(btn);
       });
     }
 
-    // フォーム送信時の処理
+    // === フォーム送信時（登録時）の処理 ===
     document.getElementById('add-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
+      // 1. 登録上限件数のチェック
+      if (subscriptions.length >= MAX_SUBS) {
+        alert(`登録件数の上限（${MAX_SUBS}件）に達しています。\n不要なサブスクリプションを削除してから追加してください。`);
+        return;
+      }
+
+      const inputName = document.getElementById('sub-name').value.trim();
+
+      // 2. 重複チェック（大文字小文字を区別せず比較）
+      const isDuplicate = subscriptions.some(sub => sub.name.toLowerCase() === inputName.toLowerCase());
+      if (isDuplicate) {
+        // 完全にブロックせず、確認ダイアログを出す（家族別プランなどで同名登録したいケースを考慮）
+        const proceed = confirm(`「${inputName}」はすでに登録済みです。\n\n重複して登録しますか？\n（プラン違いなどで別々に登録する場合は「OK」を押してください）`);
+        if (!proceed) {
+          return; // 「キャンセル」を押した場合は処理を中断
+        }
+      }
+
+      // 新規データの作成と保存
       const newSub = {
         id: Date.now(),
-        name: document.getElementById('sub-name').value,
+        name: inputName,
         category: document.getElementById('sub-category').value,
         price: parseInt(document.getElementById('sub-price').value),
         freq: document.getElementById('sub-freq').value,
@@ -423,6 +441,9 @@
     }
 
     function renderApp() {
+      // 登録件数をタイトルに反映
+      document.getElementById('list-title').innerText = `登録済みサブスク一覧（${subscriptions.length} / ${MAX_SUBS}件）`;
+
       renderList();
       renderDashboard();
       checkSuggestions();
