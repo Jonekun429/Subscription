@@ -7,7 +7,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --primary: #4A90E2;
+      /* 指定のカラーコードに変更 */
+      --primary: #005D4D;
+      --primary-light: #e6f0ef;
       --bg: #F5F7FA;
       --card-bg: #FFFFFF;
       --text: #333333;
@@ -31,7 +33,6 @@
       margin-top: 0;
       color: var(--text);
     }
-    /* カードデザイン（余白を広めにとってスッキリと） */
     .card {
       background-color: var(--card-bg);
       border-radius: 12px;
@@ -39,7 +40,6 @@
       margin-bottom: 24px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
-    /* サマリー（合計金額） */
     .summary-grid {
       display: flex;
       gap: 20px;
@@ -52,6 +52,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      border-top: 4px solid var(--primary);
     }
     .summary-box .amount {
       font-size: 28px;
@@ -59,7 +60,6 @@
       color: var(--primary);
       margin: 10px 0 0;
     }
-    /* 提案アラート */
     #suggestion-box {
       display: none;
       background-color: var(--alert-bg);
@@ -69,7 +69,6 @@
       margin-bottom: 24px;
       line-height: 1.5;
     }
-    /* フォームとボタン */
     .form-group {
       margin-bottom: 16px;
     }
@@ -86,6 +85,11 @@
       border-radius: 6px;
       box-sizing: border-box;
       font-size: 16px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
     }
     button {
       background-color: var(--primary);
@@ -108,13 +112,12 @@
       margin-bottom: 20px;
     }
     .quick-add-btn {
-      background-color: white;
-      color: var(--text);
-      border: 1px solid var(--border);
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary);
       padding: 8px 16px;
       font-size: 14px;
     }
-    /* リスト表示 */
     .sub-item {
       display: flex;
       justify-content: space-between;
@@ -138,10 +141,16 @@
       text-align: right;
     }
     .delete-btn {
-      background-color: #ff4d4f;
+      background-color: transparent;
+      color: #ff4d4f;
+      border: 1px solid #ff4d4f;
       padding: 6px 10px;
       font-size: 12px;
       margin-left: 15px;
+    }
+    .delete-btn:hover {
+      background-color: #ff4d4f;
+      color: white;
     }
     .chart-container {
       position: relative;
@@ -153,7 +162,7 @@
 <body>
 
   <div class="container">
-    <h1>サブスク管理</h1>
+    <h1 style="color: var(--primary);">サブスク管理</h1>
 
     <div id="suggestion-box"></div>
 
@@ -180,9 +189,9 @@
       
       <div style="margin-bottom: 12px; font-size: 14px;">定番サービスをクイック追加：</div>
       <div class="quick-add-buttons">
-        <button class="quick-add-btn" onclick="quickAdd('Amazon Prime', 600, '月額', '動画・総合')">+ Amazon Prime</button>
-        <button class="quick-add-btn" onclick="quickAdd('Netflix', 1490, '月額', '動画・総合')">+ Netflix</button>
-        <button class="quick-add-btn" onclick="quickAdd('Spotify', 980, '月額', '音楽')">+ Spotify</button>
+        <button class="quick-add-btn" type="button" onclick="quickAdd('Amazon Prime', 600, '月額', '動画・総合')">+ Amazon Prime</button>
+        <button class="quick-add-btn" type="button" onclick="quickAdd('Netflix', 1490, '月額', '動画・総合')">+ Netflix</button>
+        <button class="quick-add-btn" type="button" onclick="quickAdd('Spotify', 980, '月額', '音楽')">+ Spotify</button>
       </div>
 
       <form id="add-form">
@@ -222,30 +231,26 @@
 
     <div class="card">
       <h2>登録済みサブスク一覧</h2>
-      <div id="sub-list">
-        </div>
+      <div id="sub-list"></div>
     </div>
   </div>
 
   <script>
-    // データの初期化（ローカルストレージから読み込み）
+    // Local Storageからデータを取得（ここで保存・維持を行っています）
     let subscriptions = JSON.parse(localStorage.getItem('subsData')) || [];
     let myChart = null;
 
-    // クイック追加機能
     function quickAdd(name, price, freq, category) {
       document.getElementById('sub-name').value = name;
       document.getElementById('sub-price').value = price;
       document.getElementById('sub-freq').value = freq;
       document.getElementById('sub-category').value = category;
       
-      // 次回更新日を1ヶ月後に仮設定
       const today = new Date();
       today.setMonth(today.getMonth() + 1);
       document.getElementById('sub-date').value = today.toISOString().split('T')[0];
     }
 
-    // フォーム送信時の処理
     document.getElementById('add-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -264,26 +269,23 @@
       this.reset();
     });
 
-    // 削除機能
     function deleteSub(id) {
       subscriptions = subscriptions.filter(sub => sub.id !== id);
       saveData();
       renderApp();
     }
 
-    // データの保存
+    // データをLocal Storageに保存
     function saveData() {
       localStorage.setItem('subsData', JSON.stringify(subscriptions));
     }
 
-    // アプリの描画全体を管理
     function renderApp() {
       renderList();
       renderDashboard();
       checkSuggestions();
     }
 
-    // リストの描画
     function renderList() {
       const listContainer = document.getElementById('sub-list');
       listContainer.innerHTML = '';
@@ -293,7 +295,6 @@
         return;
       }
 
-      // 次回更新日が近い順にソート
       const sortedSubs = [...subscriptions].sort((a, b) => new Date(a.date) - new Date(b.date));
 
       sortedSubs.forEach(sub => {
@@ -301,19 +302,18 @@
         item.className = 'sub-item';
         item.innerHTML = `
           <div class="sub-info">
-            <div class="name">${sub.name} <span style="font-size:12px; font-weight:normal; background:#eee; padding:2px 6px; border-radius:4px;">${sub.category}</span></div>
+            <div class="name">${sub.name} <span style="font-size:12px; font-weight:normal; background:var(--primary-light); color:var(--primary); padding:2px 6px; border-radius:4px;">${sub.category}</span></div>
             <div class="meta">次回更新: ${sub.date}</div>
           </div>
           <div style="display:flex; align-items:center;">
             <div class="sub-price">¥${sub.price.toLocaleString()} / ${sub.freq}</div>
-            <button class="delete-btn" onclick="deleteSub(${sub.id})">削除</button>
+            <button class="delete-btn" type="button" onclick="deleteSub(${sub.id})">削除</button>
           </div>
         `;
         listContainer.appendChild(item);
       });
     }
 
-    // ダッシュボード（合計金額とグラフ）の描画
     function renderDashboard() {
       let monthlyTotal = 0;
       let yearlyTotal = 0;
@@ -331,7 +331,6 @@
           monthlyEquivalent = Math.floor(sub.price / 12);
         }
 
-        // グラフ用のカテゴリ別集計（月額換算）
         categoryTotals[sub.category] = (categoryTotals[sub.category] || 0) + monthlyEquivalent;
       });
 
@@ -341,14 +340,13 @@
       drawChart(categoryTotals);
     }
 
-    // グラフの描画（Chart.js）
     function drawChart(dataObj) {
       const ctx = document.getElementById('expenseChart').getContext('2d');
       const labels = Object.keys(dataObj);
       const data = Object.values(dataObj);
 
       if (myChart) {
-        myChart.destroy(); // 既存のグラフを破棄して再描画
+        myChart.destroy();
       }
 
       if (labels.length === 0) return;
@@ -359,7 +357,8 @@
           labels: labels,
           datasets: [{
             data: data,
-            backgroundColor: ['#4A90E2', '#50E3C2', '#F5A623', '#D0021B'],
+            /* メインカラー(#005D4D)を基調としたカラーパレットに変更 */
+            backgroundColor: ['#005D4D', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'],
             borderWidth: 0
           }]
         },
@@ -373,7 +372,6 @@
       });
     }
 
-    // 類似サブスクの統合提案機能
     function checkSuggestions() {
       const suggestionBox = document.getElementById('suggestion-box');
       const videoSubs = subscriptions.filter(sub => sub.category === '動画・総合');
@@ -391,7 +389,6 @@
       }
     }
 
-    // 初回読み込み時の実行
     renderApp();
   </script>
 </body>
