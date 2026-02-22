@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      /* 指定のカラーコードに変更 */
+      var(--primary): #005D4D; /* 念のため再定義を避ける記述 */
       --primary: #005D4D;
       --primary-light: #e6f0ef;
       --bg: #F5F7FA;
@@ -105,19 +105,71 @@
     button:hover {
       opacity: 0.8;
     }
-    .quick-add-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+
+    /* === クイック追加UIのスタイル === */
+    .quick-add-container {
+      background-color: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
       margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px; /* スクロールバー用余白 */
+    }
+    .category-tab {
+      background-color: var(--card-bg);
+      color: var(--text-light);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .category-tab:hover {
+      background-color: var(--primary-light);
+    }
+    .category-tab.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .quick-add-items {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .quick-add-btn {
-      background-color: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid var(--primary);
-      padding: 8px 16px;
-      font-size: 14px;
+      background-color: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      font-weight: normal;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      transition: all 0.2s;
     }
+    .quick-add-btn:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+    .quick-add-btn .price {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* === リスト表示 === */
     .sub-item {
       display: flex;
       justify-content: space-between;
@@ -187,25 +239,29 @@
     <div class="card">
       <h2>新しいサブスクを追加</h2>
       
-      <div style="margin-bottom: 12px; font-size: 14px;">定番サービスをクイック追加：</div>
-      <div class="quick-add-buttons">
-        <button class="quick-add-btn" type="button" onclick="quickAdd('Amazon Prime', 600, '月額', '動画・総合')">+ Amazon Prime</button>
-        <button class="quick-add-btn" type="button" onclick="quickAdd('Netflix', 1490, '月額', '動画・総合')">+ Netflix</button>
-        <button class="quick-add-btn" type="button" onclick="quickAdd('Spotify', 980, '月額', '音楽')">+ Spotify</button>
+      <div class="quick-add-container">
+        <div style="margin-bottom: 12px; font-size: 14px; font-weight: bold;">定番サブスクをクイック追加：</div>
+        
+        <div class="category-tabs" id="quick-add-tabs">
+          </div>
+        
+        <div class="quick-add-items" id="quick-add-items">
+          </div>
       </div>
 
       <form id="add-form">
         <div class="form-group">
           <label>サービス名</label>
-          <input type="text" id="sub-name" required placeholder="例：ChatGPT Plus">
+          <input type="text" id="sub-name" required placeholder="例：独自サービス">
         </div>
         <div class="form-group">
           <label>カテゴリ</label>
           <select id="sub-category">
-            <option value="動画・総合">動画・総合</option>
+            <option value="動画・配信">動画・配信</option>
             <option value="音楽">音楽</option>
+            <option value="電子書籍・雑誌">電子書籍・雑誌</option>
             <option value="仕事・ツール">仕事・ツール</option>
-            <option value="その他">その他</option>
+            <option value="ゲーム・その他">ゲーム・その他</option>
           </select>
         </div>
         <div class="summary-grid" style="margin-bottom:0;">
@@ -236,21 +292,106 @@
   </div>
 
   <script>
-    // Local Storageからデータを取得（ここで保存・維持を行っています）
+    // Local Storageからデータを取得
     let subscriptions = JSON.parse(localStorage.getItem('subsData')) || [];
     let myChart = null;
 
-    function quickAdd(name, price, freq, category) {
-      document.getElementById('sub-name').value = name;
-      document.getElementById('sub-price').value = price;
-      document.getElementById('sub-freq').value = freq;
-      document.getElementById('sub-category').value = category;
-      
-      const today = new Date();
-      today.setMonth(today.getMonth() + 1);
-      document.getElementById('sub-date').value = today.toISOString().split('T')[0];
+    // === 定番サブスクのデータ ===
+    // ※価格や名称は必要に応じて自由に追加・変更できます
+    const quickAddData = {
+      "動画・配信": [
+        { name: "Amazon Prime", price: 600, freq: "月額" },
+        { name: "Netflix", price: 1490, freq: "月額" },
+        { name: "U-NEXT", price: 2189, freq: "月額" },
+        { name: "Hulu", price: 1026, freq: "月額" },
+        { name: "Disney+", price: 990, freq: "月額" },
+        { name: "YouTube Premium", price: 1280, freq: "月額" }
+      ],
+      "音楽": [
+        { name: "Spotify", price: 980, freq: "月額" },
+        { name: "Apple Music", price: 1080, freq: "月額" },
+        { name: "Amazon Music", price: 1080, freq: "月額" }
+      ],
+      "電子書籍・雑誌": [
+        { name: "Kindle Unlimited", price: 980, freq: "月額" },
+        { name: "dマガジン", price: 580, freq: "月額" }
+      ],
+      "仕事・ツール": [
+        { name: "ChatGPT Plus", price: 3000, freq: "月額" },
+        { name: "Google One", price: 250, freq: "月額" },
+        { name: "Microsoft 365", price: 1490, freq: "月額" },
+        { name: "Adobe CC", price: 6480, freq: "月額" }
+      ],
+      "ゲーム・その他": [
+        { name: "Nintendo Switch Online", price: 306, freq: "月額" },
+        { name: "PlayStation Plus", price: 850, freq: "月額" }
+      ]
+    };
+
+    // クイック追加UIの初期化
+    function initQuickAdd() {
+      const tabsContainer = document.getElementById('quick-add-tabs');
+      const categories = Object.keys(quickAddData);
+
+      // タブの生成
+      categories.forEach((category, index) => {
+        const tab = document.createElement('div');
+        tab.className = 'category-tab';
+        if (index === 0) tab.classList.add('active'); // 最初をアクティブに
+        tab.innerText = category;
+        tab.onclick = () => selectCategory(category, tab);
+        tabsContainer.appendChild(tab);
+      });
+
+      // 初期のアイテムを表示
+      if (categories.length > 0) {
+        renderQuickAddItems(categories[0]);
+      }
     }
 
+    // カテゴリ選択時の処理
+    function selectCategory(category, tabElement) {
+      // タブのアクティブ状態を切り替え
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      tabElement.classList.add('active');
+      
+      // アイテムを再描画
+      renderQuickAddItems(category);
+    }
+
+    // クイック追加ボタンの描画
+    function renderQuickAddItems(category) {
+      const itemsContainer = document.getElementById('quick-add-items');
+      itemsContainer.innerHTML = ''; // クリア
+
+      const items = quickAddData[category];
+      items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quick-add-btn';
+        btn.innerHTML = `
+          <span>+ ${item.name}</span>
+          <span class="price">¥${item.price.toLocaleString()}/${item.freq}</span>
+        `;
+        // クリック時にフォームへセット
+        btn.onclick = () => {
+          document.getElementById('sub-name').value = item.name;
+          document.getElementById('sub-price').value = item.price;
+          document.getElementById('sub-freq').value = item.freq;
+          document.getElementById('sub-category').value = category;
+          
+          const today = new Date();
+          today.setMonth(today.getMonth() + 1);
+          document.getElementById('sub-date').value = today.toISOString().split('T')[0];
+          
+          // スクロールしてボタンを目立たせる（UX向上）
+          document.getElementById('sub-name').focus();
+        };
+        itemsContainer.appendChild(btn);
+      });
+    }
+
+    // フォーム送信時の処理
     document.getElementById('add-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -269,13 +410,14 @@
       this.reset();
     });
 
+    // 削除機能
     function deleteSub(id) {
       subscriptions = subscriptions.filter(sub => sub.id !== id);
       saveData();
       renderApp();
     }
 
-    // データをLocal Storageに保存
+    // データの保存
     function saveData() {
       localStorage.setItem('subsData', JSON.stringify(subscriptions));
     }
@@ -357,7 +499,6 @@
           labels: labels,
           datasets: [{
             data: data,
-            /* メインカラー(#005D4D)を基調としたカラーパレットに変更 */
             backgroundColor: ['#005D4D', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'],
             borderWidth: 0
           }]
@@ -374,14 +515,14 @@
 
     function checkSuggestions() {
       const suggestionBox = document.getElementById('suggestion-box');
-      const videoSubs = subscriptions.filter(sub => sub.category === '動画・総合');
+      const videoSubs = subscriptions.filter(sub => sub.category === '動画・配信');
 
       if (videoSubs.length >= 2) {
         const names = videoSubs.map(s => s.name).join('、');
         suggestionBox.style.display = 'block';
         suggestionBox.innerHTML = `
           <strong>💡 節約のヒント</strong><br>
-          動画・総合系のサービスが <b>${videoSubs.length}つ</b>（${names}）登録されています。<br>
+          動画・配信系のサービスが <b>${videoSubs.length}つ</b>（${names}）登録されています。<br>
           利用頻度の低いものを解約して、一つにまとめることで節約できるかもしれません。
         `;
       } else {
@@ -389,6 +530,8 @@
       }
     }
 
+    // 初回読み込み時の実行
+    initQuickAdd();
     renderApp();
   </script>
 </body>
