@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Subly</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js: CDN失敗時はCanvas自前描画にフォールバック -->
+  <script>
+  (function() {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+    s.onerror = function() { window._chartJsFailed = true; };
+    document.head.appendChild(s);
+  })();
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -43,7 +51,7 @@
       z-index: 200;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
     .header h1 {
@@ -51,11 +59,24 @@
       font-weight: 700;
       color: #fff;
       letter-spacing: 2px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
+    .header-gear {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.15);
+      border: none; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #fff;
+      -webkit-tap-highlight-color: transparent;
+      margin-left: auto;
+    }
+    .header-gear svg { width: 20px; height: 20px; fill: #fff; }
 
     /* ========== レイアウト ========== */
     .wrap {
-      max-width: 680px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 18px 16px;
     }
@@ -69,7 +90,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ========== ボトムナビ ========== */
+    /* ========== ボトムナビ（スマホ：デフォルト） ========== */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0;
@@ -88,26 +109,105 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: clamp(2px, 0.8vw, 5px);
       color: var(--text-sub);
-      font-size: 10px;
+      font-size: clamp(9px, 2.2vw, 12px);
       font-weight: 700;
       cursor: pointer;
       border: none;
       background: none;
       letter-spacing: .5px;
-      transition: color .2s;
+      transition: color .2s, background .15s;
       -webkit-tap-highlight-color: transparent;
+      min-width: 0;
+      padding: 0 4px;
     }
-    .nav-btn svg { width: 22px; height: 22px; fill: currentColor; transition: fill .2s; }
+    .nav-btn svg {
+      width: clamp(18px, 5.5vw, 26px);
+      height: clamp(18px, 5.5vw, 26px);
+      fill: currentColor;
+      transition: fill .2s;
+      flex-shrink: 0;
+    }
     .nav-btn.active { color: var(--primary); }
     .nav-btn:not(.active):active { color: var(--text); }
+
+    /* サイドバーロゴ（PC専用） */
+    .sidebar-logo {
+      display: none;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 2px;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    /* ========== PC レイアウト（768px以上） ========== */
+    @media (min-width: 768px) {
+      /* サイドバーロゴ表示・ヘッダー非表示 */
+      .sidebar-logo { display: block; }
+      .header { display: none; }
+
+      /* ボトムナビ → 左サイドバーへ */
+      .bottom-nav {
+        position: fixed;
+        left: 0; top: 0; bottom: 0;
+        width: 200px;
+        height: 100vh;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        border-top: none;
+        border-right: 1px solid var(--border);
+        padding: 24px 0;
+        gap: 4px;
+      }
+
+      /* ナビボタン：横並び＋左寄せ */
+      .nav-btn {
+        flex: none;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 10px;
+        margin: 0 10px;
+        width: calc(100% - 20px);
+        min-width: 0;
+      }
+      .nav-btn svg { width: 20px; height: 20px; }
+      .nav-btn:hover:not(.active) { background: var(--bg); }
+
+      /* コンテンツエリアをサイドバー幅分右にずらす */
+      .wrap { margin-left: 200px; padding: 28px 32px; max-width: none; }
+    }
+
+    @media (min-width: 1200px) {
+      .bottom-nav { width: 220px; }
+      .wrap { margin-left: 220px; padding: 32px 40px; }
+    }
+
+    /* 設定ボタン：スマホでは非表示、PCサイドバー下部に固定 */
+    .nav-settings { display: none; }
+    @media (min-width: 768px) {
+      .nav-settings {
+        display: flex;
+        margin-top: auto !important;
+        border-top: 1px solid var(--border);
+        padding-top: 16px !important;
+        margin-top: 8px !important;
+      }
+    }
 
     /* ========== カード ========== */
     .card {
       background: var(--card);
       border-radius: var(--radius);
-      padding: 18px;
+      padding: clamp(16px, 2.5vw, 28px);
       margin-bottom: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
@@ -121,35 +221,65 @@
     }
 
     /* ========== サマリーグリッド ========== */
+    /* ========== ダッシュボード レスポンシブ ========== */
+
+    /* サマリー行：PC=4カラム / タブレット=2カラム / スマホ=2カラム */
     .summary-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
+    @media (min-width: 768px) {
+      .summary-row { grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+
     .summary-tile {
       background: var(--card);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px 22px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       cursor: pointer;
-      transition: transform .15s;
+      transition: transform .15s, box-shadow .15s;
       -webkit-tap-highlight-color: transparent;
     }
+    .summary-tile:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); transform: translateY(-1px); }
     .summary-tile:active { transform: scale(.97); }
     .summary-tile .label {
-      font-size: 11px;
+      font-size: clamp(11px, 1.3vw, 13px);
       color: var(--text-sub);
       font-weight: 500;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .summary-tile .amount {
-      font-size: 22px;
+      font-size: clamp(22px, 3.5vw, 34px);
       font-weight: 700;
       color: var(--primary);
       line-height: 1;
     }
-    .summary-tile .amount sup { font-size: 13px; margin-right: 2px; }
+    .summary-tile .amount sup { font-size: clamp(12px, 1.5vw, 16px); margin-right: 2px; }
+
+    /* チャートグリッド：PC=2カラム均等 / スマホ=縦積み */
+    .dual-chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+    @media (max-width: 600px) {
+      .dual-chart-grid { grid-template-columns: 1fr; }
+    }
+    .dual-chart-grid .card { margin-bottom: 0; }
+
+    /* チャートの高さ：PCは大きく、スマホは適切に */
+    .chart-wrap {
+      position: relative;
+      height: clamp(160px, 25vw, 300px);
+    }
+    @media (max-width: 600px) {
+      .chart-wrap { height: 200px; }
+    }
 
     /* ========== インサイトバー ========== */
     .insight-bar {
@@ -220,19 +350,6 @@
       border-radius: 6px;
     }
     /* ========== 2カラムグリッド（カテゴリ＆満足度） ========== */
-    .dual-chart-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    /* スマホ縦向き（480px以下）では縦積みに */
-    @media (max-width: 480px) {
-      .dual-chart-grid { grid-template-columns: 1fr; }
-    }
-    .dual-chart-grid .card { margin-bottom: 0; }
-
-    .chart-wrap { position: relative; height: 160px; }
     /* カスタムlegend */
     .chart-legend {
       margin-top: 12px;
@@ -454,6 +571,107 @@
       color: var(--text-sub);
       margin-top: 8px;
     }
+
+    /* ========== 設定パネル（スライドイン） ========== */
+    .settings-overlay {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(0,0,0,0.45);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      animation: fadeIn .2s ease;
+    }
+    .settings-overlay.hidden { display: none; }
+    .settings-sheet {
+      background: var(--card);
+      border-radius: 20px 20px 0 0;
+      padding: 0 0 env(safe-area-inset-bottom);
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp .25s ease;
+    }
+    .settings-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--card); z-index: 1;
+    }
+    .settings-title { font-size: 16px; font-weight: 700; }
+    .settings-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--bg); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--text-sub);
+    }
+    .settings-section-label {
+      font-size: 11px; font-weight: 700; color: var(--text-sub);
+      letter-spacing: .8px; text-transform: uppercase;
+      padding: 16px 20px 8px;
+    }
+    .settings-group {
+      margin: 0 16px 12px;
+      background: var(--bg);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .settings-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row:active { background: var(--primary-light); }
+    .settings-row-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+    }
+    .settings-row-body { flex: 1; }
+    .settings-row-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .settings-row-sub { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+    .settings-row-arrow { color: var(--text-sub); font-size: 14px; }
+
+    /* ========== ガイドパネル ========== */
+    .guide-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      animation: fadeIn .2s ease;
+    }
+    .guide-overlay.hidden { display: none; }
+    .guide-sheet {
+      background: var(--card);
+      border-radius: 20px 20px 0 0;
+      max-height: 88vh; overflow-y: auto;
+      animation: slideUp .25s ease;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .guide-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--card); z-index: 1;
+    }
+    .guide-body { padding: 20px; }
+    .guide-step {
+      display: flex; gap: 14px; margin-bottom: 24px;
+    }
+    .guide-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .guide-step-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+    .guide-step-body p  { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+    .guide-note {
+      background: var(--primary-light); border-radius: 10px;
+      padding: 14px 16px; font-size: 13px; color: var(--primary-dark);
+      line-height: 1.7; margin-top: 8px;
+    }
+    .guide-note strong { font-weight: 700; }
 
     /* ========== オンボーディング ========== */
     .onboarding-overlay {
@@ -725,10 +943,43 @@
       font-family: inherit;
       transition: border-color .15s, background .15s;
       -webkit-tap-highlight-color: transparent;
+      width: 100%;
     }
     .quick-btn:active { background: var(--primary-light); border-color: var(--primary); }
     .quick-btn .qname { font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px; }
     .quick-btn .qprice { font-size: 11px; color: var(--text-sub); }
+    .quick-btn .qplans-badge {
+      font-size: 10px; font-weight: 700;
+      background: var(--primary-light); color: var(--primary);
+      border-radius: 4px; padding: 1px 5px; margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    /* プランドロップダウン */
+    .plan-dropdown {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--primary);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    }
+    .plan-dropdown.open { display: block; animation: slideUp .15s ease; }
+    .plan-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .plan-option:last-child { border-bottom: none; }
+    .plan-option:active { background: var(--primary-light); }
+    .plan-option-label { font-size: 13px; font-weight: 500; color: var(--text); }
+    .plan-option-price { font-size: 13px; font-weight: 700; color: var(--primary); }
 
     .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
@@ -808,8 +1059,138 @@
 </head>
 <body>
 
-<div class="header"><h1>Subly</h1></div>
+<div class="header">
+  <h1>Subly</h1>
+  <button class="header-gear" onclick="openSettings()" aria-label="設定">
+    <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+  </button>
+</div>
 
+<!-- 設定パネル -->
+<div class="settings-overlay hidden" id="settings-overlay" onclick="closeSettingsOutside(event)">
+  <div class="settings-sheet">
+    <div class="settings-header">
+      <span class="settings-title">⚙️ 設定</span>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+
+    <div class="settings-section-label">データ管理</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="exportCSV()">
+        <div class="settings-row-icon" style="background:#E8F5F2;">📤</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">CSVエクスポート</div>
+          <div class="settings-row-sub">データをCSVファイルとして保存</div>
+        </div>
+        <span class="settings-row-arrow">›</span>
+      </div>
+      <div class="settings-row" onclick="document.getElementById('csv-import-input').click()">
+        <div class="settings-row-icon" style="background:#FFF8E6;">📥</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">CSVインポート</div>
+          <div class="settings-row-sub">機種変更後のデータ引き継ぎに</div>
+        </div>
+        <span class="settings-row-arrow">›</span>
+      </div>
+      <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(event)">
+    </div>
+
+    <div class="settings-section-label">ヘルプ</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="openGuide()">
+        <div class="settings-row-icon" style="background:#EEF2FF;">📱</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">機種変更ガイド</div>
+          <div class="settings-row-sub">データの引き継ぎ方法を確認</div>
+        </div>
+        <span class="settings-row-arrow">›</span>
+      </div>
+      <div class="settings-row" onclick="showOnboarding()">
+        <div class="settings-row-icon" style="background:#F0FDF4;">📖</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">使い方を見る</div>
+          <div class="settings-row-sub">Sublyの基本的な使い方</div>
+        </div>
+        <span class="settings-row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="settings-section-label">データリセット</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="resetAllData()">
+        <div class="settings-row-icon" style="background:#FEE2E2;">🗑️</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title" style="color:#E05050;">全データを削除</div>
+          <div class="settings-row-sub">この操作は元に戻せません</div>
+        </div>
+        <span class="settings-row-arrow">›</span>
+      </div>
+    </div>
+
+    <div style="padding: 16px 20px 24px; text-align:center; font-size:12px; color:var(--text-sub);">
+      Subly v1.0
+    </div>
+  </div>
+</div>
+
+<!-- ガイドパネル -->
+<div class="guide-overlay hidden" id="guide-overlay" onclick="closeGuideOutside(event)">
+  <div class="guide-sheet">
+    <div class="guide-header">
+      <span style="font-size:16px;font-weight:700;">📱 機種変更ガイド</span>
+      <button class="settings-close" onclick="closeGuide()">✕</button>
+    </div>
+    <div class="guide-body">
+
+      <div class="guide-note" style="margin-bottom:24px;">
+        <strong>Sublyのデータはお使いの端末に保存されています。</strong><br>
+        機種変更の前にCSVエクスポートでバックアップを取り、新しい端末でインポートしてください。
+      </div>
+
+      <p style="font-size:14px;font-weight:700;margin-bottom:16px;">🔁 機種変更の手順</p>
+
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div class="guide-step-body">
+          <h4>旧端末でCSVエクスポート</h4>
+          <p>設定 → 「CSVエクスポート」をタップ。保存先を選んでCSVファイルを保存してください。<br>iCloudやGoogle Driveに保存しておくと新端末から簡単にアクセスできます。</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div class="guide-step-body">
+          <h4>新端末でSublyを開く</h4>
+          <p>新しい端末のブラウザでSublyを開きます。ブックマークに保存しておくか、リンクをiCloud Driveなどに保存しておくと便利です。</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div class="guide-step-body">
+          <h4>CSVインポートでデータを復元</h4>
+          <p>設定 → 「CSVインポート」をタップ。手順1で保存したCSVファイルを選択すると、データが復元されます。</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div class="guide-step-body">
+          <h4>確認して完了</h4>
+          <p>ホーム画面でサブスクが正しく表示されていれば引き継ぎ完了です。</p>
+        </div>
+      </div>
+
+      <div class="guide-note">
+        💡 <strong>インポート時の注意：</strong>既存データは上書きされます。インポート前に現在のデータをエクスポートしておくことをおすすめします。
+      </div>
+
+      <button class="btn-submit" style="margin-top:24px;" onclick="closeGuide(); document.getElementById('csv-import-input').click();">
+        📥 今すぐCSVインポート
+      </button>
+    </div>
+  </div>
+</div>
 <!-- オンボーディング -->
 <div class="onboarding-overlay hidden" id="onboarding-overlay" onclick="closeOnboarding(event)">
   <div class="onboarding-sheet">
@@ -865,7 +1246,7 @@
     <div id="onetime-note" class="onetime-note">※買い切りは「年間合計」にのみ加算されます</div>
 
     <div id="alerts"></div>
-    <div id="insight-bar" class="insight-bar"></div>
+
 
     <div class="summary-row">
       <div class="summary-tile" onclick="goto('list')">
@@ -922,6 +1303,8 @@
         <option value="ゲーム">ゲーム</option>
         <option value="健康・フィットネス">健康・フィットネス</option>
         <option value="金融・年会費">金融・年会費</option>
+        <option value="習い事">習い事</option>
+        <option value="保険・通信費">保険・通信費</option>
         <option value="その他">その他</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
@@ -991,6 +1374,8 @@
             <option value="ゲーム">ゲーム</option>
             <option value="健康・フィットネス">健康・フィットネス</option>
             <option value="金融・年会費">金融・年会費</option>
+            <option value="習い事">習い事</option>
+            <option value="保険・通信費">保険・通信費</option>
             <option value="その他">その他（自由入力）</option>
           </select>
           <input type="text" id="f-cat-custom" placeholder="カテゴリ名を入力" style="display:none;margin-top:8px;">
@@ -1041,8 +1426,10 @@
 
 </div><!-- /wrap -->
 
-<!-- ボトムナビ -->
+<!-- ボトムナビ / PCサイドバー -->
 <nav class="bottom-nav">
+  <!-- PCサイドバー時のロゴ（スマホでは非表示） -->
+  <div class="sidebar-logo">Subly</div>
   <button class="nav-btn" id="nav-add" onclick="goto('add')">
     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
     追加
@@ -1059,49 +1446,86 @@
     <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
     明細
   </button>
+  <!-- 設定ボタン（PCサイドバー時は下部に固定） -->
+  <button class="nav-btn nav-settings" onclick="openSettings()">
+    <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+    設定
+  </button>
 </nav>
 
 <script>
 /* ============================================================
+   localStorage 安全ラッパー（iframe環境対応）
+============================================================ */
+const Store = (() => {
+  let _ok = false;
+  try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); _ok = true; } catch(e) {}
+  return {
+    get(k)    { try { return _ok ? localStorage.getItem(k) : null; } catch(e){ return null; } },
+    set(k, v) { try { if(_ok) localStorage.setItem(k, v); } catch(e){} },
+    remove(k) { try { if(_ok) localStorage.removeItem(k); } catch(e){} }
+  };
+})();
+
+/* ============================================================
    データ・定数
 ============================================================ */
-let subs = JSON.parse(localStorage.getItem('subsData')) || [];
+let subs = JSON.parse(Store.get('subsData')) || [];
 subs.forEach(s => { if(s.freq==='単発') s.freq='単発（買い切り）'; });
 
 let myChart = null;
 let chartPeriod = 'month';
 let editId = null;
-let inclOnetime = JSON.parse(localStorage.getItem('inclOnetime')) || false;
+let inclOnetime = JSON.parse(Store.get('inclOnetime')) || false;
 const MAX = 200;
 
 const catMap = {
-  "動画・配信":        { color:"#1A6B5A", icon:"🎬" },  /* 深緑   */
-  "音楽":              { color:"#E05050", icon:"🎵" },  /* 赤     */
-  "電子書籍・雑誌":    { color:"#E9A400", icon:"📖" },  /* 黄橙   */
-  "仕事・ツール":      { color:"#2563EB", icon:"💻" },  /* 青     */
-  "ゲーム":            { color:"#9333EA", icon:"🎮" },  /* 紫     */
-  "健康・フィットネス":{ color:"#0EA5E9", icon:"💪" },  /* 水色   */
-  "金融・年会費":      { color:"#F97316", icon:"💳" },  /* オレンジ */
-  "その他":            { color:"#94A3B8", icon:"✨" }   /* グレー  */
+  "動画・配信":        { color:"#1A6B5A", icon:"🎬" },
+  "音楽":              { color:"#E05050", icon:"🎵" },
+  "電子書籍・雑誌":    { color:"#E9A400", icon:"📖" },
+  "仕事・ツール":      { color:"#2563EB", icon:"💻" },
+  "ゲーム":            { color:"#9333EA", icon:"🎮" },
+  "健康・フィットネス":{ color:"#0EA5E9", icon:"💪" },
+  "金融・年会費":      { color:"#F97316", icon:"💳" },
+  "習い事":            { color:"#DB2777", icon:"🎓" },
+  "保険・通信費":      { color:"#0D9488", icon:"📱" },
+  "その他":            { color:"#94A3B8", icon:"✨" }
 };
 
 // 定番マスタデータ（拡充版）
+// プランが複数ある場合は plans[] でまとめる
+// プランが1つの場合は { name, price, freq } のまま
 const qData = {
   "動画・配信": [
     { name:"Amazon Prime",     price:600,  freq:"月額" },
-    { name:"Netflix",          price:1490, freq:"月額" },
+    { name:"Netflix", plans:[
+      { label:"ベーシック（広告あり）", price:790  },
+      { label:"スタンダード",           price:1490 },
+      { label:"プレミアム",             price:1980 }
+    ], freq:"月額" },
     { name:"YouTube Premium",  price:1280, freq:"月額" },
     { name:"U-NEXT",           price:2189, freq:"月額" },
     { name:"Hulu",             price:1026, freq:"月額" },
-    { name:"Disney+",          price:990,  freq:"月額" },
+    { name:"Disney+", plans:[
+      { label:"スタンダード（月払い）", price:990  },
+      { label:"プレミアム（月払い）",   price:1320 }
+    ], freq:"月額" },
     { name:"dアニメストア",    price:440,  freq:"月額" },
     { name:"ABEMA プレミアム", price:960,  freq:"月額" },
     { name:"DMM TV",           price:550,  freq:"月額" },
     { name:"NHKオンデマンド",  price:990,  freq:"月額" }
   ],
   "音楽": [
-    { name:"Spotify",          price:980,  freq:"月額" },
-    { name:"Apple Music",      price:1080, freq:"月額" },
+    { name:"Spotify", plans:[
+      { label:"個人",         price:980  },
+      { label:"ファミリー",   price:1580 },
+      { label:"学生",         price:480  }
+    ], freq:"月額" },
+    { name:"Apple Music", plans:[
+      { label:"個人",         price:1080 },
+      { label:"ファミリー",   price:1680 },
+      { label:"学生",         price:580  }
+    ], freq:"月額" },
     { name:"YouTube Music",    price:980,  freq:"月額" },
     { name:"Amazon Music UL",  price:980,  freq:"月額" },
     { name:"LINE MUSIC",       price:980,  freq:"月額" },
@@ -1109,68 +1533,106 @@ const qData = {
     { name:"Audible",          price:1500, freq:"月額" }
   ],
   "電子書籍・雑誌": [
-    { name:"Kindle Unlimited", price:980,  freq:"月額" },
-    { name:"楽天マガジン",     price:418,  freq:"月額" },
-    { name:"dマガジン",        price:580,  freq:"月額" },
-    { name:"楽天 Kobo読み放題",price:693,  freq:"月額" },
-    { name:"flier",            price:2200, freq:"月額" },
-    { name:"ブック放題",       price:550,  freq:"月額" }
+    { name:"Kindle Unlimited",  price:980,  freq:"月額" },
+    { name:"楽天マガジン",      price:418,  freq:"月額" },
+    { name:"dマガジン",         price:580,  freq:"月額" },
+    { name:"楽天Kobo読み放題",  price:693,  freq:"月額" },
+    { name:"flier",             price:2200, freq:"月額" },
+    { name:"ブック放題",        price:550,  freq:"月額" }
   ],
   "仕事・ツール": [
-    { name:"ChatGPT Plus",     price:3000, freq:"月額" },
-    { name:"Claude Pro",       price:3000, freq:"月額" },
-    { name:"Microsoft 365",    price:1490, freq:"月額" },
-    { name:"Adobe CC",         price:6480, freq:"月額" },
-    { name:"Google One(100GB)",price:250,  freq:"月額" },
-    { name:"Google One(200GB)",price:380,  freq:"月額" },
-    { name:"iCloud+(50GB)",    price:130,  freq:"月額" },
-    { name:"iCloud+(200GB)",   price:400,  freq:"月額" },
-    { name:"Notion Plus",      price:1650, freq:"月額" },
-    { name:"Dropbox Plus",     price:1600, freq:"月額" },
-    { name:"マネーフォワード ME",price:500,freq:"月額" },
-    { name:"1Password",        price:360,  freq:"月額" }
+    { name:"ChatGPT Plus",      price:3000, freq:"月額" },
+    { name:"Claude Pro",        price:3000, freq:"月額" },
+    { name:"Microsoft 365",     price:1490, freq:"月額" },
+    { name:"Adobe CC",          price:6480, freq:"月額" },
+    { name:"Google One", plans:[
+      { label:"100GB",  price:250 },
+      { label:"200GB",  price:380 },
+      { label:"2TB",    price:1300 }
+    ], freq:"月額" },
+    { name:"iCloud+", plans:[
+      { label:"50GB",   price:130 },
+      { label:"200GB",  price:400 },
+      { label:"2TB",    price:1300 }
+    ], freq:"月額" },
+    { name:"Notion Plus",       price:1650, freq:"月額" },
+    { name:"Dropbox Plus",      price:1600, freq:"月額" },
+    { name:"マネーフォワード ME",price:500, freq:"月額" },
+    { name:"1Password",         price:360,  freq:"月額" }
   ],
   "ゲーム": [
-    { name:"Nintendo Switch Online",price:306,  freq:"月額" },
-    { name:"PlayStation Plus",      price:850,  freq:"月額" },
-    { name:"Xbox Game Pass",        price:935,  freq:"月額" },
-    { name:"Apple Arcade",          price:600,  freq:"月額" },
-    { name:"Google Play Pass",      price:610,  freq:"月額" }
-  ],
-  "金融・年会費": [
-    { name:"楽天カード",              price:0,     freq:"年額" },
-    { name:"三井住友カード(NL)",      price:0,     freq:"年額" },
-    { name:"PayPayカード",            price:0,     freq:"年額" },
-    { name:"エポスカード",            price:0,     freq:"年額" },
-    { name:"アメックス グリーン",     price:13200, freq:"年額" },
-    { name:"アメックス ゴールド",     price:31900, freq:"年額" },
-    { name:"三井住友ゴールド(NL)",    price:5500,  freq:"年額" },
-    { name:"JCBゴールド",            price:11000, freq:"年額" },
-    { name:"ダイナースクラブ",        price:24200, freq:"年額" },
-    { name:"楽天プレミアムカード",    price:11000, freq:"年額" },
-    { name:"ANAカード（一般）",       price:2200,  freq:"年額" },
-    { name:"JALカード（一般）",       price:2200,  freq:"年額" },
-    { name:"dカード GOLD",           price:11000, freq:"年額" },
-    { name:"au PAY ゴールドカード",   price:11000, freq:"年額" }
+    { name:"Nintendo Switch Online", plans:[
+      { label:"個人（月払い）",     price:306  },
+      { label:"ファミリー（月割）", price:417  }
+    ], freq:"月額" },
+    { name:"PlayStation Plus", plans:[
+      { label:"エッセンシャル",     price:850  },
+      { label:"エクストラ",         price:1300 },
+      { label:"プレミアム",         price:1550 }
+    ], freq:"月額" },
+    { name:"Xbox Game Pass",    price:935,  freq:"月額" },
+    { name:"Apple Arcade",      price:600,  freq:"月額" },
+    { name:"Google Play Pass",  price:610,  freq:"月額" }
   ],
   "健康・フィットネス": [
-    { name:"Apple Fitness+",       price:1200, freq:"月額" },
-    { name:"Calm（瞑想・睡眠）",   price:1500, freq:"月額" },
-    { name:"Headspace",            price:1280, freq:"月額" },
-    { name:"FiNC（健康管理）",     price:980,  freq:"月額" },
-    { name:"ライザップオンライン", price:9800, freq:"月額" },
-    { name:"LEAN BODY（ヨガ）",    price:980,  freq:"月額" },
-    { name:"ジムメンバーシップ",   price:8000, freq:"月額" },
-    { name:"スポーツクラブ",       price:6000, freq:"月額" },
-    { name:"オンラインヨガ",       price:3000, freq:"月額" },
-    { name:"ピラティス",           price:5000, freq:"月額" }
+    { name:"Apple Fitness+",    price:1200, freq:"月額" },
+    { name:"Calm（瞑想・睡眠）",price:1500, freq:"月額" },
+    { name:"Headspace",         price:1280, freq:"月額" },
+    { name:"FiNC（健康管理）",  price:980,  freq:"月額" },
+    { name:"ライザップオンライン",price:9800,freq:"月額" },
+    { name:"LEAN BODY（ヨガ）", price:980,  freq:"月額" },
+    { name:"ジムメンバーシップ",price:8000, freq:"月額" },
+    { name:"スポーツクラブ",    price:6000, freq:"月額" },
+    { name:"オンラインヨガ",    price:3000, freq:"月額" },
+    { name:"ピラティス",        price:5000, freq:"月額" }
+  ],
+  "金融・年会費": [
+    { name:"楽天カード",            price:0,     freq:"年額" },
+    { name:"三井住友カード(NL)",    price:0,     freq:"年額" },
+    { name:"PayPayカード",          price:0,     freq:"年額" },
+    { name:"エポスカード",          price:0,     freq:"年額" },
+    { name:"アメックス グリーン",   price:13200, freq:"年額" },
+    { name:"アメックス ゴールド",   price:31900, freq:"年額" },
+    { name:"三井住友ゴールド(NL)",  price:5500,  freq:"年額" },
+    { name:"JCBゴールド",          price:11000, freq:"年額" },
+    { name:"ダイナースクラブ",      price:24200, freq:"年額" },
+    { name:"楽天プレミアムカード",  price:11000, freq:"年額" },
+    { name:"ANAカード（一般）",     price:2200,  freq:"年額" },
+    { name:"JALカード（一般）",     price:2200,  freq:"年額" },
+    { name:"dカード GOLD",         price:11000, freq:"年額" },
+    { name:"au PAY ゴールドカード", price:11000, freq:"年額" }
+  ],
+  "習い事": [
+    { name:"英会話（オンライン）",    price:5000,  freq:"月額" },
+    { name:"プログラミングスクール",  price:10000, freq:"月額" },
+    { name:"ピアノ教室",              price:8000,  freq:"月額" },
+    { name:"ギター・音楽教室",        price:8000,  freq:"月額" },
+    { name:"料理教室",                price:6000,  freq:"月額" },
+    { name:"書道・習字教室",          price:5000,  freq:"月額" },
+    { name:"ダンス教室",              price:8000,  freq:"月額" },
+    { name:"茶道・華道",              price:5000,  freq:"月額" },
+    { name:"資格スクール（通信）",    price:3000,  freq:"月額" }
+  ],
+  "保険・通信費": [
+    { name:"スマホ代（ドコモ）",      price:5000, freq:"月額" },
+    { name:"スマホ代（au）",          price:5000, freq:"月額" },
+    { name:"スマホ代（ソフトバンク）",price:5000, freq:"月額" },
+    { name:"スマホ代（楽天モバイル）",price:1078, freq:"月額" },
+    { name:"スマホ代（格安SIM）",     price:1500, freq:"月額" },
+    { name:"固定回線（光回線）",      price:5000, freq:"月額" },
+    { name:"生命保険",                price:10000,freq:"月額" },
+    { name:"医療保険",                price:3000, freq:"月額" },
+    { name:"がん保険",                price:2000, freq:"月額" },
+    { name:"自動車保険",              price:5000, freq:"月額" },
+    { name:"火災保険",                price:2000, freq:"月額" },
+    { name:"NHK受信料",              price:1100, freq:"月額" }
   ],
   "その他": [
-    { name:"クックパッド",          price:308,  freq:"月額" },
-    { name:"食べログプレミアム",    price:400,  freq:"月額" },
-    { name:"DAZN",                  price:4200, freq:"月額" },
-    { name:"スポーツナビ+",         price:530,  freq:"月額" },
-    { name:"Yahoo!プレミアム",      price:508,  freq:"月額" }
+    { name:"クックパッド",        price:308,  freq:"月額" },
+    { name:"食べログプレミアム",  price:400,  freq:"月額" },
+    { name:"DAZN",                price:4200, freq:"月額" },
+    { name:"スポーツナビ+",       price:530,  freq:"月額" },
+    { name:"Yahoo!プレミアム",    price:508,  freq:"月額" }
   ]
 };
 
@@ -1210,13 +1672,151 @@ function goto(page, filterCat = null) {
 }
 
 /* ============================================================
+   設定パネル
+============================================================ */
+function openSettings() {
+  document.getElementById('settings-overlay').classList.remove('hidden');
+}
+function closeSettings() {
+  document.getElementById('settings-overlay').classList.add('hidden');
+}
+function closeSettingsOutside(e) {
+  if (e.target === document.getElementById('settings-overlay')) closeSettings();
+}
+
+function openGuide() {
+  closeSettings();
+  setTimeout(() => document.getElementById('guide-overlay').classList.remove('hidden'), 150);
+}
+function closeGuide() {
+  document.getElementById('guide-overlay').classList.add('hidden');
+}
+function closeGuideOutside(e) {
+  if (e.target === document.getElementById('guide-overlay')) closeGuide();
+}
+
+function showOnboarding() {
+  closeSettings();
+  setTimeout(() => document.getElementById('onboarding-overlay').classList.remove('hidden'), 150);
+}
+
+function resetAllData() {
+  if (!confirm('全データを削除しますか？\nこの操作は元に戻せません。')) return;
+  if (!confirm('本当によろしいですか？')) return;
+  subs = [];
+  save();
+  closeSettings();
+  goto('dashboard');
+  alert('データを削除しました。');
+}
+
+/* ============================================================
+   CSVエクスポート
+============================================================ */
+function exportCSV() {
+  if (subs.length === 0) { alert('エクスポートするデータがありません。'); return; }
+
+  const header = ['サービス名', 'カテゴリ', '料金', '支払頻度', '更新日', 'メモ', '満足度'];
+  const rows = subs.map(s => [
+    `"${(s.name  || '').replace(/"/g,'""')}"`,
+    `"${(s.cat   || '').replace(/"/g,'""')}"`,
+    s.price,
+    `"${s.freq  || ''}"`,
+    `"${s.date  || ''}"`,
+    `"${(s.memo || '').replace(/"/g,'""')}"`,
+    s.sat || 0
+  ]);
+
+  const csv = '\uFEFF' + [header, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const now  = new Date();
+  const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  a.href     = url;
+  a.download = `subly_backup_${dateStr}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  closeSettings();
+}
+
+/* ============================================================
+   CSVインポート
+============================================================ */
+function importCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      let text = ev.target.result;
+      // BOM除去
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+      const lines = text.trim().split('\n');
+      if (lines.length < 2) { alert('データが見つかりませんでした。'); return; }
+
+      // ヘッダー行をスキップ
+      const imported = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        if (cols.length < 5) continue;
+        imported.push({
+          id:    Date.now() + i,
+          name:  cols[0] || '',
+          cat:   cols[1] || 'その他',
+          price: parseInt(cols[2]) || 0,
+          freq:  cols[3] || '月額',
+          date:  cols[4] || '',
+          memo:  cols[5] || '',
+          sat:   parseInt(cols[6]) || 0
+        });
+      }
+
+      if (imported.length === 0) { alert('有効なデータが見つかりませんでした。'); return; }
+
+      if (!confirm(`${imported.length}件のデータをインポートします。\n現在のデータは上書きされます。よろしいですか？`)) return;
+
+      subs = imported;
+      save();
+      closeSettings();
+      goto('dashboard');
+      alert(`✅ ${imported.length}件のデータをインポートしました。`);
+    } catch(err) {
+      alert('インポートに失敗しました。CSVファイルの形式を確認してください。');
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = ''; // 同じファイルを再選択できるようリセット
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      result.push(cur.trim()); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+/* ============================================================
    オンボーディング
 ============================================================ */
 function closeOnboarding(e) {
-  // オーバーレイ自体をタップした場合のみ閉じる（シートタップは無視）
+  // 引数なし（ボタン押下）か、オーバーレイ自体をタップした場合に閉じる
   if (e && e.target !== document.getElementById('onboarding-overlay')) return;
   document.getElementById('onboarding-overlay').classList.add('hidden');
-  localStorage.setItem('onboarded', '1');
+  Store.set('onboarded', '1');
 }
 
 /* ============================================================
@@ -1246,7 +1846,7 @@ function init() {
   }
 
   // 初回オンボーディング
-  if (!localStorage.getItem('onboarded')) {
+  if (!Store.get('onboarded')) {
     document.getElementById('onboarding-overlay').classList.remove('hidden');
   }
 }
@@ -1259,25 +1859,105 @@ function buildQuickAdd() {
   Object.keys(qData).forEach((cat, i) => {
     const t = document.createElement('button');
     t.type = 'button';
+    const color = (catMap[cat] || catMap['その他']).color;
     t.className = 'cat-tab' + (i === 0 ? ' active' : '');
     t.textContent = cat;
-    t.onclick = () => { document.querySelectorAll('.cat-tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); buildQItems(cat); };
+    // カテゴリカラーをCSSカスタムプロパティで渡す
+    t.style.setProperty('--tab-color', color);
+    if (i === 0) t.style.background = color;
+    t.onclick = () => {
+      document.querySelectorAll('.cat-tab').forEach(x => {
+        x.classList.remove('active');
+        x.style.background = '';
+        x.style.color = '';
+        x.style.borderColor = '';
+      });
+      t.classList.add('active');
+      t.style.background = color;
+      t.style.color = '#fff';
+      t.style.borderColor = color;
+      buildQItems(cat);
+    };
     tabs.appendChild(t);
   });
+  // 初期タブの色を適用
+  const firstTab = tabs.querySelector('.cat-tab.active');
+  if (firstTab) { firstTab.style.color = '#fff'; firstTab.style.borderColor = firstTab.style.background; }
   buildQItems(Object.keys(qData)[0]);
 }
 
 function buildQItems(cat) {
   const box = document.getElementById('q-items');
   box.innerHTML = '';
+
   qData[cat].forEach(item => {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:contents';
+
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'quick-btn';
-    b.innerHTML = `<span class="qname">+ ${item.name}</span><span class="qprice">¥${item.price.toLocaleString()} / ${item.freq}</span>`;
-    b.onclick = () => fillForm(item, cat);
-    box.appendChild(b);
+
+    const hasPlans = item.plans && item.plans.length > 0;
+    const dispPrice = hasPlans
+      ? `¥${item.plans[0].price.toLocaleString()}〜 / ${item.freq}`
+      : `¥${item.price.toLocaleString()} / ${item.freq}`;
+
+    b.innerHTML = `
+      <span class="qname">
+        + ${item.name}
+        ${hasPlans ? '<span class="qplans-badge">プランを選ぶ ▾</span>' : ''}
+      </span>
+      <span class="qprice">${dispPrice}</span>
+    `;
+
+    if (hasPlans) {
+      // プランドロップダウン
+      const dropdown = document.createElement('div');
+      dropdown.className = 'plan-dropdown';
+
+      item.plans.forEach(plan => {
+        const opt = document.createElement('div');
+        opt.className = 'plan-option';
+        opt.innerHTML = `
+          <span class="plan-option-label">${plan.label}</span>
+          <span class="plan-option-price">¥${plan.price.toLocaleString()} / ${item.freq}</span>
+        `;
+        opt.onclick = (e) => {
+          e.stopPropagation();
+          fillForm({ name: item.name, price: plan.price, freq: item.freq }, cat);
+          dropdown.classList.remove('open');
+        };
+        dropdown.appendChild(opt);
+      });
+
+      b.onclick = (e) => {
+        e.stopPropagation();
+        // 他のドロップダウンを閉じる
+        document.querySelectorAll('.plan-dropdown.open').forEach(d => {
+          if (d !== dropdown) d.classList.remove('open');
+        });
+        dropdown.classList.toggle('open');
+      };
+
+      // ドロップダウンをボタンの直後に配置するためラップDIVを使う
+      const cell = document.createElement('div');
+      cell.appendChild(b);
+      cell.appendChild(dropdown);
+
+      // quick-gridは2カラムなので、プランありはfull-widthで表示
+      cell.style.cssText = 'grid-column: 1 / -1;';
+      box.appendChild(cell);
+    } else {
+      b.onclick = () => fillForm(item, cat);
+      box.appendChild(b);
+    }
   });
+
+  // グリッド外クリックでドロップダウンを閉じる
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.plan-dropdown.open').forEach(d => d.classList.remove('open'));
+  }, { once: true });
 }
 
 function fillForm(item, cat) {
@@ -1409,7 +2089,7 @@ function delSub(id) {
   save(); renderList(); renderDashboard();
 }
 
-function save() { localStorage.setItem('subsData', JSON.stringify(subs)); }
+function save() { Store.set('subsData', JSON.stringify(subs)); }
 
 /* ============================================================
    満足度入力
@@ -1491,7 +2171,7 @@ function renderList() {
 ============================================================ */
 function toggleOnetime() {
   inclOnetime = document.getElementById('sw-onetime').checked;
-  localStorage.setItem('inclOnetime', JSON.stringify(inclOnetime));
+  Store.set('inclOnetime', JSON.stringify(inclOnetime));
   renderDashboard();
 }
 
@@ -1532,23 +2212,14 @@ function renderDashboard() {
   document.getElementById('ttl-month').innerHTML = `<sup>¥</sup>${monthly.toLocaleString()}`;
   document.getElementById('ttl-year').innerHTML  = `<sup>¥</sup>${yearly.toLocaleString()}`;
 
-  // インサイト
-  const ib = document.getElementById('insight-bar');
-  if (yearly > 0 && !inclOnetime) {
-    const principal = (Math.floor(yearly/0.04)/10000).toLocaleString(undefined,{maximumFractionDigits:1});
-    ib.style.display = 'block';
-    ib.innerHTML = `💡 サブスク代を配当金（利回り4%）で賄うには、約 <b>${principal}万円</b> の投資元本が必要です。`;
-  } else {
-    ib.style.display = 'none';
-  }
-
   drawChart(cmap);
   renderSatChart();
   checkAlerts();
 }
 
 function drawChart(obj) {
-  const ctx = document.getElementById('chart').getContext('2d');
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
   const sorted = Object.entries(obj).sort((a,b)=>b[1]-a[1]);
   const labels = sorted.map(x=>x[0]);
   const data   = sorted.map(x=>x[1]);
@@ -1556,29 +2227,40 @@ function drawChart(obj) {
   const total  = data.reduce((s,v)=>s+v,0);
   const unitLbl = chartPeriod === 'month' ? '/月' : '/年';
 
-  if (myChart) myChart.destroy();
+  if (myChart) { try { myChart.destroy(); } catch(e){} myChart = null; }
 
   // カスタムlegendをクリア
   const legendBox = document.getElementById('chart-legend');
   legendBox.innerHTML = '';
 
-  if (!labels.length) return;
+  if (!labels.length) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
 
-  myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels, datasets:[{ data, backgroundColor:colors, borderWidth:2, borderColor:'#F4F6F8' }] },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      cutout: '62%',
-      plugins: {
-        legend:{ display: false },
-        tooltip:{ callbacks:{ label: c => ` ¥${c.raw.toLocaleString()}${unitLbl}（${Math.round(c.raw/total*100)}%）` } }
-      },
-      onClick:(e, els) => {
-        if (els.length) goto('list', myChart.data.labels[els[0].index]);
-      }
+  // ---- Chart.jsが使える場合 ----
+  if (typeof Chart !== 'undefined') {
+    try {
+      myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets:[{ data, backgroundColor:colors, borderWidth:2, borderColor:'#F4F6F8' }] },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          cutout: '62%',
+          plugins: {
+            legend:{ display: false },
+            tooltip:{ callbacks:{ label: c => ` ¥${c.raw.toLocaleString()}${unitLbl}（${Math.round(c.raw/total*100)}%）` } }
+          },
+          onClick:(e, els) => {
+            if (els.length) goto('list', myChart.data.labels[els[0].index]);
+          }
+        }
+      });
+    } catch(e) {
+      console.warn('Chart描画エラー:', e);
+      drawDoughnutFallback(canvas, ctx, data, colors, total, unitLbl);
     }
-  });
+  } else {
+    // ---- Chart.js不在: Canvas自前描画 ----
+    drawDoughnutFallback(canvas, ctx, data, colors, total, unitLbl);
+  }
 
   // カスタムlegend描画（金額＋%＋バー）
   const maxVal = data[0] || 1;
@@ -1599,6 +2281,45 @@ function drawChart(obj) {
     `;
     legendBox.appendChild(item);
   });
+}
+
+/* ============================================================
+   ドーナツグラフ・フォールバック（Chart.js不在時）
+============================================================ */
+function drawDoughnutFallback(canvas, ctx, data, colors, total, unitLbl) {
+  const W = canvas.offsetWidth || 220;
+  canvas.width  = W;
+  canvas.height = W;
+  ctx.clearRect(0, 0, W, W);
+
+  const cx = W / 2, cy = W / 2, R = W * 0.44, r = R * 0.62;
+  let angle = -Math.PI / 2;
+
+  data.forEach((val, i) => {
+    const sweep = (val / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, angle, angle + sweep);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    angle += sweep;
+  });
+
+  // 中心くり抜き
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = '#F4F6F8';
+  ctx.fill();
+
+  // 中心テキスト
+  ctx.fillStyle = '#1A2B3C';
+  ctx.textAlign = 'center';
+  ctx.font = `bold ${Math.round(W*0.07)}px sans-serif`;
+  ctx.fillText(`¥${total.toLocaleString()}`, cx, cy - W*0.03);
+  ctx.font = `${Math.round(W*0.055)}px sans-serif`;
+  ctx.fillStyle = '#6B7B8D';
+  ctx.fillText(unitLbl, cx, cy + W*0.07);
 }
 
 /* ============================================================
@@ -1694,11 +2415,6 @@ function checkAlerts() {
     }
   });
 }
-
-/* ============================================================
-   起動
-============================================================ */
-init();
 
 /* ============================================================
    カレンダー
@@ -1867,6 +2583,25 @@ function renderCalAlerts(target) {
     item.onclick = () => editSub(s.id);
     box.appendChild(item);
   });
+}
+
+/* ============================================================
+   起動（全関数定義後に実行）
+============================================================ */
+function waitForChartAndInit(attempts) {
+  attempts = attempts || 0;
+  // Chart.jsが使えるか、失敗フラグが立ったか、3秒(60回)経過で起動
+  if (typeof Chart !== 'undefined' || window._chartJsFailed || attempts > 60) {
+    init();
+  } else {
+    setTimeout(() => waitForChartAndInit(attempts + 1), 50);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', waitForChartAndInit);
+} else {
+  waitForChartAndInit();
 }
 </script>
 </body>
