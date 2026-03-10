@@ -211,25 +211,26 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-summary-lbl{font-size:11px;color:var(--ts);font-weight:600;margin-bottom:2px}
 .cal-summary-val{font-size:15px;font-weight:700;color:var(--p)}
 /* グリッド本体 */
-.cal-grid{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:10px}
+.cal-grid{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:6px}
 .cal-wd-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--p)}
 .cal-wd{text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);padding:5px 0}
 .cal-wd:first-child{color:#FFB3B3}
 .cal-wd:last-child{color:#B8D4FF}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);min-height:52px;padding:3px;position:relative;-webkit-tap-highlight-color:transparent}
+.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);aspect-ratio:1/1;padding:4px 3px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:flex-start}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day.other .cal-dn{color:#C8D4D0}
-.cal-day.today{background:#F2FAF8}
+.cal-day.today{background:linear-gradient(135deg,#E8F5F2 0%,#D4EDE8 100%)}
 .cal-day.has-ev{cursor:pointer}
 .cal-day.has-ev:active{background:var(--pl)}
 .cal-day.selected{background:var(--pl);outline:2px solid var(--p)}
-.cal-dn{font-size:13px;font-weight:700;color:var(--tx);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
-.cal-day.today .cal-dn{background:var(--p);color:#fff}
+.cal-dn{font-size:12px;font-weight:700;color:var(--tx);width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
+.cal-day.today .cal-dn{background:var(--p);color:#fff;box-shadow:0 2px 6px rgba(92,142,132,.5)}
 .cal-dn.sun{color:#C06060}
 .cal-dn.sat{color:#507AAA}
+.cal-day.today .cal-dn.sun,.cal-day.today .cal-dn.sat{color:#fff}
 /* 件数バッジ */
-.cal-badge{font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:1px 4px;display:inline-block;line-height:1.5;margin-bottom:1px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-badge{font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:1px 4px;display:inline-block;line-height:1.4}
 .cal-badge-more{font-size:10px;font-weight:700;color:var(--p);background:var(--pl);border-radius:3px;padding:1px 3px;display:inline-block}
 /* 月合計バー */
 .cal-total-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--pl);border-top:1px solid var(--bd);font-size:13px;font-weight:700;color:var(--p)}
