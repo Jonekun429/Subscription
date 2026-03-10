@@ -145,12 +145,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 /* ── サマリー ── */
 .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.sum-tile{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;transition:box-shadow .15s,transform .12s;-webkit-tap-highlight-color:transparent}
+.sum-tile{background:linear-gradient(135deg,var(--card) 0%,var(--pl) 100%);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;transition:box-shadow .15s,transform .12s;-webkit-tap-highlight-color:transparent;border:2px solid var(--p)}
 .sum-tile:hover{box-shadow:var(--shl);transform:translateY(-1px)}
 .sum-tile:active{transform:scale(.97)}
-.sum-lbl{font-size:14px;color:var(--ts);font-weight:500;margin-bottom:6px}
-.sum-amt{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--p);line-height:1}
-.sum-amt sup{font-size:60%;margin-right:1px}
+.sum-lbl{font-size:13px;color:var(--p);font-weight:700;margin-bottom:6px;letter-spacing:.3px}
+.sum-amt{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--tx);line-height:1}
+.sum-amt sup{font-size:60%;margin-right:1px;color:var(--p)}
 
 /* ── 円グラフ ── */
 .chart-wrap{position:relative;height:clamp(150px,28vw,220px)}
@@ -250,12 +250,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* 空メッセージ */
 .cal-empty{text-align:center;padding:40px 16px;color:var(--ts);font-size:14px;line-height:2}
 .cal-alerts{margin-top:20px;display:flex;flex-direction:column;gap:7px}
-/* カレンダー明細ボトムシート */
-.cal-sheet-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:flex-end;opacity:0;transition:opacity .25s}
+/* カレンダー明細モーダル（中央ポップアップ） */
+.cal-sheet-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s}
 .cal-sheet-ov.open{opacity:1}
 .cal-sheet-ov.hidden{display:none}
-.cal-sheet-inner{width:100%;max-width:680px;margin:0 auto;background:var(--card);border-radius:18px 18px 0 0;overflow:hidden;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,1,.23,1)}
-.cal-sheet-ov.open .cal-sheet-inner{transform:translateY(0)}
+.cal-sheet-inner{width:100%;max-width:420px;background:var(--card);border-radius:16px;overflow:hidden;max-height:80vh;overflow-y:auto;transform:scale(.93) translateY(10px);transition:transform .22s cubic-bezier(.32,1,.23,1);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.cal-sheet-ov.open .cal-sheet-inner{transform:scale(1) translateY(0)}
 .cal-alert-item{background:var(--card);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:11px;box-shadow:var(--sh);border-left:3px solid var(--dn);cursor:pointer}
 .cal-ai-icon{font-size:18px;flex-shrink:0}
 .cal-ai-body{flex:1}
@@ -1678,7 +1678,7 @@ function showCalDetail(y,m,d,evs){
   const sheet=document.getElementById('cal-sheet');
   const body=document.getElementById('cal-sheet-body');
 
-  body.innerHTML=`<div class="cal-detail-hdr" style="border-radius:0">
+  body.innerHTML=`<div class="cal-detail-hdr">
     <div class="cal-detail-title">${m+1}月${d}日（${DOW[dow]}）${dayTotal>0?' · ¥'+dayTotal.toLocaleString()+'／月':''}</div>
     <button class="cal-detail-close" onclick="closeCalSheet()">✕</button>
   </div>`;
