@@ -88,19 +88,19 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .hdrop-header{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:12px}
 .hdrop-logo{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px}
 .hdrop-app-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:1px}
-.hdrop-app-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.hdrop-app-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
 /* ドロワー行 */
-.hd-sec{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;padding:16px 20px 6px;text-transform:uppercase}
+.hd-sec{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;padding:16px 20px 6px;text-transform:uppercase}
 .hd-row{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;font-family:inherit;text-align:left;border-radius:0}
 .hd-row:hover,.hd-row:active{background:rgba(255,255,255,.12)}
 .hd-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .hd-lbl{font-size:14px;font-weight:600;color:#fff}
-.hd-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.hd-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:1px}
 .hd-div{border:none;border-top:1px solid rgba(255,255,255,.12);margin:6px 20px}
 /* プライバシーバッジ（下部） */
 .hdrop-privacy-badge{margin:auto 16px 12px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 14px}
-.hdrop-privacy-badge-ttl{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:4px}
-.hdrop-privacy-badge-txt{font-size:11px;color:rgba(255,255,255,.55);line-height:1.5}
+.hdrop-privacy-badge-ttl{font-size:13px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:4px}
+.hdrop-privacy-badge-txt{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
 
 /* ── ボトムナビ ── */
 /* 
@@ -173,7 +173,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .leg-row:active,.leg-row.active{background:var(--pl)}
 .leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 .leg-name{flex:1;font-size:14px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.leg-pct{font-size:12px;color:var(--ts);min-width:34px;text-align:right}
+.leg-pct{font-size:13px;color:var(--ts);min-width:34px;text-align:right}
 .leg-amt{font-size:14px;font-weight:700;color:var(--tx);min-width:70px;text-align:right;white-space:nowrap}
 
 /* ── 満足度グラフ（折りたたみ） ── */
@@ -219,16 +219,16 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* サマリーバー */
 .cal-summary{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .cal-summary-item{text-align:center;flex:1}
-.cal-summary-lbl{font-size:11px;color:var(--ts);font-weight:600;margin-bottom:2px}
+.cal-summary-lbl{font-size:12px;color:var(--ts);font-weight:600;margin-bottom:2px}
 .cal-summary-val{font-size:15px;font-weight:700;color:var(--p)}
 /* グリッド本体 */
 .cal-grid{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:6px}
 .cal-wd-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--p)}
-.cal-wd{text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);padding:5px 0}
+.cal-wd{text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);padding:5px 0}
 .cal-wd:first-child{color:#FFB3B3}
 .cal-wd:last-child{color:#B8D4FF}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);aspect-ratio:1/1;padding:4px 3px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between}
+.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);aspect-ratio:1/1;padding:4px 3px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day.other .cal-dn{color:#C8D4D0}
 .cal-day.today{background:linear-gradient(135deg,#E8F5F2 0%,#D4EDE8 100%)}
@@ -241,8 +241,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-dn.sat{color:#507AAA}
 .cal-day.today .cal-dn.sun,.cal-day.today .cal-dn.sat{color:#fff}
 /* 件数バッジ */
-.cal-badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:2px 5px;display:inline-block;line-height:1.3;align-self:flex-start}
-.cal-badge-more{font-size:11px;font-weight:700;color:var(--p);background:var(--pl);border-radius:3px;padding:1px 3px;display:inline-block}
+.cal-badge{font-size:12px;font-weight:700;color:#fff;border-radius:5px;padding:2px 5px;display:inline-block;line-height:1.3}
+.cal-badge-more{font-size:12px;font-weight:700;color:var(--p);background:var(--pl);border-radius:3px;padding:1px 3px;display:inline-block}
 /* 月合計バー */
 .cal-total-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--pl);border-top:1px solid var(--bd);font-size:13px;font-weight:700;color:var(--p)}
 /* 明細展開エリア */
@@ -315,7 +315,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .q-btn:active{transform:scale(.97)}
 .q-name{font-size:15px;font-weight:700;color:var(--tx);display:block;margin-bottom:3px}
 .q-price{font-size:14px;color:var(--ts)}
-.q-plans-badge{font-size:9px;font-weight:700;background:var(--pl);color:var(--p);border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle}
+.q-plans-badge{font-size:12px;font-weight:700;background:var(--pl);color:var(--p);border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle}
 /* プランドロップダウン */
 .plan-dd{display:none;background:var(--card);border:1.5px solid var(--p);border-radius:9px;overflow:hidden;margin-top:0;box-shadow:0 4px 14px rgba(0,0,0,.10);width:100%}
 .plan-dd.open{display:block;animation:fadeUp .14s ease}
@@ -401,9 +401,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .s-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .s-body{flex:1}
 .s-title{font-size:14px;font-weight:600;color:var(--tx)}
-.s-sub{font-size:12px;color:var(--ts);margin-top:1px}
+.s-sub{font-size:13px;color:var(--ts);margin-top:1px}
 .s-arr{color:var(--ts);font-size:18px;font-weight:300}
-.th-btn{padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;border:1.5px solid var(--bd);background:var(--bg);color:var(--ts);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.th-btn{padding:5px 10px;border-radius:8px;font-size:13px;font-weight:700;font-family:inherit;border:1.5px solid var(--bd);background:var(--bg);color:var(--ts);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .th-btn.on{background:var(--p);color:#fff;border-color:var(--p)}
 
 /* ── ガイドシート ── */
@@ -633,7 +633,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="s-arr">›</span>
       </div>
     </div>
-    <div style="padding:14px 18px 22px;text-align:center;font-size:11px;color:var(--ts)">Subly v1.0</div>
+    <div style="padding:14px 18px 22px;text-align:center;font-size:12px;color:var(--ts)">Subly v1.0</div>
   </div>
 </div>
 
@@ -645,8 +645,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <button class="sheet-close" onclick="closePrivacy()">✕</button>
     </div>
     <div style="padding:18px;font-size:13px;color:var(--tx);line-height:1.8">
-      <p style="margin:0 0 4px;color:var(--ts);font-size:12px">制定日：2026年4月1日</p>
-      <p style="margin:0 0 18px;color:var(--ts);font-size:12px">本アプリケーション「Subly」における情報の取り扱いについて、Jone Lab（以下、「当方」といいます）は以下の通りプライバシーポリシーを定めます。</p>
+      <p style="margin:0 0 4px;color:var(--ts);font-size:13px">制定日：2026年4月1日</p>
+      <p style="margin:0 0 18px;color:var(--ts);font-size:13px">本アプリケーション「Subly」における情報の取り扱いについて、Jone Lab（以下、「当方」といいます）は以下の通りプライバシーポリシーを定めます。</p>
 
       <div style="margin-bottom:18px">
         <div style="font-weight:700;margin-bottom:6px;color:var(--p)">1. 取得する情報および利用目的</div>
@@ -675,7 +675,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
       <div style="margin-bottom:18px">
         <div style="font-weight:700;margin-bottom:6px;color:var(--p)">6. お問い合わせ先</div>
-        <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒150-0043 東京都渋谷区道玄坂1丁目10番8号<br>渋谷道玄坂東急ビル2F-C<br>Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6bcb9b8b3f8bab7b4f8b7a6a696b1bbb7bfbaf8b5b9bb">[email&#160;protected]</a></p>
+        <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒150-0043 東京都渋谷区道玄坂1丁目10番8号<br>渋谷道玄坂東急ビル2F-C<br>Mail: jone.lab.app&#64;gmail.com</p>
       </div>
 
       <div style="margin-bottom:8px">
@@ -759,7 +759,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <span>買い切りを含める</span>
       <label class="sw"><input type="checkbox" id="sw-ot" onchange="toggleOt()"><span class="sw-t"></span></label>
     </div>
-    <div id="ot-note" style="display:none;font-size:11px;color:var(--ts);margin-bottom:10px;margin-top:-6px;text-align:right">※ 買い切りは年間合計にのみ加算</div>
+    <div id="ot-note" style="display:none;font-size:12px;color:var(--ts);margin-bottom:10px;margin-top:-6px;text-align:right">※ 買い切りは年間合計にのみ加算</div>
     <div id="alerts"></div>
     <div class="sum-row">
       <div class="sum-tile" onclick="goto('list')">
@@ -777,10 +777,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <canvas id="chart"></canvas>
         <div id="chart-center" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:54%">
           <div id="cc-icon" style="font-size:20px;line-height:1;margin-bottom:2px"></div>
-          <div id="cc-name" style="font-size:11px;font-weight:700;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div>
+          <div id="cc-name" style="font-size:13px;font-weight:700;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div>
           <div id="cc-amt" style="font-size:clamp(16px,4vw,22px);font-weight:800;color:var(--tx);line-height:1.1;margin:2px 0"></div>
-          <div id="cc-pct" style="font-size:12px;font-weight:700;color:var(--p)"></div>
-          <button id="cc-goto" style="margin-top:6px;font-size:10px;font-weight:700;color:#fff;background:var(--p);border:none;border-radius:20px;padding:3px 10px;display:none;pointer-events:auto;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">明細を見る →</button>
+          <div id="cc-pct" style="font-size:13px;font-weight:700;color:var(--p)"></div>
+          <button id="cc-goto" style="margin-top:6px;font-size:12px;font-weight:700;color:#fff;background:var(--p);border:none;border-radius:20px;padding:3px 10px;display:none;pointer-events:auto;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">明細を見る →</button>
         </div>
       </div>
       <div id="chart-legend" class="legend" style="margin-top:14px"></div>
@@ -981,7 +981,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 </div><!-- /wrap -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ============================================================
    ストレージ
 ============================================================ */
@@ -1288,7 +1288,7 @@ async function openNotifySettings(){
           </label>
         </div>
       </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--ts);line-height:1.6">
+      <div style="margin-top:10px;font-size:13px;color:var(--ts);line-height:1.6">
         📱 アプリ版：バックグラウンドでも通知が届きます<br>
         🌐 Web版：アプリを開いた際にバナーで表示
       </div>
@@ -1750,7 +1750,7 @@ function checkAlerts(){
 
   const hdr=document.createElement('div');
   hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
-  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)">⚠️ 解約を検討してみては？</span><span style="font-size:12px;color:var(--ts)">${warns.length}件</span>`;
+  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)">⚠️ 解約を検討してみては？</span><span style="font-size:13px;color:var(--ts)">${warns.length}件</span>`;
   section.appendChild(hdr);
 
   warns.forEach(s=>{
@@ -1762,9 +1762,9 @@ function checkAlerts(){
       <div style="width:32px;height:32px;border-radius:8px;background:${ci.color}22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${ci.icon}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:14px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</div>
-        <div style="font-size:12px;color:var(--ts)">${'⭐'.repeat(s.sat)}${'☆'.repeat(5-s.sat)} · ${s.cat}</div>
+        <div style="font-size:13px;color:var(--ts)">${'⭐'.repeat(s.sat)}${'☆'.repeat(5-s.sat)} · ${s.cat}</div>
       </div>
-      <div style="font-size:14px;font-weight:700;color:var(--dn);white-space:nowrap">¥${mo.toLocaleString()}<span style="font-size:11px;font-weight:400;color:var(--ts)">/月</span></div>`;
+      <div style="font-size:14px;font-weight:700;color:var(--dn);white-space:nowrap">¥${mo.toLocaleString()}<span style="font-size:12px;font-weight:400;color:var(--ts)">/月</span></div>`;
     row.onclick=()=>editSub(s.id);
     section.appendChild(row);
   });
@@ -2061,7 +2061,7 @@ function buildQItems(cat){
           return;
         }
         panel.dataset.item=item.name;
-        panel.innerHTML=`<div style="padding:9px 13px 6px;font-size:12px;font-weight:700;color:var(--ts);border-bottom:1px solid var(--bd)">${item.name} のプランを選択</div>`;
+        panel.innerHTML=`<div style="padding:9px 13px 6px;font-size:13px;font-weight:700;color:var(--ts);border-bottom:1px solid var(--bd)">${item.name} のプランを選択</div>`;
         item.plans.forEach(plan=>{
           const opt=document.createElement('div');
           opt.className='plan-opt';
