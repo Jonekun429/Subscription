@@ -2314,31 +2314,23 @@ async function exportCSV(){
   });
 }
 
-// File System Access API 対応インポート（Android/PC Chrome推奨）
+// CSVインポート（iOS/Android/PC共通 input方式）
+// showOpenFilePicker はAndroid ChromeでCSVが選択できないバグがあるため使わない
 async function importCSVPicker(){
-  // ① File System Access API（Android Chrome / PC Chrome → 本体から直接選択）
-  if(window.showOpenFilePicker){
-    try{
-      const [fh] = await window.showOpenFilePicker({
-        types:[{ description:'CSVファイル', accept:{'text/csv':['.csv'], 'text/plain':['.csv']} }],
-        multiple: false
-      });
-      const file = await fh.getFile();
-      _processImportFile(file);
-      return;
-    }catch(err){
-      if(err.name==='AbortError') return;
-      // 失敗 → ②へ
-    }
-  }
-  // ② fallback: 隠しinputをクリック（iOS / 旧Android）
   const input = document.createElement('input');
-  input.type='file'; input.accept='.csv';
-  input.style.cssText='position:absolute;opacity:0;width:1px;height:1px';
-  input.onchange=e=>{ if(e.target.files[0]) _processImportFile(e.target.files[0]); };
+  input.type = 'file';
+  // Android対応: MIMEタイプを広めに指定（text/csvだけだと選択できない機種がある）
+  input.accept = '.csv,text/csv,text/plain,application/csv';
+  input.style.cssText = 'position:fixed;opacity:0;width:1px;height:1px;top:0;left:0';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(file) _processImportFile(file);
+    document.body.removeChild(input);
+  };
   document.body.appendChild(input);
   input.click();
-  setTimeout(()=>document.body.removeChild(input), 5000);
+  // fallbackタイムアウト（ファイル未選択でも5秒後に除去）
+  setTimeout(()=>{ if(document.body.contains(input)) document.body.removeChild(input); }, 8000);
 }
 
 function importCSV(e){
