@@ -9,7 +9,7 @@
   // Capacitor が存在しない場合（ブラウザプレビュー）は何もしない
   if(typeof window.Capacitor === 'undefined') window.Capacitor = null;
 </script>
-<script>(function(){const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';s.onerror=()=>{window._chartFailed=true};document.head.appendChild(s);})();</script>
+<script>(function(){const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';s.onerror=()=>{window._chartJsFailed=true};document.head.appendChild(s);})();</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -36,8 +36,8 @@
   --pl:   #1E3230;
   --bg:   #121816;
   --card: #1E2622;
-  --tx:   #E8F0ED;
-  --ts:   #8AA89F;
+  --tx:   #C8D8D2;
+  --ts:   #7A9A91;
   --bd:   #2E3E3A;
   --dn:   #D08080;
   --wbg:  #2A2218;
@@ -53,8 +53,8 @@
     --pl:   #1E3230;
     --bg:   #121816;
     --card: #1E2622;
-    --tx:   #E8F0ED;
-    --ts:   #8AA89F;
+    --tx:   #C8D8D2;
+    --ts:   #7A9A91;
     --bd:   #2E3E3A;
     --dn:   #D08080;
     --wbg:  #2A2218;
@@ -75,19 +75,32 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .hdr-hamburger{width:38px;height:38px;background:rgba(255,255,255,.18);border:none;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-right:auto;flex-shrink:0}
 .hdr-hamburger span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:all .2s}
 
-/* ── ハンバーガードロップダウン ── */
-.hdrop-bg{display:none;position:fixed;inset:0;z-index:350}
+/* ── 左ドロワーメニュー ── */
+.hdrop-bg{display:none;position:fixed;inset:0;z-index:490;background:rgba(0,0,0,.45);backdrop-filter:blur(1px);transition:opacity .25s}
 .hdrop-bg.open{display:block}
-.hdrop{position:fixed;background:var(--card);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);min-width:220px;overflow:hidden;z-index:500;
-  opacity:0;transform:translateY(-8px) scale(.97);transform-origin:top left;
-  pointer-events:none;transition:opacity .18s ease,transform .18s ease}
-.hdrop.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
-.hd-row{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;font-family:inherit;text-align:left}
-.hd-row:hover,.hd-row:active{background:var(--pl)}
-.hd-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.hd-lbl{font-size:14px;font-weight:600;color:var(--tx)}
-.hd-sub{font-size:12px;color:var(--ts);margin-top:1px}
-.hd-div{border:none;border-top:1px solid var(--bd);margin:3px 0}
+.hdrop{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:85vw;background:var(--p);z-index:500;
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:translateX(-100%);transition:transform .28s cubic-bezier(.32,1,.23,1);
+  padding-top:max(env(safe-area-inset-top),0px)}
+.hdrop.open{transform:translateX(0)}
+.hdrop-inner{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,16px)}
+/* ドロワーヘッダー */
+.hdrop-header{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:12px}
+.hdrop-logo{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px}
+.hdrop-app-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:1px}
+.hdrop-app-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+/* ドロワー行 */
+.hd-sec{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;padding:16px 20px 6px;text-transform:uppercase}
+.hd-row{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;font-family:inherit;text-align:left;border-radius:0}
+.hd-row:hover,.hd-row:active{background:rgba(255,255,255,.12)}
+.hd-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.hd-lbl{font-size:14px;font-weight:600;color:#fff}
+.hd-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.hd-div{border:none;border-top:1px solid rgba(255,255,255,.12);margin:6px 20px}
+/* プライバシーバッジ（下部） */
+.hdrop-privacy-badge{margin:auto 16px 12px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 14px}
+.hdrop-privacy-badge-ttl{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:4px}
+.hdrop-privacy-badge-txt{font-size:11px;color:rgba(255,255,255,.55);line-height:1.5}
 
 /* ── ボトムナビ ── */
 /* 
@@ -98,7 +111,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 */
 .bnav{
   position:fixed;bottom:0;left:0;width:100%;
-  background:#fff;border-top:1px solid var(--bd);
+  background:var(--card);border-top:1px solid var(--bd);
   display:flex;align-items:stretch;
   z-index:300;
   box-shadow:0 -2px 10px rgba(0,0,0,.05);
@@ -110,7 +123,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   gap:4px;
   /* ボタン自体の高さを固定して機種差をなくす */
   height:var(--nh);
-  color:var(--ts);font-size:12px;font-weight:600;
+  color:var(--ts);font-size:13px;font-weight:600;
   cursor:pointer;border:none;background:none;
   -webkit-tap-highlight-color:transparent;
   transition:color .15s;letter-spacing:.2px;
@@ -118,10 +131,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 }
 .nb svg{width:24px;height:24px;fill:currentColor;flex-shrink:0}
 .nb.on{color:var(--p)}
-.nb.on{color:var(--p)}
 
 /* ── ラップ ── */
 .wrap{max-width:680px;margin:0 auto;padding:16px}
+/* カレンダーページは左右余白を最小化してグリッドを大きく */
+#pg-calendar .wrap{padding:16px 6px}
 .page{display:none}
 .page.on{display:block;animation:fadeUp .22s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -153,17 +167,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .sum-amt sup{font-size:60%;margin-right:1px;color:var(--p)}
 
 /* ── 円グラフ ── */
-.chart-wrap{position:relative;height:clamp(150px,28vw,220px)}
-.chart-hint{font-size:14px;color:var(--ts);text-align:center;margin-top:8px}
-.legend{margin-top:10px;display:flex;flex-direction:column;gap:5px}
-.leg-row{display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;padding:3px 4px;border-radius:6px;transition:background .12s}
-.leg-row:hover{background:var(--bg)}
-.leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-.leg-name{flex:1;color:var(--tx);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.leg-bar-w{flex:2;background:var(--bg);border-radius:3px;height:5px;overflow:hidden}
-.leg-bar{height:100%;border-radius:3px;transition:width .4s}
-.leg-pct{font-size:14px;color:var(--ts);min-width:30px;text-align:right}
-.leg-amt{font-size:15px;font-weight:700;color:var(--tx);min-width:60px;text-align:right;white-space:nowrap}
+.chart-wrap{position:relative;height:clamp(160px,30vw,220px)}
+.legend{display:flex;flex-direction:column;gap:0}
+.leg-row{display:flex;align-items:center;gap:9px;padding:7px 6px;border-radius:8px;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent}
+.leg-row:active,.leg-row.active{background:var(--pl)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.leg-name{flex:1;font-size:14px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leg-pct{font-size:12px;color:var(--ts);min-width:34px;text-align:right}
+.leg-amt{font-size:14px;font-weight:700;color:var(--tx);min-width:70px;text-align:right;white-space:nowrap}
 
 /* ── 満足度グラフ（折りたたみ） ── */
 .sat-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -224,14 +235,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-day.has-ev{cursor:pointer}
 .cal-day.has-ev:active{background:var(--pl)}
 .cal-day.selected{background:var(--pl);outline:2px solid var(--p)}
-.cal-dn{font-size:12px;font-weight:700;color:var(--tx);width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
+.cal-dn{font-size:13px;font-weight:700;color:var(--tx);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
 .cal-day.today .cal-dn{background:var(--p);color:#fff;box-shadow:0 2px 6px rgba(92,142,132,.5)}
 .cal-dn.sun{color:#C06060}
 .cal-dn.sat{color:#507AAA}
 .cal-day.today .cal-dn.sun,.cal-day.today .cal-dn.sat{color:#fff}
 /* 件数バッジ */
-.cal-badge{font-size:10px;font-weight:700;color:#fff;border-radius:5px;padding:2px 5px;display:inline-block;line-height:1.3;align-self:flex-start}
-.cal-badge-more{font-size:10px;font-weight:700;color:var(--p);background:var(--pl);border-radius:3px;padding:1px 3px;display:inline-block}
+.cal-badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:2px 5px;display:inline-block;line-height:1.3;align-self:flex-start}
+.cal-badge-more{font-size:11px;font-weight:700;color:var(--p);background:var(--pl);border-radius:3px;padding:1px 3px;display:inline-block}
 /* 月合計バー */
 .cal-total-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--pl);border-top:1px solid var(--bd);font-size:13px;font-weight:700;color:var(--p)}
 /* 明細展開エリア */
@@ -246,7 +257,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-detail-icon{font-size:18px;flex-shrink:0}
 .cal-detail-body{flex:1;min-width:0}
 .cal-detail-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal-detail-meta{font-size:12px;color:var(--ts);margin-top:1px}
+.cal-detail-meta{font-size:13px;color:var(--ts);margin-top:1px}
 .cal-detail-price{font-size:14px;font-weight:700;color:var(--p);white-space:nowrap}
 /* 空メッセージ */
 .cal-empty{text-align:center;padding:40px 16px;color:var(--ts);font-size:14px;line-height:2}
@@ -431,62 +442,86 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </button>
 </header>
 
-<!-- ハンバーガードロップダウン -->
+<!-- 左ドロワーメニュー -->
 <div class="hdrop-bg" id="hdrop-bg" onclick="closeHdrop()"></div>
 <div class="hdrop" id="hdrop">
   <div class="hdrop-inner">
-      <button class="hd-row" onclick="closeHdrop();setTimeout(exportCSV,150)">
-        <div class="hd-ico" style="background:#EDF4F2">📤</div>
-        <div><div class="hd-lbl">CSVエクスポート</div><div class="hd-sub">データをCSVとして保存</div></div>
-      </button>
-      <label class="hd-row" style="cursor:pointer;position:relative" onclick="closeHdrop()">
-        <div class="hd-ico" style="background:#FDF6EE">📥</div>
-        <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
-        <input type="file" accept=".csv" style="position:absolute;opacity:0;width:1px;height:1px;top:0;left:0" onchange="importCSV(event)">
-      </label>
-      <hr class="hd-div">
-      <button class="hd-row" onclick="closeHdrop();setTimeout(openNotifySettings,150)">
-        <div class="hd-ico" style="background:#FFFBEB">🔔</div>
-        <div><div class="hd-lbl">支払い通知の設定</div><div class="hd-sub" id="hd-notify-sub">1週間前に通知</div></div>
-      </button>
-      <div class="hd-row" style="cursor:default">
-        <div class="hd-ico" style="background:#F0F0F8">🌓</div>
-        <div style="flex:1"><div class="hd-lbl">テーマ</div></div>
-        <div style="display:flex;gap:5px">
-          <button class="th-btn" id="hd-th-light" onclick="setTheme('light')">ライト</button>
-          <button class="th-btn" id="hd-th-auto"  onclick="setTheme('auto')">自動</button>
-          <button class="th-btn" id="hd-th-dark"  onclick="setTheme('dark')">ダーク</button>
-        </div>
+
+    <!-- アプリヘッダー -->
+    <div class="hdrop-header">
+      <div class="hdrop-logo">S</div>
+      <div>
+        <div class="hdrop-app-name">Subly</div>
+        <div class="hdrop-app-sub">サブスク管理アプリ</div>
       </div>
-      <hr class="hd-div">
-      <button class="hd-row" onclick="closeHdrop();setTimeout(openGuide,150)">
-        <div class="hd-ico" style="background:#EEF2FF">📱</div>
-        <div><div class="hd-lbl">機種変更ガイド</div><div class="hd-sub">引き継ぎ方法を確認</div></div>
-      </button>
-      <button class="hd-row" onclick="closeHdrop();setTimeout(showOnboarding,150)">
-        <div class="hd-ico" style="background:#F0FDF4">📖</div>
-        <div><div class="hd-lbl">使い方を見る</div><div class="hd-sub">Sublyの基本的な使い方</div></div>
-      </button>
-      <hr class="hd-div">
-      <button class="hd-row" onclick="closeHdrop();window.open('https://forms.gle/XXXXXXX','_blank')">
-        <div class="hd-ico" style="background:#EEF6FF">💡</div>
-        <div><div class="hd-lbl">機能リクエスト</div><div class="hd-sub">ご要望をお聞かせください</div></div>
-      </button>
-      <button class="hd-row" onclick="closeHdrop();window.open('https://forms.gle/YYYYYYY','_blank')">
-        <div class="hd-ico" style="background:#FFF8EE">✉️</div>
-        <div><div class="hd-lbl">お問い合わせ</div><div class="hd-sub">不具合・ご意見はこちら</div></div>
-      </button>
-      <button class="hd-row" onclick="closeHdrop();setTimeout(openPrivacy,150)">
-        <div class="hd-ico" style="background:#F0FDF4">🔒</div>
-        <div><div class="hd-lbl">プライバシーポリシー</div><div class="hd-sub">データの取り扱いについて</div></div>
-      </button>
-      <hr class="hd-div">
-      <button class="hd-row" onclick="closeHdrop();setTimeout(resetAll,150)">
-        <div class="hd-ico" style="background:#FEE2E2">🗑️</div>
-        <div><div class="hd-lbl" style="color:var(--dn)">全データを削除</div><div class="hd-sub">この操作は元に戻せません</div></div>
-      </button>
-      <div style="padding:8px 16px 10px;text-align:right;font-size:10px;color:var(--ts)">Subly v1.0</div>
     </div>
+
+    <!-- データ管理 -->
+    <div class="hd-sec">データ管理</div>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(exportCSV,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📤</div>
+      <div><div class="hd-lbl">CSVエクスポート</div><div class="hd-sub">データをCSVとして保存</div></div>
+    </button>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(importCSVPicker,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📥</div>
+      <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
+    </button>
+
+    <!-- 設定 -->
+    <div class="hd-sec">設定</div>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(openNotifySettings,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🔔</div>
+      <div><div class="hd-lbl">月次見直し通知</div><div class="hd-sub" id="hd-notify-sub">毎月1日 朝9時にお知らせ</div></div>
+    </button>
+    <div class="hd-row" style="cursor:default">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🌓</div>
+      <div style="flex:1"><div class="hd-lbl">テーマ</div></div>
+      <div style="display:flex;gap:4px">
+        <button class="th-btn" id="hd-th-light" onclick="setTheme('light')">ライト</button>
+        <button class="th-btn" id="hd-th-auto"  onclick="setTheme('auto')">自動</button>
+        <button class="th-btn" id="hd-th-dark"  onclick="setTheme('dark')">ダーク</button>
+      </div>
+    </div>
+
+    <!-- ヘルプ -->
+    <div class="hd-sec">ヘルプ</div>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(openGuide,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📱</div>
+      <div><div class="hd-lbl">機種変更ガイド</div><div class="hd-sub">引き継ぎ方法を確認</div></div>
+    </button>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(showOnboarding,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📖</div>
+      <div><div class="hd-lbl">使い方を見る</div><div class="hd-sub">Sublyの基本的な使い方</div></div>
+    </button>
+
+    <!-- サポート -->
+    <div class="hd-sec">サポート</div>
+    <button class="hd-row" onclick="closeHdrop();window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">💡</div>
+      <div><div class="hd-lbl">機能リクエスト</div><div class="hd-sub">ご要望をお聞かせください</div></div>
+    </button>
+    <button class="hd-row" onclick="closeHdrop();window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">✉️</div>
+      <div><div class="hd-lbl">お問い合わせ</div><div class="hd-sub">不具合・ご意見はこちら</div></div>
+    </button>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(openPrivacy,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🔒</div>
+      <div><div class="hd-lbl">プライバシーポリシー</div><div class="hd-sub">データの取り扱いについて</div></div>
+    </button>
+
+    <hr class="hd-div">
+    <button class="hd-row" onclick="closeHdrop();setTimeout(resetAll,150)">
+      <div class="hd-ico" style="background:rgba(255,100,100,.25)">🗑️</div>
+      <div><div class="hd-lbl" style="color:#ffaaaa">全データを削除</div><div class="hd-sub">この操作は元に戻せません</div></div>
+    </button>
+
+    <!-- プライバシーバッジ -->
+    <div class="hdrop-privacy-badge">
+      <div class="hdrop-privacy-badge-ttl">🔒 プライバシー保護</div>
+      <div class="hdrop-privacy-badge-txt">全データは端末内にのみ保存。外部送信なし。</div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ナビ -->
@@ -553,12 +588,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div class="s-body"><div class="s-title">CSVエクスポート</div><div class="s-sub">データをCSVファイルとして保存</div></div>
         <span class="s-arr">›</span>
       </div>
-      <label class="s-row" style="cursor:pointer;position:relative">
+      <div class="s-row" onclick="importCSVPicker()" style="cursor:pointer">
         <div class="s-ico" style="background:#FDF6EE">📥</div>
         <div class="s-body"><div class="s-title">CSVインポート</div><div class="s-sub">機種変更後のデータ引き継ぎに</div></div>
         <span class="s-arr">›</span>
-        <input type="file" accept=".csv" style="position:absolute;opacity:0;width:1px;height:1px;top:0;left:0" onchange="importCSV(event)">
-      </label>
+      </div>
     </div>
     <div class="s-sec">ヘルプ</div>
     <div class="s-grp">
@@ -575,12 +609,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div class="s-sec">サポート</div>
     <div class="s-grp">
-      <div class="s-row" onclick="window.open('https://forms.gle/XXXXXXX','_blank')">
+      <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
         <div class="s-ico" style="background:#EEF6FF">💡</div>
         <div class="s-body"><div class="s-title">機能リクエスト</div><div class="s-sub">ご要望をお聞かせください</div></div>
         <span class="s-arr">›</span>
       </div>
-      <div class="s-row" onclick="window.open('https://forms.gle/YYYYYYY','_blank')">
+      <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
         <div class="s-ico" style="background:#FFF8EE">✉️</div>
         <div class="s-body"><div class="s-title">お問い合わせ</div><div class="s-sub">不具合・ご意見はこちら</div></div>
         <span class="s-arr">›</span>
@@ -641,7 +675,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
       <div style="margin-bottom:18px">
         <div style="font-weight:700;margin-bottom:6px;color:var(--p)">6. お問い合わせ先</div>
-        <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒151-0073 東京都渋谷区笹塚1丁目48番14号<br>笹塚太陽ビル内 GMOオフィスサポート<br>Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91fbfefff4bffdf0f3bff0e1e1d1f6fcf0f8fdbff2fefc">[email&#160;protected]</a></p>
+        <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒150-0043 東京都渋谷区道玄坂1丁目10番8号<br>渋谷道玄坂東急ビル2F-C<br>Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6bcb9b8b3f8bab7b4f8b7a6a696b1bbb7bfbaf8b5b9bb">[email&#160;protected]</a></p>
       </div>
 
       <div style="margin-bottom:8px">
@@ -688,7 +722,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
     </div>
     <div style="padding:0 16px 20px">
-      <button class="btn-submit" onclick="closeGuide();document.getElementById('csv-in').click()">📥 今すぐインポート</button>
+      <button class="btn-submit" onclick="closeGuide();setTimeout(importCSVPicker,150)">📥 今すぐインポート</button>
     </div>
   </div>
 </div>
@@ -739,9 +773,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div class="card">
       <div class="card-ttl">カテゴリ別支出（月換算）</div>
-      <div class="chart-wrap"><canvas id="chart"></canvas></div>
-      <div id="chart-legend" class="legend"></div>
-      <div class="chart-hint">💡 グラフをタップして明細を絞り込み</div>
+      <div class="chart-wrap" style="position:relative">
+        <canvas id="chart"></canvas>
+        <div id="chart-center" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:54%">
+          <div id="cc-icon" style="font-size:20px;line-height:1;margin-bottom:2px"></div>
+          <div id="cc-name" style="font-size:11px;font-weight:700;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div>
+          <div id="cc-amt" style="font-size:clamp(16px,4vw,22px);font-weight:800;color:var(--tx);line-height:1.1;margin:2px 0"></div>
+          <div id="cc-pct" style="font-size:12px;font-weight:700;color:var(--p)"></div>
+          <button id="cc-goto" style="margin-top:6px;font-size:10px;font-weight:700;color:#fff;background:var(--p);border:none;border-radius:20px;padding:3px 10px;display:none;pointer-events:auto;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">明細を見る →</button>
+        </div>
+      </div>
+      <div id="chart-legend" class="legend" style="margin-top:14px"></div>
     </div>
     <!-- 満足度グラフ（折りたたみ） -->
     <div class="card">
@@ -939,7 +981,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 </div><!-- /wrap -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ============================================================
    ストレージ
 ============================================================ */
@@ -997,7 +1039,6 @@ const Store = (function(){
    データ
 ============================================================ */
 let subs = [];
-subs.forEach(s=>{ if(s.freq==='単発') s.freq='単発（買い切り）'; });
 
 let myChart=null, editId=null, calYear, calMonth, calFilter='all';
 let inclOt = false;
@@ -1210,166 +1251,209 @@ function goto(page, filterCat=null){
 }
 
 /* ============================================================
-   支払い通知（Capacitor Local Notifications + Web Notification API）
+   月次見直し通知
+   - 毎月1日 朝9時に1通だけ送る
+   - ★（sat）が設定値以下のサービスをまとめて通知
+   - Capacitor: バックグラウンド通知
+   - Web: アプリ起動時にバナー表示（代替）
 ============================================================ */
+
+// 通知設定を開く
 async function openNotifySettings(){
-  const isNativeApp = !!(window.Capacitor?.isNativePlatform?.());
+  // 現在の設定を読み込む
+  const raw = await Store.get('notifyConfig');
+  const cfg = raw ? JSON.parse(raw) : { enabled: false, starThreshold: 3 };
 
-  if(isNativeApp){
-    // ── Capacitorネイティブアプリ ──
-    try{
-      const { LocalNotifications } = await import('@capacitor/local-notifications');
-      const perm = await LocalNotifications.requestPermissions();
-      if(perm.display !== 'granted'){
-        showAlert('🔕','通知が許可されませんでした','設定アプリから通知を許可してください');
-        return;
-      }
-      await scheduleNativeNotifications(LocalNotifications);
-      showDialog({
-        icon:'🔔',
-        title:'通知を設定しました',
-        msg:'支払い1週間前にお知らせします。\nアプリを閉じていても通知が届きます。',
-        buttons:[
-          {label:'今すぐ確認', cls:'ok', onClick:()=>checkUpcoming()},
-          {label:'閉じる', cls:'cancel'}
-        ]
-      });
-    }catch(e){
-      showAlert('⚠️','エラー','通知の設定に失敗しました: '+e.message);
-    }
-    return;
-  }
-
-  // ── ブラウザ（HTML単体） ──
-  if(!('Notification' in window)){
-    showAlert('📵','通知非対応','このブラウザは通知に対応していません。\nCapacitorアプリ版で完全対応できます。');
-    return;
-  }
-  if(Notification.permission==='denied'){
-    showAlert('🔕','通知がブロックされています','ブラウザの設定から通知を許可してください。');
-    return;
-  }
-  if(Notification.permission==='default'){
-    const r = await Notification.requestPermission();
-    if(r !== 'granted'){ showToast('通知が許可されませんでした'); return; }
-  }
-  scheduleBrowserNotifications();
+  // 設定シートを表示
   showDialog({
-    icon:'🔔',
-    title:'通知を設定しました',
-    msg:'支払い1週間前にブラウザ通知でお知らせします。\n※アプリを開いている間のみ動作します。\nCapacitorアプリ版ではバックグラウンドでも通知できます。',
+    icon: '🔔',
+    title: '月次見直し通知',
+    msg: `<div style="text-align:left">
+      <div style="margin-bottom:14px;font-size:13px;color:var(--ts);line-height:1.6">毎月1日 朝9時に、見直し対象のサブスクをまとめてお知らせします。</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)">
+        <span style="font-size:14px;font-weight:600">通知を受け取る</span>
+        <label class="sw" style="width:40px;height:24px"><input type="checkbox" id="dlg-notify-toggle" ${cfg.enabled?'checked':''}><span class="sw-t"></span></label>
+      </div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--bd)">
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px">通知対象</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[3,2,1].map(n=>`
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="radio" name="dlg-star" value="${n}" ${cfg.starThreshold===n?'checked':''} style="accent-color:var(--p);width:16px;height:16px">
+            <span style="font-size:13px">★${n}以下のサービス</span>
+          </label>`).join('')}
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="radio" name="dlg-star" value="5" ${cfg.starThreshold===5?'checked':''} style="accent-color:var(--p);width:16px;height:16px">
+            <span style="font-size:13px">全件（満足度に関わらず）</span>
+          </label>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--ts);line-height:1.6">
+        📱 アプリ版：バックグラウンドでも通知が届きます<br>
+        🌐 Web版：アプリを開いた際にバナーで表示
+      </div>
+    </div>`,
     buttons:[
-      {label:'今すぐ確認', cls:'ok', onClick:()=>checkUpcoming()},
-      {label:'閉じる', cls:'cancel'}
+      {label:'キャンセル', cls:'cancel'},
+      {label:'保存する', cls:'ok', onClick: ()=> _saveNotifyConfig()}
     ]
   });
 }
 
-// Capacitorネイティブ通知をスケジュール
-async function scheduleNativeNotifications(LocalNotifications){
-  // 既存の通知をキャンセル
-  const pending = await LocalNotifications.getPending();
-  if(pending.notifications.length){
-    await LocalNotifications.cancel({notifications: pending.notifications});
+// 設定を保存してスケジュール
+async function _saveNotifyConfig(){
+  const enabled = document.getElementById('dlg-notify-toggle')?.checked || false;
+  const starEl  = document.querySelector('input[name="dlg-star"]:checked');
+  const starThreshold = starEl ? parseInt(starEl.value) : 3;
+  const cfg = { enabled, starThreshold };
+  await Store.set('notifyConfig', JSON.stringify(cfg));
+
+  // ラベル更新
+  const lbl = document.getElementById('hd-notify-sub');
+  if(lbl) lbl.textContent = enabled
+    ? `毎月1日 朝9時・★${starThreshold===5?'全件':starThreshold+'以下'}対象`
+    : 'オフ';
+
+  if(!enabled){
+    // 通知OFFにしたらCapacitor通知をキャンセル
+    _cancelNativeNotifications();
+    showToast('通知をオフにしました');
+    return;
   }
-  const now = new Date();
-  const notifications = [];
-  subs.forEach(s=>{
-    if(s.freq==='単発（買い切り）') return;
-    const base = new Date(s.date);
-    if(isNaN(base)) return;
-    // 次の支払い日
-    let next = new Date(now.getFullYear(), now.getMonth(), base.getDate());
-    if(s.freq==='月額' && next <= now){
-      next = new Date(now.getFullYear(), now.getMonth()+1, base.getDate());
-    }
-    if(s.freq==='年額'){
-      next = new Date(now.getFullYear(), base.getMonth(), base.getDate());
-      if(next <= now) next = new Date(now.getFullYear()+1, base.getMonth(), base.getDate());
-    }
-    // 1週間前
-    const notifyAt = new Date(next.getTime() - 7*24*60*60*1000);
-    if(notifyAt > now){
-      notifications.push({
-        id: s.id % 2147483647,
-        title: `💳 ${s.name} の支払いが1週間後です`,
-        body: `¥${s.price.toLocaleString()} / ${s.freq}　（${next.getMonth()+1}月${next.getDate()}日）`,
-        schedule: { at: notifyAt },
+
+  // 通知をスケジュール
+  await _scheduleMonthlyNotification(cfg);
+}
+
+// Capacitorネイティブ通知をキャンセル
+async function _cancelNativeNotifications(){
+  try{
+    const LN = window.Capacitor?.Plugins?.LocalNotifications;
+    if(!LN) return;
+    const pending = await LN.getPending();
+    if(pending.notifications.length) await LN.cancel({notifications: pending.notifications});
+  }catch(e){}
+}
+
+// 月次通知をスケジュール（毎月1日 9:00）
+async function _scheduleMonthlyNotification(cfg){
+  const isNativeApp = !!(window.Capacitor?.isNativePlatform?.());
+
+  // 通知本文を作成
+  const targets = subs.filter(s=>{
+    if(s.freq==='単発（買い切り）') return false;
+    if(cfg.starThreshold === 5) return true;
+    return (s.sat||0) > 0 && s.sat <= cfg.starThreshold;
+  });
+  const monthly = subs.reduce((a,s)=>{
+    if(s.freq==='単発（買い切り）') return a;
+    return a + (s.freq==='月額'?s.price:Math.round(s.price/12));
+  },0);
+  const body = targets.length
+    ? `見直し候補 ${targets.length}件 / 月額合計 ¥${monthly.toLocaleString()}`
+    : `月額合計 ¥${monthly.toLocaleString()} をチェックしましょう`;
+
+  if(isNativeApp){
+    // ── Capacitorアプリ: 毎月1日9時に繰り返し通知 ──
+    try{
+      const LN = window.Capacitor?.Plugins?.LocalNotifications;
+      if(!LN) throw new Error('plugin not found');
+
+      const perm = await LN.requestPermissions();
+      if(perm.display !== 'granted'){
+        showAlert('🔕','通知を許可してください','設定アプリ → Subly → 通知をオンにしてください');
+        return;
+      }
+
+      // 既存通知をクリア
+      await _cancelNativeNotifications();
+
+      // 次の1日 9:00 を計算
+      const now = new Date();
+      const next1st = new Date(now.getFullYear(), now.getMonth()+1, 1, 9, 0, 0);
+
+      await LN.schedule({notifications:[{
+        id: 1001,
+        title: '📊 今月のサブスク見直しタイムです',
+        body,
+        schedule: {
+          at: next1st,
+          every: 'month',   // 毎月繰り返し
+          count: 12         // 1年分スケジュール
+        },
         sound: null,
         actionTypeId: '',
-        extra: { subId: s.id }
+        smallIcon: 'ic_notification'
+      }]});
+
+      showDialog({
+        icon:'🔔',
+        title:'通知を設定しました',
+        msg:`毎月1日 朝9時にお知らせします。\n\n次回: ${next1st.getMonth()+1}月${next1st.getDate()}日 9:00`,
+        buttons:[{label:'OK', cls:'ok'}]
       });
+    }catch(e){
+      showAlert('⚠️','設定に失敗しました', e.message.replace(/</g,'&lt;').replace(/>/g,'&gt;'));
     }
-  });
-  if(notifications.length){
-    await LocalNotifications.schedule({ notifications });
-    showToast(`${notifications.length}件の通知をスケジュールしました`);
+  } else {
+    // ── Web版: アプリ起動時バナーで代替 ──
+    showDialog({
+      icon:'🔔',
+      title:'通知を設定しました（Web版）',
+      msg:'Web版ではアプリを開いた際に見直しバナーを表示します。\n\nバックグラウンド通知はCapacitorアプリ版で対応しています。',
+      buttons:[{label:'OK', cls:'ok'}]
+    });
   }
 }
 
-// ブラウザ通知（アプリ開いている間のみ）
-function scheduleBrowserNotifications(){
-  if(window._notifyTimers) window._notifyTimers.forEach(t=>clearTimeout(t));
-  window._notifyTimers = [];
+// アプリ起動時: Web版の見直しバナー表示（月初のみ）
+async function checkMonthlyReviewBanner(){
+  const raw = await Store.get('notifyConfig');
+  if(!raw) return;
+  const cfg = JSON.parse(raw);
+  if(!cfg.enabled) return;
+
+  // 今月すでに表示済みならスキップ
+  const lastShown = await Store.get('notifyLastShown');
   const now = new Date();
-  subs.forEach(s=>{
-    if(s.freq==='単発（買い切り）') return;
-    const base = new Date(s.date);
-    if(isNaN(base)) return;
-    let next = new Date(now.getFullYear(), now.getMonth(), base.getDate());
-    if(s.freq==='月額' && next <= now) next = new Date(now.getFullYear(), now.getMonth()+1, base.getDate());
-    const notifyAt = new Date(next.getTime() - 7*24*60*60*1000);
-    const ms = notifyAt.getTime() - now.getTime();
-    if(ms > 0 && ms < 30*24*60*60*1000){
-      const t = setTimeout(()=>{
-        new Notification(`💳 ${s.name} の支払いが1週間後です`,{
-          body:`¥${s.price.toLocaleString()} / ${s.freq}　（${next.getMonth()+1}月${next.getDate()}日）`,
-          tag:`subly-${s.id}`
-        });
-      }, ms);
-      window._notifyTimers.push(t);
-    }
+  const thisMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
+  if(lastShown === thisMonth) return;
+
+  // 月の最初の3日間だけ表示
+  if(now.getDate() > 3) return;
+
+  await Store.set('notifyLastShown', thisMonth);
+
+  const targets = subs.filter(s=>{
+    if(s.freq==='単発（買い切り）') return false;
+    if(cfg.starThreshold === 5) return true;
+    return (s.sat||0) > 0 && s.sat <= cfg.starThreshold;
+  });
+  const monthly = subs.reduce((a,s)=>{
+    if(s.freq==='単発（買い切り）') return a;
+    return a + (s.freq==='月額'?s.price:Math.round(s.price/12));
+  },0);
+
+  const msg = targets.length
+    ? `見直し候補 ${targets.length}件（★${cfg.starThreshold===5?'全件':cfg.starThreshold+'以下'}）\n月額合計 ¥${monthly.toLocaleString()}`
+    : `月額合計 ¥${monthly.toLocaleString()}\n今月のサブスクを確認しましょう。`;
+
+  showDialog({
+    icon:'📊',
+    title:'今月のサブスク見直しタイム',
+    msg,
+    buttons:[
+      {label:'あとで', cls:'cancel'},
+      {label:'確認する', cls:'ok', onClick:()=>goto('dashboard')}
+    ]
   });
 }
 
-function checkUpcoming(){
-  const now = new Date();
-  const week = new Date(now.getTime() + 7*24*60*60*1000);
-  const upcoming = subs.filter(s=>{
-    if(s.freq==='単発（買い切り）') return false;
-    const base = new Date(s.date);
-    if(isNaN(base)) return false;
-    let next = new Date(now.getFullYear(), now.getMonth(), base.getDate());
-    if(next < now) next = new Date(now.getFullYear(), now.getMonth()+1, base.getDate());
-    return next <= week;
-  });
-  if(!upcoming.length){ showToast('1週間以内の支払いはありません'); return; }
-  const rows = upcoming.map(s=>{
-    const base = new Date(s.date);
-    let next = new Date(now.getFullYear(), now.getMonth(), base.getDate());
-    if(next < now) next = new Date(now.getFullYear(), now.getMonth()+1, base.getDate());
-    const ci = catMap[s.cat]||catMap['その他'];
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)">
-      <span style="font-size:18px">${ci.icon}</span>
-      <div style="flex:1;text-align:left">
-        <div style="font-size:14px;font-weight:700">${s.name}</div>
-        <div style="font-size:13px;color:var(--ts)">${next.getMonth()+1}月${next.getDate()}日　¥${s.price.toLocaleString()}</div>
-      </div>
-    </div>`;
-  }).join('');
-  showDialog({
-    icon:'📅',
-    title:`1週間以内の支払い（${upcoming.length}件）`,
-    msg:'',
-    buttons:[{label:'閉じる',cls:'cancel'}]
-  });
-  document.getElementById('dlg-msg').innerHTML=`<div style="max-height:240px;overflow-y:auto">${rows}</div>`;
-}
 // showDialog({ icon, title, msg, buttons:[{label, cls, onClick}] })
 function showDialog({icon='', title='', msg='', buttons=[]}){
   document.getElementById('dlg-icon').textContent=icon;
   document.getElementById('dlg-ttl').textContent=title;
-  document.getElementById('dlg-msg').textContent=msg;
+  document.getElementById('dlg-msg').innerHTML = typeof msg === 'string' ? msg : '';
   const btns=document.getElementById('dlg-btns');
   btns.innerHTML='';
   buttons.forEach(b=>{
@@ -1401,12 +1485,6 @@ function toggleHdrop(e){
   e.stopPropagation();
   const drop=document.getElementById('hdrop');
   const bg=document.getElementById('hdrop-bg');
-  const btn=document.getElementById('hdr-hamburger');
-  const rect=btn.getBoundingClientRect();
-  // 左揃え：ボタン左端に合わせる
-  drop.style.top=(rect.bottom+6)+'px';
-  drop.style.left=rect.left+'px';
-  drop.style.right='auto';
   const isOpen=drop.classList.contains('open');
   if(isOpen){ closeHdrop(); }
   else { drop.classList.add('open'); bg.classList.add('open'); }
@@ -1496,21 +1574,32 @@ function drawChart(obj){
   if(myChart){try{myChart.destroy()}catch(e){} myChart=null}
   const legendBox=document.getElementById('chart-legend');
   legendBox.innerHTML='';
-  if(!labels.length){ctx.clearRect(0,0,canvas.width,canvas.height);return}
+  if(!labels.length){ctx.clearRect(0,0,canvas.width,canvas.height);_setCenterDefault(0);return}
 
+  // 中央表示を初期化（月額合計）
+  _setCenterDefault(total);
+
+  // グラフ描画
   if(typeof Chart!=='undefined'){
     try{
       myChart=new Chart(ctx,{
         type:'doughnut',
-        data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#F6F7F5'}]},
+        data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2.5,borderColor:'var(--card)',hoverBorderWidth:0}]},
         options:{
-          responsive:true,maintainAspectRatio:false,cutout:'60%',
+          responsive:true,maintainAspectRatio:false,cutout:'64%',
+          animation:{duration:500},
           plugins:{
             legend:{display:false},
-            tooltip:{callbacks:{label:c=>` ¥${c.raw.toLocaleString()}/月（${Math.round(c.raw/total*100)}%）`}}
+            tooltip:{enabled:false}  // ツールチップ無効化（中央表示で代替）
           },
           onClick(_,els){
-            if(els.length){goto('list',labels[els[0].index])}
+            if(!els.length){ _setCenterDefault(total); _clearLegendActive(); return; }
+            const i=els[0].index;
+            _setCenterSelected(labels[i], data[i], total, colors[i]);
+            _setLegendActive(i);
+          },
+          onHover(_,els){
+            canvas.style.cursor=els.length?'pointer':'default';
           }
         }
       });
@@ -1519,21 +1608,65 @@ function drawChart(obj){
     drawFallback(ctx,canvas,data,colors,labels,total);
   }
 
-  // legend
+  // legend（シンプル版）
   sorted.forEach(([cat,val],i)=>{
     const pct=total>0?Math.round(val/total*100):0;
     const ci=catMap[cat]||catMap['その他'];
     const row=document.createElement('div');
     row.className='leg-row';
+    row.dataset.idx=i;
     row.innerHTML=`
       <span class="leg-dot" style="background:${ci.color}"></span>
       <span class="leg-name">${ci.icon} ${cat}</span>
-      <span class="leg-bar-w"><span class="leg-bar" style="width:${pct}%;background:${ci.color}"></span></span>
       <span class="leg-pct">${pct}%</span>
       <span class="leg-amt">¥${val.toLocaleString()}</span>
     `;
-    row.onclick=()=>goto('list',cat);
+    row.onclick=()=>{
+      _setCenterSelected(cat, val, total, ci.color);
+      _setLegendActive(i);
+      // ハイライト
+      if(myChart){
+        myChart.setDatasetVisibility(0,true);
+        myChart.update();
+      }
+    };
     legendBox.appendChild(row);
+  });
+}
+
+// 中央：デフォルト表示（合計）
+function _setCenterDefault(total){
+  document.getElementById('cc-icon').textContent='';
+  document.getElementById('cc-name').textContent='月額合計';
+  document.getElementById('cc-amt').innerHTML=`<span style="font-size:60%;color:var(--p)">¥</span>${total.toLocaleString()}`;
+  document.getElementById('cc-pct').textContent='';
+  document.getElementById('cc-goto').style.display='none';
+  document.getElementById('cc-goto').onclick=null;
+}
+
+// 中央：カテゴリ選択時
+function _setCenterSelected(cat, val, total, color){
+  const ci=catMap[cat]||catMap['その他'];
+  const pct=total>0?Math.round(val/total*100):0;
+  document.getElementById('cc-icon').textContent=ci.icon;
+  document.getElementById('cc-name').textContent=cat;
+  document.getElementById('cc-amt').innerHTML=`<span style="font-size:60%;color:${color}">¥</span>${val.toLocaleString()}`;
+  document.getElementById('cc-pct').textContent=`${pct}% / 月`;
+  const btn=document.getElementById('cc-goto');
+  btn.style.display='inline-block';
+  btn.style.background=color;
+  btn.onclick=()=>{ _setCenterDefault(0); _clearLegendActive(); goto('list',cat); };
+}
+
+function _setLegendActive(activeIdx){
+  document.querySelectorAll('#chart-legend .leg-row').forEach((r,i)=>{
+    r.classList.toggle('active', i===activeIdx);
+    r.style.opacity= i===activeIdx ? '1' : '0.45';
+  });
+}
+function _clearLegendActive(){
+  document.querySelectorAll('#chart-legend .leg-row').forEach(r=>{
+    r.classList.remove('active'); r.style.opacity='1';
   });
 }
 
@@ -1542,14 +1675,16 @@ function drawFallback(ctx,canvas,data,colors,labels,total){
   ctx.clearRect(0,0,W,H);
   if(!total)return;
   let angle=-Math.PI/2;
-  const cx=W/2,cy=H/2,R=Math.min(W,H)/2-6,inner=R*0.6;
+  const cx=W/2,cy=H/2,R=Math.min(W,H)/2-6,inner=R*0.64;
   data.forEach((v,i)=>{
     const sweep=2*Math.PI*v/total;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,angle,angle+sweep);ctx.closePath();
     ctx.fillStyle=colors[i];ctx.fill();
     angle+=sweep;
   });
-  ctx.beginPath();ctx.arc(cx,cy,inner,0,2*Math.PI);ctx.fillStyle='#F6F7F5';ctx.fill();
+  // 中央の穴（カード背景色に合わせる）
+  const bg=getComputedStyle(document.documentElement).getPropertyValue('--card').trim()||'#ffffff';
+  ctx.beginPath();ctx.arc(cx,cy,inner,0,2*Math.PI);ctx.fillStyle=bg;ctx.fill();
 }
 
 function renderSatChart(){
@@ -2117,25 +2252,42 @@ async function exportCSV(){
   ].join(','));
   const csvText = BOM+header+'\n'+rows.join('\n');
   const fileName = `subly_${new Date().toISOString().slice(0,10)}.csv`;
+  const blob = new Blob([csvText], {type:'text/csv;charset=utf-8'});
 
-  // ① Web Share API（iOS/Android → シェアシートで「ファイル」アプリ等に保存）
+  // ① File System Access API（Android Chrome / PC Chrome → 保存先を指定できる）
+  if(window.showSaveFilePicker){
+    try{
+      const fh = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types:[{ description:'CSVファイル', accept:{'text/csv':['.csv']} }]
+      });
+      const writable = await fh.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      showToast('CSVを保存しました ✅');
+      return;
+    }catch(err){
+      if(err.name==='AbortError') return;
+      // 失敗 → ②へ
+    }
+  }
+
+  // ② Web Share API（iOS / 古いAndroid → シェアシートで保存先を選択）
   if(navigator.share){
     try{
       const file = new File([csvText], fileName, {type:'text/csv;charset=utf-8'});
       if(navigator.canShare && navigator.canShare({files:[file]})){
         await navigator.share({files:[file], title:'Subly バックアップ'});
         showToast('エクスポートしました ✅');
-        return; // 成功 → 終了
+        return;
       }
     }catch(err){
-      if(err.name==='AbortError') return; // キャンセルは無視
-      // Share失敗 → ②へ
+      if(err.name==='AbortError') return;
     }
   }
 
-  // ② 通常ダウンロード（PC Chrome/Firefox/Edge）
+  // ③ 通常ダウンロード（PC Chrome/Firefox/Edge → ダウンロードフォルダへ）
   try{
-    const blob = new Blob([csvText], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = fileName; a.style.display='none';
@@ -2146,7 +2298,7 @@ async function exportCSV(){
     return;
   }catch(e){}
 
-  // ③ 上記すべて失敗時のみ → クリップボードコピー提示
+  // ④ 上記すべて失敗時 → クリップボードコピー
   showDialog({
     icon:'📋',
     title:'CSVをコピー',
@@ -2162,8 +2314,40 @@ async function exportCSV(){
   });
 }
 
+// File System Access API 対応インポート（Android/PC Chrome推奨）
+async function importCSVPicker(){
+  // ① File System Access API（Android Chrome / PC Chrome → 本体から直接選択）
+  if(window.showOpenFilePicker){
+    try{
+      const [fh] = await window.showOpenFilePicker({
+        types:[{ description:'CSVファイル', accept:{'text/csv':['.csv'], 'text/plain':['.csv']} }],
+        multiple: false
+      });
+      const file = await fh.getFile();
+      _processImportFile(file);
+      return;
+    }catch(err){
+      if(err.name==='AbortError') return;
+      // 失敗 → ②へ
+    }
+  }
+  // ② fallback: 隠しinputをクリック（iOS / 旧Android）
+  const input = document.createElement('input');
+  input.type='file'; input.accept='.csv';
+  input.style.cssText='position:absolute;opacity:0;width:1px;height:1px';
+  input.onchange=e=>{ if(e.target.files[0]) _processImportFile(e.target.files[0]); };
+  document.body.appendChild(input);
+  input.click();
+  setTimeout(()=>document.body.removeChild(input), 5000);
+}
+
 function importCSV(e){
   const file=e.target.files[0];if(!file)return;
+  _processImportFile(file);
+  e.target.value='';
+}
+
+function _processImportFile(file){
   const reader=new FileReader();
   reader.onload=ev=>{
     const text=ev.target.result.replace(/^\uFEFF/,'');
@@ -2190,7 +2374,6 @@ function importCSV(e){
     });
   };
   reader.readAsText(file,'UTF-8');
-  e.target.value='';
 }
 
 function parseCSVLine(line){
@@ -2212,16 +2395,16 @@ function setTheme(mode){
   html.classList.remove('light','dark');
   if(mode==='light') html.classList.add('light');
   else if(mode==='dark') html.classList.add('dark');
-  // 設定パネルと ハンバーガー両方のボタン状態更新
   ['light','auto','dark'].forEach(m=>{
     document.getElementById('th-'+m)?.classList.toggle('on', m===mode);
     document.getElementById('hd-th-'+m)?.classList.toggle('on', m===mode);
   });
-  localStorage.setItem('subly_theme', mode);
+  // Storeを使ってCapacitor/localStorage両対応
+  Store.set('subly_theme', mode);
 }
 
-function loadTheme(){
-  const saved = localStorage.getItem('subly_theme') || 'auto';
+async function loadTheme(){
+  const saved = (await Store.get('subly_theme')) || 'auto';
   setTheme(saved);
 }
 
@@ -2229,7 +2412,7 @@ function loadTheme(){
    初期化（非同期：Capacitor Preferences対応）
 ============================================================ */
 async function init(){
-  loadTheme();
+  await loadTheme();
   // ストレージからデータをロード
   const subsRaw  = await Store.get('subsData');
   const otRaw    = await Store.get('inclOt');
@@ -2247,17 +2430,40 @@ async function init(){
   document.getElementById('sw-ot').checked = inclOt;
   if(inclOt) document.getElementById('ot-note').style.display='block';
 
+  // 通知ラベルを初期化
+  const rawCfg = await Store.get('notifyConfig');
+  if(rawCfg){
+    const cfg = JSON.parse(rawCfg);
+    const lbl = document.getElementById('hd-notify-sub');
+    if(lbl) lbl.textContent = cfg.enabled
+      ? `毎月1日 朝9時・★${cfg.starThreshold===5?'全件':cfg.starThreshold+'以下'}対象`
+      : 'オフ';
+  }
+
   if(!onboarded) showOnboarding();
   goto('dashboard');
+
+  // Web版: 月初の見直しバナー表示（onboarding後に少し遅らせて表示）
+  if(onboarded) setTimeout(()=>checkMonthlyReviewBanner(), 1200);
 }
 
+/* ============================================================
+   起動（全関数定義後に実行）
+============================================================ */
 function waitAndInit(n){
   n=n||0;
-  if(typeof Chart!=='undefined'||window._chartFailed||n>60)init();
-  else setTimeout(()=>waitAndInit(n+1),50);
+  if(typeof Chart!=='undefined'||window._chartJsFailed||n>60){
+    init();
+  } else {
+    setTimeout(()=>waitAndInit(n+1),50);
+  }
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',waitAndInit);
-else waitAndInit();
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',waitAndInit);
+} else {
+  waitAndInit();
+}
 </script>
 </body>
 </html>
