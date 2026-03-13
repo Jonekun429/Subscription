@@ -285,6 +285,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .sub-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .sub-body{flex:1;min-width:0}
 .sub-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.saving-badge{font-size:14px;cursor:pointer;display:inline-block;margin-left:4px;vertical-align:middle;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.saving-badge:hover,.saving-badge:active{transform:scale(1.3)}
 .sub-meta{font-size:14px;color:var(--ts);margin-top:1px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .badge{font-size:15px;font-weight:700;padding:1px 6px;border-radius:4px;color:#fff;white-space:nowrap;flex-shrink:0}
 .sub-right{text-align:right;flex-shrink:0}
@@ -415,22 +417,63 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .guide-note{background:var(--pl);border-radius:9px;padding:12px 14px;font-size:14px;color:var(--pd);line-height:1.7;margin-top:6px}
 
 /* ── オンボーディング ── */
-.ob-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;animation:fadeIn .2s ease}
+/* ── オンボーディング（フルスクリーン・スライド式） ── */
+.ob-overlay{position:fixed;inset:0;z-index:9999;background:var(--p);display:flex;flex-direction:column;overflow:hidden}
 .ob-overlay.hidden{display:none}
-.ob-sheet{width:100%;background:var(--card);border-radius:18px 18px 0 0;padding:24px 20px 36px;animation:fadeUp .28s ease}
-.ob-ttl{font-size:17px;font-weight:700;margin-bottom:5px}
-.ob-sub{font-size:14px;color:var(--ts);margin-bottom:20px;line-height:1.6}
-.ob-steps{display:flex;flex-direction:column;gap:13px;margin-bottom:22px}
-.ob-step{display:flex;align-items:flex-start;gap:12px}
-.ob-icon{width:38px;height:38px;border-radius:11px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.ob-step-ttl{font-size:14px;font-weight:700;margin-bottom:2px}
-.ob-step-desc{font-size:15px;color:var(--ts);line-height:1.5}
-.ob-btn{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+/* スライドラッパー */
+.ob-slides{display:flex;width:300%;height:100%;transition:transform .38s cubic-bezier(.4,0,.2,1)}
+.ob-slide{width:33.333%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px 24px;text-align:left;box-sizing:border-box}
+/* イラストエリア */
+.ob-illust{width:200px;height:200px;border-radius:36px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin-bottom:36px;flex-shrink:0}
+.ob-illust svg{filter:drop-shadow(0 4px 16px rgba(0,0,0,.15))}
+/* テキスト */
+.ob-badge{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:10px;text-align:left;width:100%}
+.ob-ttl{font-size:26px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:14px;text-align:left;width:100%}
+.ob-ttl em{font-style:normal;color:rgba(255,255,255,.75)}
+.ob-desc{font-size:15px;color:rgba(255,255,255,.8);line-height:1.75;max-width:300px;text-align:left}
+/* ドットインジケーター */
+.ob-dots{display:flex;gap:8px;justify-content:center;padding:28px 0 12px;flex-shrink:0}
+.ob-dot{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.35);transition:all .3s;cursor:pointer}
+.ob-dot.on{width:24px;background:#fff}
+/* ボタンエリア */
+.ob-footer{width:100%;padding:0 28px calc(env(safe-area-inset-bottom,0px) + 28px);box-sizing:border-box;display:flex;gap:10px;flex-shrink:0}
+.ob-btn-next{flex:1;padding:15px;background:#fff;color:var(--p);border:none;border-radius:14px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.ob-btn-next:active{opacity:.8}
+.ob-btn-skip{padding:15px 16px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);border:none;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 /* PCサイドバー設定ボタン */
 .nb-settings{display:none}
 @media(min-width:768px){.nb-settings{display:flex;margin-top:auto!important;border-top:1px solid var(--bd);padding-top:12px!important}}
 </style>
+
+<!-- ============================================================
+     Google Analytics 4
+     ★ 本番環境に切り替える際は G-XXXXXXXXXX を実際の測定IDに変更してください
+============================================================ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  // ページビュー計測（セッション・デバイス種別・滞在時間はGAが自動取得）
+  gtag('config', 'G-XXXXXXXXXX', {
+    // ページタイトルをそのまま使用
+    page_title: document.title,
+    // デバッグ用（本番環境では false に変更）
+    debug_mode: false
+  });
+
+  /**
+   * GAカスタムイベント送信ヘルパー
+   * @param {string} eventName  - GAイベント名（snake_case推奨）
+   * @param {Object} params     - 追加パラメータ
+   */
+  function gaEvent(eventName, params) {
+    if (typeof gtag !== 'function') return;
+    gtag('event', eventName, params || {});
+  }
+</script>
 </head>
 <body>
 
@@ -459,22 +502,22 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <!-- データ管理 -->
     <div class="hd-sec">データ管理</div>
     <button class="hd-row" onclick="closeHdrop();setTimeout(exportCSV,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📤</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
       <div><div class="hd-lbl">CSVエクスポート</div><div class="hd-sub">データをCSVとして保存</div></div>
     </button>
     <button class="hd-row" onclick="closeHdrop();setTimeout(importCSVPicker,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📥</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg></div>
       <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
     </button>
 
     <!-- 設定 -->
     <div class="hd-sec">設定</div>
     <button class="hd-row" onclick="closeHdrop();setTimeout(openNotifySettings,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🔔</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
       <div><div class="hd-lbl">月次見直し通知</div><div class="hd-sub" id="hd-notify-sub">毎月1日 朝9時にお知らせ</div></div>
     </button>
     <div class="hd-row" style="cursor:default">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🌓</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
       <div style="flex:1"><div class="hd-lbl">テーマ</div></div>
       <div style="display:flex;gap:4px">
         <button class="th-btn" id="hd-th-light" onclick="setTheme('light')">ライト</button>
@@ -486,38 +529,38 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <!-- ヘルプ -->
     <div class="hd-sec">ヘルプ</div>
     <button class="hd-row" onclick="closeHdrop();setTimeout(openGuide,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📱</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></div>
       <div><div class="hd-lbl">機種変更ガイド</div><div class="hd-sub">引き継ぎ方法を確認</div></div>
     </button>
     <button class="hd-row" onclick="closeHdrop();setTimeout(showOnboarding,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">📖</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
       <div><div class="hd-lbl">使い方を見る</div><div class="hd-sub">Sublyの基本的な使い方</div></div>
     </button>
 
     <!-- サポート -->
     <div class="hd-sec">サポート</div>
     <button class="hd-row" onclick="closeHdrop();window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">💡</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></div>
       <div><div class="hd-lbl">機能リクエスト</div><div class="hd-sub">ご要望をお聞かせください</div></div>
     </button>
     <button class="hd-row" onclick="closeHdrop();window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">✉️</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
       <div><div class="hd-lbl">お問い合わせ</div><div class="hd-sub">不具合・ご意見はこちら</div></div>
     </button>
     <button class="hd-row" onclick="closeHdrop();setTimeout(openPrivacy,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)">🔒</div>
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg></div>
       <div><div class="hd-lbl">プライバシーポリシー</div><div class="hd-sub">データの取り扱いについて</div></div>
     </button>
 
     <hr class="hd-div">
     <button class="hd-row" onclick="closeHdrop();setTimeout(resetAll,150)">
-      <div class="hd-ico" style="background:rgba(255,100,100,.25)">🗑️</div>
+      <div class="hd-ico" style="background:rgba(255,100,100,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
       <div><div class="hd-lbl" style="color:#ffaaaa">全データを削除</div><div class="hd-sub">この操作は元に戻せません</div></div>
     </button>
 
     <!-- プライバシーバッジ -->
     <div class="hdrop-privacy-badge">
-      <div class="hdrop-privacy-badge-ttl">🔒 プライバシー保護</div>
+      <div class="hdrop-privacy-badge-ttl"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> プライバシー保護</div>
       <div class="hdrop-privacy-badge-txt">全データは端末内にのみ保存。外部送信なし。</div>
     </div>
 
@@ -528,20 +571,20 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <nav class="bnav">
   <div class="sidebar-logo">Subly</div>
   <button class="nb on" id="nb-dashboard" onclick="goto('dashboard')">
-    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>ホーム
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L2 12h3v8h5v-5h4v5h5v-8h3L12 3z"/></svg>ホーム
   </button>
   <button class="nb" id="nb-add" onclick="goto('add')">
-    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>登録
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>登録
   </button>
   <button class="nb" id="nb-calendar" onclick="goto('calendar')">
-    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"/></svg>カレンダー
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>カレンダー
   </button>
   <button class="nb" id="nb-list" onclick="goto('list')">
-    <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>明細一覧
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>明細一覧
   </button>
   <!-- PC サイドバーのみ表示 -->
   <button class="nb nb-settings" onclick="openSettings()">
-    <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>設定
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>設定
   </button>
 </nav>
 
@@ -566,13 +609,13 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <div class="overlay hidden" id="settings-ov" onclick="if(event.target===this)closeSettings()">
   <div class="sheet">
     <div class="sheet-hdr">
-      <span class="sheet-ttl">⚙️ 設定</span>
+      <span class="sheet-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> 設定</span>
       <button class="sheet-close" onclick="closeSettings()">✕</button>
     </div>
     <div class="s-sec">外観</div>
     <div class="s-grp">
       <div class="s-row" style="cursor:default">
-        <div class="s-ico" style="background:#F0F0F8">🌓</div>
+        <div class="s-ico" style="background:#F0F0F8"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
         <div class="s-body"><div class="s-title">テーマ</div></div>
         <div style="display:flex;gap:6px;flex-shrink:0">
           <button id="th-light" class="th-btn" onclick="setTheme('light')">ライト</button>
@@ -584,12 +627,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="s-sec">データ管理</div>
     <div class="s-grp">
       <div class="s-row" onclick="exportCSV()">
-        <div class="s-ico" style="background:#EDF4F2">📤</div>
+        <div class="s-ico" style="background:#EDF4F2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
         <div class="s-body"><div class="s-title">CSVエクスポート</div><div class="s-sub">データをCSVファイルとして保存</div></div>
         <span class="s-arr">›</span>
       </div>
       <div class="s-row" onclick="importCSVPicker()" style="cursor:pointer">
-        <div class="s-ico" style="background:#FDF6EE">📥</div>
+        <div class="s-ico" style="background:#FDF6EE"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg></div>
         <div class="s-body"><div class="s-title">CSVインポート</div><div class="s-sub">機種変更後のデータ引き継ぎに</div></div>
         <span class="s-arr">›</span>
       </div>
@@ -597,12 +640,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="s-sec">ヘルプ</div>
     <div class="s-grp">
       <div class="s-row" onclick="openGuide()">
-        <div class="s-ico" style="background:#EEF2FF">📱</div>
+        <div class="s-ico" style="background:#EEF2FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></div>
         <div class="s-body"><div class="s-title">機種変更ガイド</div><div class="s-sub">データの引き継ぎ方法を確認</div></div>
         <span class="s-arr">›</span>
       </div>
       <div class="s-row" onclick="showOnboarding()">
-        <div class="s-ico" style="background:#F0FDF4">📖</div>
+        <div class="s-ico" style="background:#F0FDF4"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
         <div class="s-body"><div class="s-title">使い方を見る</div><div class="s-sub">Sublyの基本的な使い方</div></div>
         <span class="s-arr">›</span>
       </div>
@@ -610,17 +653,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="s-sec">サポート</div>
     <div class="s-grp">
       <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
-        <div class="s-ico" style="background:#EEF6FF">💡</div>
+        <div class="s-ico" style="background:#EEF6FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></div>
         <div class="s-body"><div class="s-title">機能リクエスト</div><div class="s-sub">ご要望をお聞かせください</div></div>
         <span class="s-arr">›</span>
       </div>
       <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
-        <div class="s-ico" style="background:#FFF8EE">✉️</div>
+        <div class="s-ico" style="background:#FFF8EE"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
         <div class="s-body"><div class="s-title">お問い合わせ</div><div class="s-sub">不具合・ご意見はこちら</div></div>
         <span class="s-arr">›</span>
       </div>
       <div class="s-row" onclick="openPrivacy()">
-        <div class="s-ico" style="background:#F0FDF4">🔒</div>
+        <div class="s-ico" style="background:#F0FDF4"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg></div>
         <div class="s-body"><div class="s-title">プライバシーポリシー</div><div class="s-sub">データの取り扱いについて</div></div>
         <span class="s-arr">›</span>
       </div>
@@ -628,7 +671,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="s-sec">データリセット</div>
     <div class="s-grp">
       <div class="s-row" onclick="resetAll()">
-        <div class="s-ico" style="background:#FEE2E2">🗑️</div>
+        <div class="s-ico" style="background:#FEE2E2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#C06060"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
         <div class="s-body"><div class="s-title" style="color:var(--dn)">全データを削除</div><div class="s-sub">この操作は元に戻せません</div></div>
         <span class="s-arr">›</span>
       </div>
@@ -641,7 +684,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <div class="overlay hidden" id="privacy-ov" onclick="if(event.target===this)closePrivacy()">
   <div class="sheet">
     <div class="sheet-hdr">
-      <span class="sheet-ttl">🔒 プライバシーポリシー</span>
+      <span class="sheet-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> プライバシーポリシー</span>
       <button class="sheet-close" onclick="closePrivacy()">✕</button>
     </div>
     <div style="padding:18px;font-size:13px;color:var(--tx);line-height:1.8">
@@ -690,7 +733,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <div class="overlay hidden" id="guide-ov" onclick="if(event.target===this)closeGuide()">
   <div class="sheet">
     <div class="sheet-hdr">
-      <span class="sheet-ttl">📱 機種変更ガイド</span>
+      <span class="sheet-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> 機種変更ガイド</span>
       <button class="sheet-close" onclick="closeGuide()">✕</button>
     </div>
     <div class="guide-body">
@@ -698,7 +741,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <strong>Sublyのデータはお使いの端末に保存されています。</strong><br>
         機種変更の前にCSVエクスポートでバックアップを取り、新しい端末でインポートしてください。
       </div>
-      <p style="font-size:13px;font-weight:700;margin-bottom:14px">🔁 機種変更の手順</p>
+      <p style="font-size:13px;font-weight:700;margin-bottom:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#5C8E84"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> 機種変更の手順</p>
       <div class="guide-step">
         <div class="guide-num">1</div>
         <div><h4>旧端末でCSVエクスポート</h4><p>設定 → CSVエクスポートをタップして保存。ファイルはメール等で転送してください。</p></div>
@@ -716,38 +759,103 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div><h4>データを確認</h4><p>ホームやカレンダーでデータが正しく読み込まれているか確認してください。</p></div>
       </div>
       <div class="guide-note">
-        <strong>💡 ホーム画面に追加する方法：</strong><br>
+        <strong><svg width="14" height="14" viewBox="0 0 24 24" fill="#5C8E84"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg> ホーム画面に追加する方法：</strong><br>
         iPhoneはSafariで開き「共有 → ホーム画面に追加」。<br>
         Androidはメニューから「ホーム画面に追加」。
       </div>
     </div>
     <div style="padding:0 16px 20px">
-      <button class="btn-submit" onclick="closeGuide();setTimeout(importCSVPicker,150)">📥 今すぐインポート</button>
+      <button class="btn-submit" onclick="closeGuide();setTimeout(importCSVPicker,150)"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg> 今すぐインポート</button>
     </div>
   </div>
 </div>
 
 <!-- オンボーディング -->
-<div class="ob-overlay hidden" id="ob-ov" onclick="if(event.target===this)closeOb()">
-  <div class="ob-sheet">
-    <div class="ob-ttl">Sublyへようこそ 🌿</div>
-    <div class="ob-sub">サブスクと固定費をかんたんに管理できます。</div>
-    <div class="ob-steps">
-      <div class="ob-step">
-        <div class="ob-icon">➕</div>
-        <div><div class="ob-step-ttl">「追加」から登録する</div><div class="ob-step-desc">定番サービスから1タップで追加、または自由入力で登録できます。</div></div>
+<div class="ob-overlay hidden" id="ob-ov">
+
+  <!-- スライドコンテナ -->
+  <div class="ob-slides" id="ob-slides">
+
+    <!-- ページ1: ウェルカム / 国産・安心 -->
+    <div class="ob-slide">
+      <div class="ob-illust">
+        <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
+          <!-- 盾アイコン（安心感） -->
+          <path d="M55 10 L90 24 L90 52 C90 72 72 88 55 95 C38 88 20 72 20 52 L20 24 Z" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
+          <path d="M55 22 L80 33 L80 52 C80 67 68 80 55 86 C42 80 30 67 30 52 L30 33 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <!-- チェックマーク -->
+          <path d="M40 55 L50 65 L70 43" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- 日本国旗モチーフ（小さく右下に） -->
+          <circle cx="82" cy="82" r="14" fill="rgba(255,255,255,0.9)"/>
+          <circle cx="82" cy="82" r="5" fill="#C8363A"/>
+        </svg>
       </div>
-      <div class="ob-step">
-        <div class="ob-icon">🏠</div>
-        <div><div class="ob-step-ttl">ホームでグラフを確認</div><div class="ob-step-desc">カテゴリ別の支出が円グラフで一目でわかります。グラフをタップすると明細を絞り込めます。</div></div>
-      </div>
-      <div class="ob-step">
-        <div class="ob-icon">📅</div>
-        <div><div class="ob-step-ttl">カレンダーで更新日を確認</div><div class="ob-step-desc">各サービスの更新日がカレンダー表示されます。年払いは年額のまま表示されます。</div></div>
-      </div>
+      <div class="ob-badge">Made in Japan</div>
+      <div class="ob-ttl">あなたの大切なお金を<br><em>まもります。</em></div>
+      <div class="ob-desc">Sublyは日本人が作った、日本人のためのサブスク管理アプリです。すべてのデータはあなたの端末の中だけに保存されます。</div>
     </div>
-    <button class="ob-btn" onclick="closeOb()">はじめる</button>
+
+    <!-- ページ2: グラフで見える化 -->
+    <div class="ob-slide">
+      <div class="ob-illust">
+        <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
+          <!-- ドーナツグラフ風 -->
+          <circle cx="55" cy="52" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="16"/>
+          <path d="M55 18 A34 34 0 0 1 89 52" stroke="rgba(255,255,255,0.9)" stroke-width="16" stroke-linecap="round"/>
+          <path d="M89 52 A34 34 0 0 1 67 82" stroke="rgba(255,255,255,0.6)" stroke-width="16" stroke-linecap="round"/>
+          <path d="M67 82 A34 34 0 0 1 38 79" stroke="rgba(255,255,255,0.4)" stroke-width="16" stroke-linecap="round"/>
+          <!-- 中央の円 -->
+          <circle cx="55" cy="52" r="20" fill="var(--p)"/>
+          <!-- ¥マーク -->
+          <text x="55" y="58" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" font-family="sans-serif">¥</text>
+          <!-- 凡例 -->
+          <rect x="14" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.9)"/>
+          <rect x="34" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.6)"/>
+          <rect x="54" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.4)"/>
+          <rect x="74" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.2)"/>
+        </svg>
+      </div>
+      <div class="ob-badge">Visualize</div>
+      <div class="ob-ttl">毎月いくら払ってる？<br><em>一目でわかる。</em></div>
+      <div class="ob-desc">カテゴリ別の円グラフで支出を可視化。月額・年額を自動で換算して合計します。知らなかった出費に気づけます。</div>
+    </div>
+
+    <!-- ページ3: かんたん登録 -->
+    <div class="ob-slide">
+      <div class="ob-illust">
+        <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
+          <!-- スマホ風フレーム -->
+          <rect x="28" y="12" width="54" height="86" rx="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <!-- リスト行 -->
+          <rect x="36" y="28" width="38" height="8" rx="4" fill="rgba(255,255,255,0.8)"/>
+          <rect x="36" y="42" width="30" height="8" rx="4" fill="rgba(255,255,255,0.55)"/>
+          <rect x="36" y="56" width="34" height="8" rx="4" fill="rgba(255,255,255,0.55)"/>
+          <rect x="36" y="70" width="26" height="8" rx="4" fill="rgba(255,255,255,0.35)"/>
+          <!-- 追加ボタン（+） -->
+          <circle cx="82" cy="88" r="16" fill="#fff"/>
+          <path d="M82 80 L82 96 M74 88 L90 88" stroke="var(--p)" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="ob-badge">Get Started</div>
+      <div class="ob-ttl">登録は<em>30秒。</em><br>今すぐはじめよう。</div>
+      <div class="ob-desc">Netflix・Spotify・Amazon Primeなど定番サービスはワンタップで登録。自分だけのサブスクも自由に追加できます。</div>
+    </div>
+
   </div>
+
+  <!-- ドット -->
+  <div class="ob-dots" id="ob-dots">
+    <div class="ob-dot on" onclick="obGoto(0)"></div>
+    <div class="ob-dot" onclick="obGoto(1)"></div>
+    <div class="ob-dot" onclick="obGoto(2)"></div>
+  </div>
+
+  <!-- ボタン -->
+  <div class="ob-footer">
+    <button class="ob-btn-skip" id="ob-skip" onclick="closeOb()">スキップ</button>
+    <button class="ob-btn-next" id="ob-next" onclick="obNext()">次へ</button>
+  </div>
+
 </div>
 
 <!-- メインコンテンツ -->
@@ -792,9 +900,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="sat-toggle-arrow open" id="sat-arrow">▼</span>
       </div>
       <div class="sat-body open" id="sat-body">
-        <div id="sat-chart-area"><div class="sat-none">満足度を登録すると表示されます ⭐</div></div>
+        <div id="sat-chart-area"><div class="sat-none">満足度を登録すると表示されます</div></div>
       </div>
     </div>
+    <!-- 解約検討カード（満足度★1〜3） -->
+    <div id="warn-section"></div>
   </div>
 
   <!-- ② 追加 -->
@@ -803,7 +913,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <!-- ── 登録の仕方ヒント（折りたたみ） ── -->
     <div id="how-to-box" style="background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden">
       <button onclick="toggleHowTo()" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:none;border:none;cursor:pointer;font-family:inherit">
-        <span style="font-size:14px;font-weight:700;color:var(--p)">📝 登録の仕方</span>
+        <span style="font-size:14px;font-weight:700;color:var(--p)"><svg width="14" height="14" viewBox="0 0 24 24" fill="#5C8E84"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> 登録の仕方</span>
         <span id="how-to-arrow" style="font-size:12px;color:var(--ts)">▼</span>
       </button>
       <div id="how-to-body" style="display:none;padding:0 16px 14px;font-size:13px;color:var(--ts);line-height:1.8">
@@ -856,17 +966,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="f-row">
         <label>カテゴリ</label>
         <select id="f-cat" onchange="onCatChange()">
-          <option value="動画・配信">🎬 動画・配信</option>
-          <option value="音楽">🎵 音楽</option>
-          <option value="電子書籍・雑誌">📖 電子書籍・雑誌</option>
-          <option value="仕事・ツール">💻 仕事・ツール</option>
-          <option value="ゲーム">🎮 ゲーム</option>
-          <option value="健康・フィットネス">💪 健康・フィットネス</option>
-          <option value="金融・年会費">💳 金融・年会費</option>
-          <option value="習い事">🎓 習い事</option>
-          <option value="通信費">📱 通信費</option>
-          <option value="保険">🛡️ 保険</option>
-          <option value="その他">✨ その他</option>
+          <option value="動画・配信">動画・配信</option>
+          <option value="音楽">音楽</option>
+          <option value="電子書籍・雑誌">電子書籍・雑誌</option>
+          <option value="仕事・ツール">仕事・ツール</option>
+          <option value="ゲーム">ゲーム</option>
+          <option value="健康・フィットネス">健康・フィットネス</option>
+          <option value="金融・年会費">金融・年会費</option>
+          <option value="習い事">習い事</option>
+          <option value="通信費">通信費</option>
+          <option value="保険">保険</option>
+          <option value="その他">その他</option>
         </select>
         <div class="custom-cat-wrap hidden" id="custom-cat-wrap">
           <input type="text" id="f-custom-cat" placeholder="カテゴリ名">
@@ -882,7 +992,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
           <label>支払い頻度</label>
           <select id="f-freq">
             <option value="月額">月額</option>
-            <option value="年額">年額</option>
+            <option value="2ヶ月">2ヶ月ごと</option>
+            <option value="3ヶ月">3ヶ月ごと</option>
+            <option value="6ヶ月">6ヶ月ごと</option>
+            <option value="年額">年額（12ヶ月）</option>
             <option value="単発（買い切り）">買い切り</option>
           </select>
         </div>
@@ -919,8 +1032,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <!-- フィルター -->
     <div class="cal-filters">
-      <button class="cal-fb on" id="cf-all" onclick="setCalFilter('all')">📋 全件</button>
-      <button class="cal-fb" id="cf-warn" onclick="setCalFilter('warn')">⚠️ 要見直し</button>
+      <button class="cal-fb on" id="cf-all" onclick="setCalFilter('all')">全件</button>
+      <button class="cal-fb" id="cf-warn" onclick="setCalFilter('warn')">要見直し</button>
     </div>
     <!-- 月間サマリー -->
     <div class="cal-summary">
@@ -1047,18 +1160,107 @@ const MAX=200;
 const today=new Date();
 calYear=today.getFullYear(); calMonth=today.getMonth();
 
+
+/* ── 支払い周期ユーティリティ ── */
+function freqMonths(freq){
+  return {月額:1,'2ヶ月':2,'3ヶ月':3,'6ヶ月':6,年額:12}[freq]||1;
+}
+function moFromSub(s){
+  if(s.freq==='単発（買い切り）') return 0;
+  return Math.round(s.price / freqMonths(s.freq));
+}
+function yrFromSub(s){
+  if(s.freq==='単発（買い切り）') return s.price;
+  return Math.round(s.price / freqMonths(s.freq) * 12);
+}
+
+/* ── 次回支払日計算 ── */
+function nextPayDate(s, ref){
+  ref = ref || new Date();
+  ref = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate()); // 時刻除去
+  if(s.freq === '単発（買い切り）') return null;
+
+  const base = new Date(s.date);
+  if(isNaN(base)) return null;
+
+  const months = freqMonths(s.freq); // 1/2/3/6/12
+
+  // base が ref 以降なら base がそのまま次回
+  if(base >= ref) return base;
+
+  // base から months ずつ進めて ref 以降で最初の支払日を求める
+  function addMonths(date, n){
+    const day = date.getDate();
+    const d2 = new Date(date.getFullYear(), date.getMonth() + n, 1);
+    const lastDay = new Date(d2.getFullYear(), d2.getMonth() + 1, 0).getDate();
+    d2.setDate(Math.min(day, lastDay));
+    return d2;
+  }
+
+  // floor で大まかなステップ数を出し、そこから1つずつ確認
+  const diffMonths = (ref.getFullYear() - base.getFullYear()) * 12
+                   + (ref.getMonth() - base.getMonth());
+  let steps = Math.max(1, Math.floor(diffMonths / months));
+
+  let candidate = addMonths(base, steps * months);
+  // candidate が ref より前なら進める
+  while(candidate < ref){
+    steps++;
+    candidate = addMonths(base, steps * months);
+  }
+  // candidate が ref より後ろすぎれば1ステップ戻れるか確認
+  while(steps > 1){
+    const prev = addMonths(base, (steps - 1) * months);
+    if(prev >= ref){ steps--; candidate = prev; } else break;
+  }
+  return candidate;
+}
+
+/* 日付を YYYY-MM-DD 文字列に */
+function dateStr(d){
+  if(!d) return '';
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+/* 日付を M/D 形式に */
+function dateMD(d){
+  if(!d) return '';
+  return (d.getMonth()+1)+'/'+d.getDate();
+}
+
+function freqLabel(freq){
+  return {月額:'月額','2ヶ月':'2ヶ月','3ヶ月':'3ヶ月','6ヶ月':'6ヶ月',年額:'年額','単発（買い切り）':'買い切り'}[freq]||freq;
+}
+
+// カテゴリ別SVGアイコン（ソリッド）
+function _catSvg(path, color, size){
+  size=size||18;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}">${path}</svg>`;
+}
+const _CP={
+  video:   '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
+  music:   '<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>',
+  book:    '<path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>',
+  pc:      '<path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>',
+  game:    '<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5S14.67 12 15.5 12s1.5.67 1.5 1.5S16.33 15 15.5 15zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 10 19.5 10s1.5.67 1.5 1.5S20.33 12 19.5 12z"/>',
+  health:  '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
+  card:    '<path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>',
+  school:  '<path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.76 2.24 5 5 5s5-2.24 5-5v-4.27l2-1.09V17h2V9L12 3zm3 13.12c0 1.65-1.35 3-3 3s-3-1.35-3-3v-3.73l3 1.64 3-1.64v3.73z"/>',
+  phone:   '<path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>',
+  shield:  '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>',
+  more:    '<path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>',
+};
 const catMap={
-  "動画・配信":        {color:"#4E8B82",icon:"🎬"},  // ディープグリーン
-  "音楽":              {color:"#6B9E95",icon:"🎵"},  // ミディアムグリーン
-  "電子書籍・雑誌":    {color:"#5B8FA8",icon:"📖"},  // スレートブルー
-  "仕事・ツール":      {color:"#4A7A9B",icon:"💻"},  // くすみブルー
-  "ゲーム":            {color:"#7A9E7E",icon:"🎮"},  // セージグリーン
-  "健康・フィットネス":{color:"#3D8C7A",icon:"💪"},  // ティールグリーン
-  "金融・年会費":      {color:"#7A9B8A",icon:"💳"},  // グレイッシュグリーン
-  "習い事":            {color:"#5E8C7A",icon:"🎓"},  // くすみグリーン
-  "通信費":            {color:"#4A8A78",icon:"📱"},  // ミントグリーン
-  "保険":              {color:"#6B8E82",icon:"🛡️"}, // セージ
-  "その他":            {color:"#8A9E96",icon:"✨"}   // グレイグリーン
+  "動画・配信":        {color:"#4E8B82",icon:(c,s)=>_catSvg(_CP.video,  c||"#4E8B82",s)},
+  "音楽":              {color:"#6B9E95",icon:(c,s)=>_catSvg(_CP.music,  c||"#6B9E95",s)},
+  "電子書籍・雑誌":    {color:"#5B8FA8",icon:(c,s)=>_catSvg(_CP.book,   c||"#5B8FA8",s)},
+  "仕事・ツール":      {color:"#4A7A9B",icon:(c,s)=>_catSvg(_CP.pc,     c||"#4A7A9B",s)},
+  "ゲーム":            {color:"#7A9E7E",icon:(c,s)=>_catSvg(_CP.game,   c||"#7A9E7E",s)},
+  "健康・フィットネス":{color:"#3D8C7A",icon:(c,s)=>_catSvg(_CP.health, c||"#3D8C7A",s)},
+  "金融・年会費":      {color:"#7A9B8A",icon:(c,s)=>_catSvg(_CP.card,   c||"#7A9B8A",s)},
+  "習い事":            {color:"#5E8C7A",icon:(c,s)=>_catSvg(_CP.school, c||"#5E8C7A",s)},
+  "通信費":            {color:"#4A8A78",icon:(c,s)=>_catSvg(_CP.phone,  c||"#4A8A78",s)},
+  "保険":              {color:"#6B8E82",icon:(c,s)=>_catSvg(_CP.shield, c||"#6B8E82",s)},
+  "その他":            {color:"#8A9E96",icon:(c,s)=>_catSvg(_CP.more,   c||"#8A9E96",s)},
 };
 
 const qData={
@@ -1218,6 +1420,136 @@ const qData={
 };
 
 /* ============================================================
+   解約引き留めキャンペーンデータ
+   出典: リベ大「改訂版お金の大学」コミュニティ情報 (2024年時点)
+   ※ 契約状況・プランによって異なる場合があります。必ず解約画面で確認を。
+============================================================ */
+const campaignData = [
+  {
+    // マッチングキーワード（サービス名に含まれる文字列、小文字で比較）
+    keywords: ['adobe', 'creative cloud', 'creativecloud', 'photoshop', 'illustrator', 'premiere', 'lightroom', 'acrobat'],
+    name: 'Adobe Creative Cloud',
+    discount: '月額 40%OFF または 60日間無料',
+    how: '解約ボタンを押すと割引オファーが表示されます。チャットサポートで「解約したい」と伝えるのも有効です。',
+    tip: '割引期間終了後も、再度解約しようとすると再び出てくるケースあり。',
+    color: '#E33A2B'
+  },
+  {
+    keywords: ['office', 'microsoft 365', 'microsoft365', 'm365'],
+    name: 'Microsoft 365',
+    discount: 'Personal 永続版（¥1,490/月相当）に切り替え可能',
+    how: '「Microsoft 365 Personal 永続版」を購入すると、Copilotなしで継続利用できます（実質値下げ）。',
+    tip: 'サブスクを解約し、買い切り版に移行する方法が最もコスト削減になるケースが多い。',
+    color: '#0078D4'
+  },
+  {
+    keywords: ['canva'],
+    name: 'Canva Pro',
+    discount: '3ヶ月間 月額50%OFF',
+    how: '解約ページへ進むと割引オファーが自動で表示されます。',
+    tip: '割引期間終了後、再度解約しようとすると再提示されることがある。',
+    color: '#7C3FE4'
+  },
+  {
+    keywords: ['zoom'],
+    name: 'Zoom',
+    discount: '月額 ¥2,125 → ¥899 プランに変更可',
+    how: '解約フローに進むと低価格プランへの変更オファーが提示されます。',
+    tip: 'チャットサポートで「費用を抑えたい」と伝えると案内されやすい。',
+    color: '#2D8CFF'
+  },
+  {
+    keywords: ['mindmeister', 'マインドマイスター', 'mind meister'],
+    name: 'MindMeister',
+    discount: '月額 30%OFF',
+    how: '解約ページへ進むと割引オファーが表示されます。',
+    tip: 'マインドマップ用途なら、無料プランへのダウングレードも検討を。',
+    color: '#18A085'
+  },
+  {
+    keywords: ['audible', 'amazon audible'],
+    name: 'Amazon Audible',
+    discount: '3ヶ月間 月額¥99（通常¥1,500）',
+    how: '解約ページへ進むと「休会」または特別割引オファーが表示されます。',
+    tip: '年間で約¥4,200以上の節約になる。期間終了後も再度試みると出ることあり。',
+    color: '#FF9900'
+  },
+  {
+    keywords: ['disney+', 'disney plus', 'ディズニープラス', 'ディズニー+'],
+    name: 'Disney+',
+    discount: '6ヶ月間 ¥200/月割引',
+    how: '解約フローに進むと割引継続オファーが表示されます。',
+    tip: 'スタンダードプランとプレミアムプランで対象が異なる場合あり。',
+    color: '#113CCF'
+  },
+  {
+    keywords: ['dazn'],
+    name: 'DAZN',
+    discount: '年間 ¥6,000割引',
+    how: '解約ページで「プランを変更する」を選ぶと割引プランが提示されます。',
+    tip: 'シーズンオフ中は解約し、シーズン開始時に再契約する方法も有効。',
+    color: '#F5003D'
+  },
+  {
+    keywords: ['日経', 'nikkei', '日本経済新聞'],
+    name: '日経新聞電子版',
+    discount: '6ヶ月間 半額',
+    how: 'マイページの解約ページへ進むと割引継続オファーが表示されます。',
+    tip: '期間終了後も再度解約しようとすると同様のオファーが出るケースあり。',
+    color: '#D0001E'
+  },
+  {
+    keywords: ['写真ac', 'photo ac', 'photoac'],
+    name: '写真AC',
+    discount: '解約時に割引プラン提示あり',
+    how: 'マイページの解約フローに進むと継続割引オファーが表示されます。',
+    tip: '無料会員プランでも毎日一定枚数ダウンロード可能。用途次第では無料で十分。',
+    color: '#4A90D9'
+  }
+];
+
+/**
+ * サービス名からキャンペーン情報を検索
+ * @param {string} name - サービス名
+ * @returns {Object|null} キャンペーン情報
+ */
+function findCampaign(name) {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  return campaignData.find(c => c.keywords.some(k => lower.includes(k))) || null;
+}
+
+/**
+ * 節約ヒントモーダルを表示
+ * @param {Object} campaign - キャンペーン情報
+ * @param {string} serviceName - 実際のサービス名
+ */
+function showSavingHint(campaign, serviceName) {
+  gaEvent('saving_hint_view', { service_name: serviceName, campaign_name: campaign.name });
+  showDialog({
+    icon: '💰',
+    title: `${serviceName} を安くできるかも`,
+    msg: `<div style="text-align:left;line-height:1.8;font-size:13px">
+      <div style="background:#f0faf6;border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;color:#666;margin-bottom:4px;font-weight:700">🎁 キャンペーン内容</div>
+        <div style="font-size:15px;font-weight:700;color:#1A6B5A">${campaign.discount}</div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;color:#666;font-weight:700;margin-bottom:4px">📋 やり方</div>
+        <div>${campaign.how}</div>
+      </div>
+      <div style="background:#fff8e6;border-radius:8px;padding:8px 12px;font-size:12px;color:#8a6030">
+        💡 ${campaign.tip}
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:8px">
+        ※ 契約状況・プランにより適用されない場合があります。必ず解約画面でご確認ください。
+      </div>
+    </div>`,
+    buttons: [{ label: '閉じる', cls: 'ok' }]
+  });
+}
+
+/* ============================================================
    ナビ
 ============================================================ */
 function goto(page, filterCat=null){
@@ -1229,6 +1561,10 @@ function goto(page, filterCat=null){
   document.getElementById('pg-'+page).classList.add('on');
   const nb=document.getElementById('nb-'+page);
   if(nb)nb.classList.add('on');
+
+  // GA: 仮想ページビュー（SPAのためpage_viewを手動送信）
+  const pageNames = { dashboard:'ホーム', add:'追加', list:'明細', calendar:'カレンダー' };
+  gaEvent('page_view', { page_title: pageNames[page] || page, filter_category: filterCat || 'none' });
 
   if(page==='dashboard') renderDashboard();
   else if(page==='list'){
@@ -1266,7 +1602,7 @@ async function openNotifySettings(){
 
   // 設定シートを表示
   showDialog({
-    icon: '🔔',
+    icon: '●',
     title: '月次見直し通知',
     msg: `<div style="text-align:left">
       <div style="margin-bottom:14px;font-size:13px;color:var(--ts);line-height:1.6">毎月1日 朝9時に、見直し対象のサブスクをまとめてお知らせします。</div>
@@ -1289,8 +1625,8 @@ async function openNotifySettings(){
         </div>
       </div>
       <div style="margin-top:10px;font-size:13px;color:var(--ts);line-height:1.6">
-        📱 アプリ版：バックグラウンドでも通知が届きます<br>
-        🌐 Web版：アプリを開いた際にバナーで表示
+        アプリ版：バックグラウンドでも通知が届きます<br>
+        Web版：アプリを開いた際にバナーで表示
       </div>
     </div>`,
     buttons:[
@@ -1361,7 +1697,7 @@ async function _scheduleMonthlyNotification(cfg){
 
       const perm = await LN.requestPermissions();
       if(perm.display !== 'granted'){
-        showAlert('🔕','通知を許可してください','設定アプリ → Subly → 通知をオンにしてください');
+        showAlert('','通知を許可してください','設定アプリ → Subly → 通知をオンにしてください');
         return;
       }
 
@@ -1374,7 +1710,7 @@ async function _scheduleMonthlyNotification(cfg){
 
       await LN.schedule({notifications:[{
         id: 1001,
-        title: '📊 今月のサブスク見直しタイムです',
+        title: '今月のサブスク見直しタイムです',
         body,
         schedule: {
           at: next1st,
@@ -1387,18 +1723,18 @@ async function _scheduleMonthlyNotification(cfg){
       }]});
 
       showDialog({
-        icon:'🔔',
+        icon:'●',
         title:'通知を設定しました',
         msg:`毎月1日 朝9時にお知らせします。\n\n次回: ${next1st.getMonth()+1}月${next1st.getDate()}日 9:00`,
         buttons:[{label:'OK', cls:'ok'}]
       });
     }catch(e){
-      showAlert('⚠️','設定に失敗しました', e.message.replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+      showAlert('','設定に失敗しました', e.message.replace(/</g,'&lt;').replace(/>/g,'&gt;'));
     }
   } else {
     // ── Web版: アプリ起動時バナーで代替 ──
     showDialog({
-      icon:'🔔',
+      icon:'●',
       title:'通知を設定しました（Web版）',
       msg:'Web版ではアプリを開いた際に見直しバナーを表示します。\n\nバックグラウンド通知はCapacitorアプリ版で対応しています。',
       buttons:[{label:'OK', cls:'ok'}]
@@ -1439,7 +1775,7 @@ async function checkMonthlyReviewBanner(){
     : `月額合計 ¥${monthly.toLocaleString()}\n今月のサブスクを確認しましょう。`;
 
   showDialog({
-    icon:'📊',
+    icon:'',
     title:'今月のサブスク見直しタイム',
     msg,
     buttons:[
@@ -1493,6 +1829,62 @@ function closeHdrop(){
   document.getElementById('hdrop').classList.remove('open');
   document.getElementById('hdrop-bg').classList.remove('open');
 }
+
+// ── スワイプでドロワーを開閉 ──────────────────────────────
+(function(){
+  let _sx=0, _sy=0, _tracking=false;
+  const EDGE=40;      // 画面左端から何px以内のスワイプで反応するか
+  const THRESHOLD=60; // 何px横に動いたらドロワーを開く/閉じるか
+  const MAX_Y=80;     // 縦ずれ許容量（これ以上縦に動いたらスクロール優先）
+
+  document.addEventListener('touchstart', e=>{
+    const t=e.touches[0];
+    _sx=t.clientX; _sy=t.clientY;
+    const drop=document.getElementById('hdrop');
+    const isOpen=drop.classList.contains('open');
+    // 開いていないとき：左端EDGE内からのスワイプのみ反応
+    // 開いているとき：どこからでも左スワイプで閉じる
+    _tracking = isOpen || _sx <= EDGE;
+  }, {passive:true});
+
+  document.addEventListener('touchend', e=>{
+    if(!_tracking) return;
+    const t=e.changedTouches[0];
+    const dx=t.clientX - _sx;
+    const dy=t.clientY - _sy;
+    _tracking=false;
+
+    // 縦スクロールが主体なら無視
+    if(Math.abs(dy) > MAX_Y) return;
+
+    const drop=document.getElementById('hdrop');
+    const isOpen=drop.classList.contains('open');
+
+    if(!isOpen && dx > THRESHOLD){
+      // → 右スワイプ：開く
+      drop.classList.add('open');
+      document.getElementById('hdrop-bg').classList.add('open');
+    } else if(isOpen && dx < -THRESHOLD){
+      // ← 左スワイプ：閉じる
+      closeHdrop();
+    }
+  }, {passive:true});
+})();
+
+// ── オンボーディング スワイプ ──
+(function(){
+  let _ox=0, _oy=0;
+  const el=document.getElementById('ob-ov');
+  if(!el) return;
+  el.addEventListener('touchstart',e=>{ _ox=e.touches[0].clientX; _oy=e.touches[0].clientY; },{passive:true});
+  el.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-_ox;
+    const dy=e.changedTouches[0].clientY-_oy;
+    if(Math.abs(dy)>60) return;
+    if(dx<-50 && _obPage<2) obGoto(_obPage+1);
+    else if(dx>50 && _obPage>0) obGoto(_obPage-1);
+  },{passive:true});
+})();
 // 旧設定シート（PCサイドバーの設定ボタン用に残す）
 function openSettings(){document.getElementById('settings-ov').classList.remove('hidden')}
 function closeSettings(){document.getElementById('settings-ov').classList.add('hidden')}
@@ -1500,12 +1892,37 @@ function openGuide(){document.getElementById('guide-ov').classList.remove('hidde
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
 function openPrivacy(){closeSettings();setTimeout(()=>document.getElementById('privacy-ov').classList.remove('hidden'),200)}
 function closePrivacy(){document.getElementById('privacy-ov').classList.add('hidden')}
-function showOnboarding(){closeSettings();document.getElementById('ob-ov').classList.remove('hidden')}
-async function closeOb(){ document.getElementById('ob-ov').classList.add('hidden'); await Store.set('onboarded','1'); }
+function showOnboarding(){
+  closeSettings();
+  obGoto(0); // 必ず最初のページから
+  document.getElementById('ob-ov').classList.remove('hidden');
+}
+let _obPage=0;
+function obGoto(n){
+  _obPage=n;
+  const slides=document.getElementById('ob-slides');
+  const dots=document.querySelectorAll('.ob-dot');
+  const nextBtn=document.getElementById('ob-next');
+  const skipBtn=document.getElementById('ob-skip');
+  if(!slides) return;
+  slides.style.transform=`translateX(${-n*33.333}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('on',i===n));
+  const isLast=(n===2);
+  if(nextBtn) nextBtn.textContent=isLast?'はじめる':'次へ';
+  if(skipBtn) skipBtn.style.display=isLast?'none':'';
+}
+function obNext(){
+  if(_obPage<2){ obGoto(_obPage+1); }
+  else { closeOb(); }
+}
+async function closeOb(){
+  document.getElementById('ob-ov').classList.add('hidden');
+  await Store.set('onboarded','1');
+}
 
 async function resetAll(){
   showDialog({
-    icon:'🗑️',
+    icon:'',
     title:'全データを削除',
     msg:'この操作は元に戻せません。本当に削除しますか？',
     buttons:[
@@ -1542,14 +1959,14 @@ function toggleSat(){
 function renderDashboard(){
   let monthly=0,yearly=0;
   const cmap={};
-  subs.forEach(s=>{
+  subs.filter(s=>!s.paused).forEach(s=>{
     if(s.freq==='単発（買い切り）'){
       if(!inclOt)return;
       yearly+=s.price;
       return;
     }
-    const mo=s.freq==='月額'?s.price:Math.round(s.price/12);
-    const yr=s.freq==='年額'?s.price:s.price*12;
+    const mo=moFromSub(s);
+    const yr=yrFromSub(s);
     monthly+=mo; yearly+=yr;
     if(mo>0){
       const key=catMap[s.cat]?s.cat:'その他';
@@ -1597,6 +2014,8 @@ function drawChart(obj){
             const i=els[0].index;
             _setCenterSelected(labels[i], data[i], total, colors[i]);
             _setLegendActive(i);
+            // GA: チャートタップ（絞り込み操作）
+            gaEvent('chart_category_tap', { category: labels[i], amount: data[i], period: chartPeriod });
           },
           onHover(_,els){
             canvas.style.cursor=els.length?'pointer':'default';
@@ -1617,7 +2036,7 @@ function drawChart(obj){
     row.dataset.idx=i;
     row.innerHTML=`
       <span class="leg-dot" style="background:${ci.color}"></span>
-      <span class="leg-name">${ci.icon} ${cat}</span>
+      <span class="leg-name">${ci.icon(ci.color,16)} ${cat}</span>
       <span class="leg-pct">${pct}%</span>
       <span class="leg-amt">¥${val.toLocaleString()}</span>
     `;
@@ -1648,7 +2067,7 @@ function _setCenterDefault(total){
 function _setCenterSelected(cat, val, total, color){
   const ci=catMap[cat]||catMap['その他'];
   const pct=total>0?Math.round(val/total*100):0;
-  document.getElementById('cc-icon').textContent=ci.icon;
+  document.getElementById('cc-icon').innerHTML=ci.icon(ci.color,22);
   document.getElementById('cc-name').textContent=cat;
   document.getElementById('cc-amt').innerHTML=`<span style="font-size:60%;color:${color}">¥</span>${val.toLocaleString()}`;
   document.getElementById('cc-pct').textContent=`${pct}% / 月`;
@@ -1691,20 +2110,20 @@ function renderSatChart(){
   const area=document.getElementById('sat-chart-area');
   const groups={};
   subs.filter(s=>s.sat&&s.freq!=='単発（買い切り）').forEach(s=>{
-    const mo=s.freq==='月額'?s.price:Math.round(s.price/12);
+    const mo=moFromSub(s);
     groups[s.sat]=(groups[s.sat]||{total:0,cnt:0});
     groups[s.sat].total+=mo;
     groups[s.sat].cnt++;
   });
   const keys=Object.keys(groups).map(Number).sort((a,b)=>b-a);
-  if(!keys.length){area.innerHTML='<div class="sat-none">満足度を登録すると表示されます ⭐</div>';return}
+  if(!keys.length){area.innerHTML='<div class="sat-none">満足度を登録すると表示されます</div>';return}
   const maxV=Math.max(...keys.map(k=>groups[k].total));
   let html='<div class="sat-row">';
   keys.forEach(k=>{
     const g=groups[k];
     const pct=maxV>0?Math.round(g.total/maxV*100):0;
     const bar_colors=['','#C07070','#B8956A','#A8A860','#7AAB82','#4E8B82'];
-    const stars='⭐'.repeat(k)+'☆'.repeat(5-k);
+    const stars='★'.repeat(k)+'☆'.repeat(5-k);
     html+=`<div class="sat-band" onclick="goto('list')">
       <span class="sat-stars">${stars}</span>
       <div class="sat-bw"><div class="sat-b" style="width:${pct}%;background:${bar_colors[k]||'#8A9890'}"></div></div>
@@ -1715,10 +2134,10 @@ function renderSatChart(){
     </div>`;
   });
   html+='</div>';
-  const lowSat=subs.filter(s=>s.sat>=1&&s.sat<=2&&s.freq!=='単発（買い切り）');
+  const lowSat=subs.filter(s=>!s.paused&&s.sat>=1&&s.sat<=2&&s.freq!=='単発（買い切り）');
   if(lowSat.length){
     const low=lowSat.reduce((s,x)=>s+(x.freq==='月額'?x.price:Math.round(x.price/12)),0);
-    html+=`<div class="sat-insight">💡 満足度が低いサブスクに <b>¥${low.toLocaleString()}/月</b>。解約すると年間 <b>¥${(low*12).toLocaleString()}</b> 節約できます。</div>`;
+    html+=`<div class="sat-insight">満足度が低いサブスクに <b>¥${low.toLocaleString()}/月</b>。解約すると年間 <b>¥${(low*12).toLocaleString()}</b> 節約できます。</div>`;
   }
   area.innerHTML=html;
 }
@@ -1727,7 +2146,26 @@ function checkAlerts(){
   const box=document.getElementById('alerts');
   box.innerHTML='';
 
-  // ① 同カテゴリ複数アラート
+  // ① 節約キャンペーン対象サービスバナー
+  const savingSubs = subs.filter(s => s.freq !== '単発（買い切り）' && findCampaign(s.name));
+  if (savingSubs.length > 0) {
+    const banner = document.createElement('div');
+    banner.className = 'alert-box';
+    banner.style.cssText = 'background:linear-gradient(135deg,#f0faf6,#e8f5f2);border-left:3px solid #1A6B5A;border-radius:10px;padding:12px 14px;margin-bottom:10px;position:relative;padding-right:32px;';
+    const names = savingSubs.slice(0, 3).map(s => `<b>${s.name}</b>`).join('、');
+    const more  = savingSubs.length > 3 ? `ほか${savingSubs.length - 3}件` : '';
+    banner.innerHTML = `
+      <button class="alert-x" onclick="this.parentNode.remove()" style="color:#1A6B5A">✕</button>
+      <div style="font-size:13px;font-weight:700;color:#1A6B5A;margin-bottom:6px">💰 安くできるかもしれないサブスクがあります</div>
+      <div style="font-size:12px;color:#2B5A4A;line-height:1.6">${names}${more} は解約しようとすると割引キャンペーンが表示されることがあります。</div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        ${savingSubs.slice(0, 4).map(s => `<button onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()" style="background:#1A6B5A;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">${s.name}</button>`).join('')}
+        ${savingSubs.length > 4 ? `<span style="font-size:12px;color:#555;padding:5px 0">+${savingSubs.length-4}件</span>` : ''}
+      </div>`;
+    box.appendChild(banner);
+  }
+
+  // ② 同カテゴリ複数アラート
   const catGroups={};
   subs.filter(s=>s.freq!=='単発（買い切り）').forEach(s=>{
     catGroups[s.cat]=(catGroups[s.cat]||0)+1;
@@ -1736,12 +2174,12 @@ function checkAlerts(){
     const ci=catMap[cat]||catMap['その他'];
     const el=document.createElement('div');
     el.className='alert-box';
-    el.innerHTML=`${ci.icon} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="this.parentNode.remove()">✕</button>`;
+    el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="this.parentNode.remove()">✕</button>`;
     box.appendChild(el);
   });
 
   // ② 解約検討（満足度★1〜3）
-  const warns=subs.filter(s=>s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）').sort((a,b)=>b.price-a.price);
+  const warns=subs.filter(s=>!s.paused&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）').sort((a,b)=>b.price-a.price);
   if(!warns.length) return;
 
   const section=document.createElement('div');
@@ -1750,19 +2188,19 @@ function checkAlerts(){
 
   const hdr=document.createElement('div');
   hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
-  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)">⚠️ 解約を検討してみては？</span><span style="font-size:13px;color:var(--ts)">${warns.length}件</span>`;
+  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> 解約を検討してみては？</span><span style="font-size:13px;color:var(--ts)">${warns.length}件</span>`;
   section.appendChild(hdr);
 
   warns.forEach(s=>{
     const ci=catMap[s.cat]||catMap['その他'];
-    const mo=s.freq==='月額'?s.price:Math.round(s.price/12);
+    const mo=moFromSub(s);
     const row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);cursor:pointer';
     row.innerHTML=`
-      <div style="width:32px;height:32px;border-radius:8px;background:${ci.color}22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${ci.icon}</div>
+      <div style="width:32px;height:32px;border-radius:8px;background:${ci.color}22;display:flex;align-items:center;justify-content:center;flex-shrink:0">${ci.icon(ci.color,18)}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:14px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</div>
-        <div style="font-size:13px;color:var(--ts)">${'⭐'.repeat(s.sat)}${'☆'.repeat(5-s.sat)} · ${s.cat}</div>
+        <div style="font-size:13px;color:var(--ts)"><span style="color:var(--p)">${'★'.repeat(s.sat)}</span><span style="color:var(--bd)">${'☆'.repeat(5-s.sat)}</span> · ${s.cat}${(()=>{const np=nextPayDate(s);return np?' · 次回'+dateMD(np):''})()}</div>
       </div>
       <div style="font-size:14px;font-weight:700;color:var(--dn);white-space:nowrap">¥${mo.toLocaleString()}<span style="font-size:12px;font-weight:400;color:var(--ts)">/月</span></div>`;
     row.onclick=()=>editSub(s.id);
@@ -1770,7 +2208,8 @@ function checkAlerts(){
   });
   // 最後の行のborder-bottomを削除
   section.querySelector('div[style*="border-bottom"]:last-of-type')?.style.setProperty('border-bottom','none');
-  box.appendChild(section);
+  const warnSection=document.getElementById('warn-section');
+  if(warnSection){ warnSection.innerHTML=''; warnSection.appendChild(section); }
 }
 
 /* ============================================================
@@ -1803,14 +2242,18 @@ function renderCalendar(){
   // 日付→イベントマップ
   const lastDay=new Date(y,m+1,0).getDate();
   const events={};
+  const calMonthStart = new Date(y, m, 1);
+  const calMonthEnd   = new Date(y, m+1, 0);
   target.forEach(s=>{
+    if(s.freq==='単発（買い切り）') return;
     const base=new Date(s.date);
-    if(isNaN(base))return;
-    if(s.freq==='月額'){
-      const day=Math.min(base.getDate(),lastDay);
+    if(isNaN(base)) return;
+    // この月に支払いが発生するか: nextPayDate を月初基準で計算
+    const np = nextPayDate(s, calMonthStart);
+    if(!np) return;
+    if(np.getFullYear()===y && np.getMonth()===m){
+      const day = Math.min(np.getDate(), lastDay);
       (events[day]=events[day]||[]).push(s);
-    }else if(s.freq==='年額'&&base.getMonth()===m){
-      (events[base.getDate()]=events[base.getDate()]||[]).push(s);
     }
   });
 
@@ -1819,9 +2262,9 @@ function renderCalendar(){
   const todayD=today.getFullYear()===y&&today.getMonth()===m?today.getDate():null;
   Object.entries(events).forEach(([d,evs])=>{
     evs.forEach(s=>{
-      if(s.freq==='月額')monthTotal+=s.price;
+      monthTotal+=moFromSub(s)||s.price; // 月換算（年額等は月割り）
       chipCount++;
-      if(todayD&&parseInt(d)>=todayD&&s.freq==='月額')remainTotal+=s.price;
+      if(todayD&&parseInt(d)>=todayD) remainTotal+=moFromSub(s)||s.price;
     });
   });
   document.getElementById('cal-count').textContent=`${chipCount}件`;
@@ -1891,7 +2334,7 @@ function renderCalendar(){
 function showCalDetail(y,m,d,evs){
   const DOW=['日','月','火','水','木','金','土'];
   const dow=new Date(y,m,d).getDay();
-  const dayTotal=evs.reduce((s,sub)=>s+(sub.freq==='月額'?sub.price:0),0);
+  const dayTotal=evs.reduce((a,sub)=>a+moFromSub(sub),0);
 
   // ボトムシートに内容を構築
   const sheet=document.getElementById('cal-sheet');
@@ -1905,15 +2348,20 @@ function showCalDetail(y,m,d,evs){
   evs.forEach(s=>{
     const ci=catMap[s.cat]||catMap['その他'];
     const isWarn=s.sat>=1&&s.sat<=3;
-    const dispAmt=s.freq==='年額'?`¥${s.price.toLocaleString()}（年払い）`:`¥${s.price.toLocaleString()}/月`;
+    const dispAmt=(()=>{
+      if(s.freq==='単発（買い切り）') return `¥${s.price.toLocaleString()}（買い切り）`;
+      if(s.freq==='年額') return `¥${s.price.toLocaleString()}（年払い）`;
+      if(s.freq==='月額') return `¥${s.price.toLocaleString()}/月`;
+      return `¥${s.price.toLocaleString()}（${freqLabel(s.freq)}）`;
+    })();
     const row=document.createElement('div');
     row.className='cal-detail-row';
     row.innerHTML=`
       <div class="cal-detail-bar" style="background:${ci.color};min-height:36px"></div>
-      <div class="cal-detail-icon">${ci.icon}</div>
+      <div class="cal-detail-icon">${ci.icon(ci.color,20)}</div>
       <div class="cal-detail-body">
-        <div class="cal-detail-name">${isWarn?'⚠️ ':''}${s.name}</div>
-        <div class="cal-detail-meta">${s.cat}${s.sat?' · ★'+s.sat:''}</div>
+        <div class="cal-detail-name">${isWarn?`<svg width="13" height="13" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> `:''}{s.name}</div>
+        <div class="cal-detail-meta">${s.cat}${s.sat?' · <span style="color:var(--p)">'+'★'.repeat(s.sat)+'</span><span style="color:var(--bd)">'+'☆'.repeat(5-s.sat)+'</span>':''}</div>
       </div>
       <div class="cal-detail-price">${dispAmt}</div>`;
     row.onclick=()=>{ closeCalSheet(); editSub(s.id); };
@@ -1946,23 +2394,35 @@ function renderList(){
   const box=document.getElementById('list-items');
   box.innerHTML='';
   if(!list.length){
-    box.innerHTML='<div class="empty">登録されているサブスクがありません<br>「追加」タブから登録してみましょう 🌿</div>';
+    box.innerHTML='<div class="empty">登録されているサブスクがありません<br>「追加」タブから登録してみましょう</div>';
     return;
   }
   list.forEach(s=>{
     const ci=catMap[s.cat]||catMap['その他'];
-    const freqLbl=s.freq==='単発（買い切り）'?'買い切り':s.freq;
+    const freqLbl=freqLabel(s.freq);
+    const campaign=findCampaign(s.name);
     const row=document.createElement('div');
     row.className='sub-row';
     row.innerHTML=`
-      <div class="sub-icon" style="background:${ci.color}20">${ci.icon}</div>
+      <div class="sub-icon" style="background:${ci.color}20">${ci.icon(ci.color,20)}</div>
       <div class="sub-body">
-        <div class="sub-name">${s.name}</div>
+        <div class="sub-name">${s.name}${s.paused?'<span class="paused-badge">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()">💰</span>`:''}
+        </div>
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
-          <span>更新: ${s.date}</span>
-          ${s.sat?`<span>${'⭐'.repeat(s.sat)}</span>`:''}
-          ${s.memo?`<span>📝 ${s.memo}</span>`:''}
+          <span>${(()=>{
+            if(s.freq==='単発（買い切り）') return '買い切り';
+            const np=nextPayDate(s);
+            if(!np) return '更新: '+s.date;
+            const today=new Date(); today.setHours(0,0,0,0);
+            const diffDay=Math.round((np-today)/86400000);
+            const label='次回: '+dateMD(np);
+            if(diffDay===0) return label+'<span class="pay-today">今日</span>';
+            if(diffDay<=7) return label+'<span class="pay-soon">'+diffDay+'日後</span>';
+            return label;
+          })()}</span>
+          ${s.sat?`<span>${'★'.repeat(s.sat)}</span>`:''}
+          ${s.memo?`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--ts)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> ${s.memo}</span>`:''}
         </div>
       </div>
       <div class="sub-right">
@@ -1970,20 +2430,48 @@ function renderList(){
         <div class="sub-freq">${freqLbl}</div>
       </div>
     `;
-    // タップで編集/削除ボタン展開
+    // 休止中バッジ
+    if(s.paused) row.classList.add('paused');
+
+    // タップで編集/削除/休止ボタン展開 + 左スワイプでも開く
     const actions=document.createElement('div');
     actions.className='sub-actions';
-    actions.innerHTML=`<button class="btn-e" onclick="editSub(${s.id});event.stopPropagation()">編集</button><button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">削除</button>`;
+    const pauseLabel=s.paused?'再開':'休止';
+    const pauseCls=s.paused?'btn-pause active':'btn-pause';
+    actions.innerHTML=`
+      <button class="${pauseCls}" onclick="togglePause(${s.id});event.stopPropagation()">${pauseLabel}</button>
+      <button class="btn-e" onclick="editSub(${s.id});event.stopPropagation()">編集</button>
+      <button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">削除</button>`;
     const wrapper=document.createElement('div');
-    wrapper.style.cssText='background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sh);transition:box-shadow .12s';
+    wrapper.style.cssText='background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sh);transition:box-shadow .12s;overflow:hidden;position:relative';
     wrapper.appendChild(row);
     wrapper.appendChild(actions);
-    wrapper.onclick=()=>{
+
+    // タップで開閉
+    const toggleActions=()=>{
       const isOpen=actions.classList.contains('open');
       document.querySelectorAll('.sub-actions.open').forEach(a=>a.classList.remove('open'));
       if(!isOpen)actions.classList.add('open');
     };
-    // styleリセット（inner rowのbox-shadow等を避ける）
+    wrapper.onclick=toggleActions;
+
+    // 左スワイプで開く
+    let _lsx=0,_lsy=0;
+    wrapper.addEventListener('touchstart',e=>{
+      _lsx=e.touches[0].clientX; _lsy=e.touches[0].clientY;
+    },{passive:true});
+    wrapper.addEventListener('touchend',e=>{
+      const dx=e.changedTouches[0].clientX-_lsx;
+      const dy=e.changedTouches[0].clientY-_lsy;
+      if(Math.abs(dy)>40)return;
+      if(dx<-50){ // 左スワイプ
+        document.querySelectorAll('.sub-actions.open').forEach(a=>a.classList.remove('open'));
+        actions.classList.add('open');
+      } else if(dx>50){ // 右スワイプで閉じる
+        actions.classList.remove('open');
+      }
+    },{passive:true});
+
     row.style.cssText='display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent';
     box.appendChild(wrapper);
   });
@@ -2011,8 +2499,8 @@ function buildQuickAdd(){
       t.classList.add('on');t.style.background=color;t.style.color='#fff';t.style.borderColor=color;
       buildQItems(cat);
       const note=document.getElementById('q-note');
-      if(cat==='金融・年会費'){note.style.display='block';note.textContent='💡 クレカ年会費は固定費として管理できます。更新日管理に便利です。'}
-      else if(cat==='保険'){note.style.display='block';note.textContent='💡 保険は固定費として管理できます。見直しのきっかけに。'}
+      if(cat==='金融・年会費'){note.style.display='block';note.textContent='クレカ年会費は固定費として管理できます。更新日管理に便利です。'}
+      else if(cat==='保険'){note.style.display='block';note.textContent='保険は固定費として管理できます。見直しのきっかけに。'}
       else{note.style.display='none'}
     };
     tabs.appendChild(t);
@@ -2023,7 +2511,7 @@ function buildQuickAdd(){
   starsEl.innerHTML='';
   for(let i=1;i<=5;i++){
     const b=document.createElement('button');
-    b.type='button';b.className='star-btn';b.textContent='⭐';b.dataset.v=i;
+    b.type='button';b.className='star-btn';b.textContent='★';b.dataset.v=i;
     b.onclick=()=>{
       document.querySelectorAll('.star-btn').forEach((s,j)=>s.classList.toggle('on',j<i));
     };
@@ -2067,6 +2555,8 @@ function buildQItems(cat){
           opt.className='plan-opt';
           opt.innerHTML=`<span class="plan-opt-lbl">${plan.label}</span><span class="plan-opt-prc">¥${plan.price.toLocaleString()} / ${item.freq}</span>`;
           opt.onclick=()=>{
+            // GA: クイック追加タップ（何のサービスが人気か）
+            gaEvent('quick_add_tap', { service_name: item.name, category: cat, price: plan.price, freq: item.freq });
             fillForm({name:item.name,price:plan.price,freq:item.freq},cat);
             panel.classList.remove('open'); panel.innerHTML=''; panel.dataset.item='';
           };
@@ -2076,7 +2566,11 @@ function buildQItems(cat){
         panel.scrollIntoView({behavior:'smooth',block:'nearest'});
       };
     }else{
-      btn.onclick=()=>fillForm({name:item.name,price:item.price,freq:item.freq},cat);
+      btn.onclick=()=>{
+        // GA: クイック追加タップ（何のサービスが人気か）
+        gaEvent('quick_add_tap', { service_name: item.name, category: cat, price: item.price, freq: item.freq });
+        fillForm({name:item.name,price:item.price,freq:item.freq},cat);
+      };
     }
     wrapper.appendChild(btn);
     box.appendChild(wrapper);
@@ -2127,9 +2621,9 @@ async function submitForm(){
   const memo=document.getElementById('f-memo').value.trim();
   const satEl=document.querySelectorAll('.star-btn.on');
   const sat=satEl.length;
-  if(!name){ showAlert('✏️','サービス名を入力してください','サービス名は必須です'); return}
-  if(!date){ showAlert('📅','更新日を入力してください','次の支払い予定日を入力してください'); return}
-  if(subs.length>=MAX&&!editId){ showAlert('⚠️','登録上限です',`登録できるサブスクは${MAX}件までです`); return}
+  if(!name){ showAlert('','サービス名を入力してください','サービス名は必須です'); return}
+  if(!date){ showAlert('','次回支払日を入力してください','次の支払い予定日を入力してください'); return}
+  if(subs.length>=MAX&&!editId){ showAlert('','登録上限です',`登録できるサブスクは${MAX}件までです`); return}
 
   const isEdit=!!editId;
   if(isEdit){
@@ -2142,15 +2636,19 @@ async function submitForm(){
     resetForm();
     backToStep1();
     goto('dashboard');
-    showToast('更新しました ✅');
+    // GA: 編集・更新イベント
+    gaEvent('subscription_updated', { category: cat, price: price, freq: freq });
+    showToast('更新しました');
   } else {
-    subs.push({id:Date.now(),name,cat,price,freq,date,memo,sat});
+    subs.push({id:Date.now(),name,cat,price,freq,date,memo,sat,paused:false});
     await save();
+    // GA: 新規登録イベント（カテゴリ別・金額・頻度を計測）
+    gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length });
     // 初回登録後は手順バナーを非表示
     document.getElementById('how-to-box').style.display='none';
     // 登録完了 → 続けて追加 or ホームへ のダイアログ
     showDialog({
-      icon:'✅',
+      icon:'',
       title:`「${name}」を登録しました`,
       msg:`現在 ${subs.length} 件登録中`,
       buttons:[
@@ -2215,17 +2713,30 @@ function cancelEdit(){
   backToStep1();
 }
 
+
+async function togglePause(id){
+  const s=subs.find(x=>x.id===id);
+  if(!s)return;
+  s.paused=!s.paused;
+  await save();
+  renderDashboard();
+  renderList();
+  showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);
+}
+
 async function delSub(id){
   const s = subs.find(x=>x.id===id);
   const name = s ? s.name : 'このサブスク';
   showDialog({
-    icon:'🗑️',
+    icon:'',
     title:`${name}を削除`,
     msg:'削除すると元に戻せません。',
     buttons:[
       {label:'キャンセル', cls:'cancel'},
       {label:'削除する', cls:'danger', onClick: async ()=>{
         subs=subs.filter(s=>s.id!==id);
+        // GA: 削除イベント
+        gaEvent('subscription_deleted', { service_name: name });
         await save(); renderList();
         showToast(`${name}を削除しました`);
       }}
@@ -2237,9 +2748,9 @@ async function delSub(id){
    CSV
 ============================================================ */
 async function exportCSV(){
-  if(!subs.length){ showAlert('📭','データがありません','登録されたサブスクがありません'); return; }
+  if(!subs.length){ showAlert('','データがありません','登録されたサブスクがありません'); return; }
   const BOM='\uFEFF';
-  const header='ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度';
+  const header='ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度,休止';
   const rows=subs.map(s=>[
     s.id,
     `"${(s.name||'').replace(/"/g,'""')}"`,
@@ -2248,7 +2759,8 @@ async function exportCSV(){
     `"${s.freq||''}"`,
     s.date||'',
     `"${(s.memo||'').replace(/"/g,'""')}"`,
-    s.sat||''
+    s.sat||'',
+    s.paused?1:0
   ].join(','));
   const csvText = BOM+header+'\n'+rows.join('\n');
   const fileName = `subly_${new Date().toISOString().slice(0,10)}.csv`;
@@ -2264,7 +2776,7 @@ async function exportCSV(){
       const writable = await fh.createWritable();
       await writable.write(blob);
       await writable.close();
-      showToast('CSVを保存しました ✅');
+      showToast('CSVを保存しました');
       return;
     }catch(err){
       if(err.name==='AbortError') return;
@@ -2278,7 +2790,7 @@ async function exportCSV(){
       const file = new File([csvText], fileName, {type:'text/csv;charset=utf-8'});
       if(navigator.canShare && navigator.canShare({files:[file]})){
         await navigator.share({files:[file], title:'Subly バックアップ'});
-        showToast('エクスポートしました ✅');
+        showToast('エクスポートしました');
         return;
       }
     }catch(err){
@@ -2294,19 +2806,19 @@ async function exportCSV(){
     document.body.appendChild(a);
     a.click();
     setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
-    showToast('CSVを保存しました ✅');
+    showToast('CSVを保存しました');
     return;
   }catch(e){}
 
   // ④ 上記すべて失敗時 → クリップボードコピー
   showDialog({
-    icon:'📋',
+    icon:'',
     title:'CSVをコピー',
     msg:'お使いの環境ではファイル保存ができないため、クリップボードにコピーします。\nメモ帳やファイルアプリに貼り付けて保存してください。',
     buttons:[
       {label:'コピーする', cls:'ok', onClick:()=>{
         navigator.clipboard.writeText(csvText)
-          .then(()=>showToast('コピーしました ✅'))
+          .then(()=>showToast('コピーしました'))
           .catch(()=>showToast('コピーに失敗しました'));
       }},
       {label:'閉じる', cls:'cancel'}
@@ -2344,23 +2856,23 @@ function _processImportFile(file){
   reader.onload=ev=>{
     const text=ev.target.result.replace(/^\uFEFF/,'');
     const lines=text.split(/\r?\n/).filter(l=>l.trim());
-    if(lines.length<2){ showAlert('📭','データがありません','有効なCSVデータが見つかりませんでした'); return}
+    if(lines.length<2){ showAlert('','データがありません','有効なCSVデータが見つかりませんでした'); return}
     const imported=[];
     lines.slice(1).forEach(line=>{
       const cols=parseCSVLine(line);
       if(cols.length<6)return;
-      imported.push({id:parseInt(cols[0])||Date.now(),name:cols[1],cat:cols[2],price:parseInt(cols[3])||0,freq:cols[4]||'月額',date:cols[5],memo:cols[6]||'',sat:parseInt(cols[7])||0});
+      imported.push({id:parseInt(cols[0])||Date.now(),name:cols[1],cat:cols[2],price:parseInt(cols[3])||0,freq:cols[4]||'月額',date:cols[5],memo:cols[6]||'',sat:parseInt(cols[7])||0,paused:cols[8]==="1"});
     });
-    if(!imported.length){ showAlert('📭','データがありません','インポートできるデータが見つかりませんでした'); return}
+    if(!imported.length){ showAlert('','データがありません','インポートできるデータが見つかりませんでした'); return}
     showDialog({
-      icon:'📥',
+      icon:'↓',
       title:`${imported.length}件をインポート`,
       msg:'現在のデータは上書きされます。よろしいですか？',
       buttons:[
         {label:'キャンセル', cls:'cancel'},
         {label:'インポート', cls:'ok', onClick: async ()=>{
           subs=imported; await save(); closeSettings(); goto('dashboard');
-          showToast(`${imported.length}件をインポートしました ✅`);
+          showToast(`${imported.length}件をインポートしました`);
         }}
       ]
     });
