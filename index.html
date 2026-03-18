@@ -514,6 +514,13 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
     </button>
 
+    <!-- 節約のヒント -->
+    <div class="hd-sec">節約のヒント</div>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(openSavingHints,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      <div><div class="hd-lbl">節約のヒント一覧</div><div class="hd-sub">解約引き留めキャンペーン情報</div></div>
+    </button>
+
     <!-- 設定 -->
     <div class="hd-sec">設定</div>
     <button class="hd-row" onclick="closeHdrop();setTimeout(openNotifySettings,150)">
@@ -613,7 +620,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <div class="overlay hidden" id="settings-ov" onclick="if(event.target===this)closeSettings()">
   <div class="sheet">
     <div class="sheet-hdr">
-      <span class="sheet-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> 設定</span>
+      <span class="sheet-ttl" id="settings-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> 設定</span>
       <button class="sheet-close" onclick="closeSettings()">✕</button>
     </div>
     <div class="s-sec">外観</div>
@@ -680,7 +687,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="s-arr">›</span>
       </div>
     </div>
-    <div style="padding:14px 18px 22px;text-align:center;font-size:12px;color:var(--ts)">Subly v1.0</div>
+    <div id="settings-body" style="padding:0 18px 14px"></div>
+    <div style="padding:4px 18px 22px;text-align:center;font-size:12px;color:var(--ts)">Subly v1.0</div>
   </div>
 </div>
 
@@ -1908,6 +1916,19 @@ function closeHdrop(){
     _tracking = isOpen || _sx <= EDGE;
   }, {passive:true});
 
+  let _swiped = false; // スワイプ判定済みフラグ（click発火防止）
+
+  document.addEventListener('touchmove', e=>{
+    if(!_tracking) return;
+    const t=e.touches[0];
+    const dx=t.clientX - _sx;
+    const dy=t.clientY - _sy;
+    // 横スワイプが主体のとき縦スクロールを止める（アイテム誤選択防止）
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
+      e.preventDefault();
+    }
+  }, {passive:false});
+
   document.addEventListener('touchend', e=>{
     if(!_tracking) return;
     const t=e.changedTouches[0];
@@ -1923,13 +1944,22 @@ function closeHdrop(){
 
     if(!isOpen && dx > THRESHOLD){
       // → 右スワイプ：開く
+      _swiped = true;
       drop.classList.add('open');
       document.getElementById('hdrop-bg').classList.add('open');
+      setTimeout(()=>{ _swiped=false; }, 300);
     } else if(isOpen && dx < -THRESHOLD){
       // ← 左スワイプ：閉じる
+      _swiped = true;
       closeHdrop();
+      setTimeout(()=>{ _swiped=false; }, 300);
     }
   }, {passive:true});
+
+  // スワイプ後のclick発火を1回だけ吸収
+  document.addEventListener('click', e=>{
+    if(_swiped){ e.stopPropagation(); _swiped=false; }
+  }, true);
 })();
 
 // ── オンボーディング スワイプ ──
@@ -1947,6 +1977,69 @@ function closeHdrop(){
   },{passive:true});
 })();
 // 旧設定シート（PCサイドバーの設定ボタン用に残す）
+
+function openSavingHints(){
+  const sheet = document.getElementById('settings-ov');
+  const body  = document.getElementById('settings-body');
+  document.getElementById('settings-ttl').textContent = '節約のヒント';
+  body.innerHTML = '';
+
+  // 登録済みサブスクのうちキャンペーン対象のみ先に表示
+  const matched = subs.filter(s => findCampaign(s.name));
+  const matchedSection = document.createElement('div');
+  if(matched.length){
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin:0 0 8px';
+    lbl.textContent = '登録済みで対象のサービス';
+    matchedSection.appendChild(lbl);
+    matched.forEach(s => {
+      const c = findCampaign(s.name);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);gap:10px';
+      row.innerHTML = `
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:var(--tx)">${s.name}</div>
+          <div style="font-size:12px;color:var(--p);font-weight:700;margin-top:2px">${c.discount}</div>
+        </div>
+        <button onclick="closeSettings();showSavingHint(findCampaign('${s.name.replace(/'/g,"\'")}'),'${s.name.replace(/'/g,"\'")}');event.stopPropagation()"
+          style="flex-shrink:0;background:var(--p);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">
+          詳しく見る
+        </button>`;
+      matchedSection.appendChild(row);
+    });
+    // 最後のborder削除
+    const rows = matchedSection.querySelectorAll('div[style*="border-bottom"]');
+    if(rows.length) rows[rows.length-1].style.borderBottom = 'none';
+    body.appendChild(matchedSection);
+  }
+
+  // 全キャンペーン一覧
+  const allSection = document.createElement('div');
+  allSection.style.marginTop = matched.length ? '20px' : '0';
+  const lbl2 = document.createElement('div');
+  lbl2.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px';
+  lbl2.textContent = '対象サービス一覧（10件）';
+  allSection.appendChild(lbl2);
+
+  campaignData.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);gap:10px';
+    row.innerHTML = `
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:700;color:var(--tx)">${c.name}</div>
+        <div style="font-size:12px;color:var(--p);font-weight:700;margin-top:2px">${c.discount}</div>
+      </div>
+      <button onclick="showSavingHint(campaignData[${i}],'${c.name}')"
+        style="flex-shrink:0;background:var(--bg);color:var(--p);border:1.5px solid var(--p);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">
+        詳細
+      </button>`;
+    if(i === campaignData.length-1) row.style.borderBottom = 'none';
+    allSection.appendChild(row);
+  });
+  body.appendChild(allSection);
+  sheet.classList.remove('hidden');
+}
+
 function openSettings(){document.getElementById('settings-ov').classList.remove('hidden')}
 function closeSettings(){document.getElementById('settings-ov').classList.add('hidden')}
 function openGuide(){document.getElementById('guide-ov').classList.remove('hidden')}
@@ -2258,27 +2351,29 @@ function clearSatFilter(){
   renderList();
 }
 
+const _dismissedAlertCats = new Set();
+
 function checkAlerts(){
   const box=document.getElementById('alerts');
   box.innerHTML='';
 
-  // ① 節約キャンペーン対象サービスバナー
+  // ① 節約キャンペーン対象サービスバナー（一度閉じたら再表示しない）
   const savingSubs = subs.filter(s => s.freq !== '単発（買い切り）' && findCampaign(s.name));
   if (savingSubs.length > 0) {
-    const banner = document.createElement('div');
-    banner.className = 'alert-box';
-    banner.style.cssText = 'background:linear-gradient(135deg,#f0faf6,#e8f5f2);border-left:3px solid #1A6B5A;border-radius:10px;padding:12px 14px;margin-bottom:10px;position:relative;padding-right:32px;';
-    const names = savingSubs.slice(0, 3).map(s => `<b>${s.name}</b>`).join('、');
-    const more  = savingSubs.length > 3 ? `ほか${savingSubs.length - 3}件` : '';
-    banner.innerHTML = `
-      <button class="alert-x" onclick="this.parentNode.remove()" style="color:#1A6B5A">✕</button>
-      <div style="font-size:13px;font-weight:700;color:#1A6B5A;margin-bottom:6px">💰 安くできるかもしれないサブスクがあります</div>
-      <div style="font-size:12px;color:#2B5A4A;line-height:1.6">${names}${more} は解約しようとすると割引キャンペーンが表示されることがあります。</div>
-      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
-        ${savingSubs.slice(0, 4).map(s => `<button onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()" style="background:#1A6B5A;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">${s.name}</button>`).join('')}
-        ${savingSubs.length > 4 ? `<span style="font-size:12px;color:#555;padding:5px 0">+${savingSubs.length-4}件</span>` : ''}
-      </div>`;
-    box.appendChild(banner);
+    Store.get('savingBannerDismissed').then(dismissed => {
+      if (dismissed) return;
+      const banner = document.createElement('div');
+      banner.className = 'alert-box';
+      banner.style.cssText = 'background:linear-gradient(135deg,#f0faf6,#e8f5f2);border-left:3px solid #1A6B5A;border-radius:10px;padding:12px 14px;margin-bottom:10px;position:relative;padding-right:32px;';
+      const names = savingSubs.slice(0, 3).map(s => `<b>${s.name}</b>`).join('、');
+      const more  = savingSubs.length > 3 ? `ほか${savingSubs.length - 3}件` : '';
+      banner.innerHTML = `
+        <button class="alert-x" onclick="Store.set('savingBannerDismissed','1');this.parentNode.remove()" style="color:#1A6B5A">✕</button>
+        <div style="font-size:13px;font-weight:700;color:#1A6B5A;margin-bottom:6px">💰 安くできるかもしれないサブスクがあります</div>
+        <div style="font-size:12px;color:#2B5A4A;line-height:1.6">${names}${more} は解約しようとすると割引キャンペーンが表示されることがあります。</div>
+        <div style="font-size:11px;color:#5A8A7A;margin-top:6px">詳細はメニュー →「節約のヒント」から確認できます</div>`;
+      box.insertBefore(banner, box.firstChild);
+    });
   }
 
   // ② 同カテゴリ複数アラート
@@ -2286,11 +2381,11 @@ function checkAlerts(){
   subs.filter(s=>s.freq!=='単発（買い切り）').forEach(s=>{
     catGroups[s.cat]=(catGroups[s.cat]||0)+1;
   });
-  Object.entries(catGroups).filter(([,v])=>v>=2).forEach(([cat])=>{
+  Object.entries(catGroups).filter(([,v])=>v>=2).filter(([cat])=>!_dismissedAlertCats.has(cat)).forEach(([cat])=>{
     const ci=catMap[cat]||catMap['その他'];
     const el=document.createElement('div');
     el.className='alert-box';
-    el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="this.parentNode.remove()">✕</button>`;
+    el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="_dismissedAlertCats.add('${cat}');this.parentNode.remove()">✕</button>`;
     box.appendChild(el);
   });
 
@@ -2557,6 +2652,14 @@ function renderList(){
   else if(sort==='price-a')list.sort((a,b)=>a.price-b.price);
   else if(sort==='sat')list.sort((a,b)=>(b.sat||0)-(a.sat||0));
   else list.sort((a,b)=>a.date.localeCompare(b.date));
+  // 休止中は常に末尾（カテゴリが「休止中」フィルターの場合は除く）
+  if(cat !== '休止中'){
+    list.sort((a,b)=>{
+      if(a.paused && !b.paused) return 1;
+      if(!a.paused && b.paused) return -1;
+      return 0;
+    });
+  }
 
   const box=document.getElementById('list-items');
   box.innerHTML='';
@@ -2573,7 +2676,7 @@ function renderList(){
     row.innerHTML=`
       <div class="sub-icon" style="background:${ci.color}20">${ci.icon(ci.color,20)}</div>
       <div class="sub-body">
-        <div class="sub-name">${s.name}${s.paused?'<span class="paused-badge">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()">💰</span>`:''}
+        <div class="sub-name">${s.name}${s.paused?' <span style="font-size:11px;font-weight:500;color:var(--ts);letter-spacing:.3px">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()">💰</span>`:''}
         </div>
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
