@@ -2910,7 +2910,8 @@ async function togglePause(id){
   await save();
   renderDashboard();
   renderList();
-  showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);\n}
+  showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);
+}
 
 async function delSub(id){
   const s = subs.find(x=>x.id===id);
