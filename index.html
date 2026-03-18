@@ -625,13 +625,15 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div class="s-sec">外観</div>
     <div class="s-grp">
-      <div class="s-row" style="cursor:default">
-        <div class="s-ico" style="background:#F0F0F8"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
-        <div class="s-body"><div class="s-title">テーマ</div></div>
-        <div style="display:flex;gap:6px;flex-shrink:0">
-          <button id="th-light" class="th-btn" onclick="setTheme('light')">ライト</button>
-          <button id="th-auto"  class="th-btn" onclick="setTheme('auto')">自動</button>
-          <button id="th-dark"  class="th-btn" onclick="setTheme('dark')">ダーク</button>
+      <div style="padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div class="s-ico" style="background:#F0F0F8;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
+          <div class="s-title">テーマ</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <button id="th-light" class="th-btn" onclick="setTheme('light')" style="padding:10px 0;border-radius:10px;font-size:13px">☀️ ライト</button>
+          <button id="th-auto"  class="th-btn" onclick="setTheme('auto')"  style="padding:10px 0;border-radius:10px;font-size:13px">🌓 自動<div style="font-size:9px;opacity:.6;margin-top:1px">時間連動</div></button>
+          <button id="th-dark"  class="th-btn" onclick="setTheme('dark')"  style="padding:10px 0;border-radius:10px;font-size:13px">🌙 ダーク</button>
         </div>
       </div>
     </div>
@@ -946,6 +948,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div id="sat-chart-area"><div class="sat-none">満足度を登録すると表示されます</div></div>
       </div>
     </div>
+    <!-- 同カテゴリ複数アラート -->
+    <div id="cat-alert-box" style="margin-top:8px"></div>
     <!-- 解約検討カード（満足度★1〜3） -->
     <div id="warn-section"></div>
   </div>
@@ -1061,6 +1065,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div class="star-row" id="stars"></div>
       </div>
       <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">登録する</button>
+      <button type="button" id="btn-pause-toggle" onclick="togglePauseFromForm()" style="display:none;width:100%;padding:13px;background:var(--bg);color:var(--ts);border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px">⏸ 休止にする</button>
       <button type="button" class="btn-cancel" id="btn-cancel" style="display:none" onclick="cancelEdit()">キャンセル</button>
     </div>
 
@@ -1803,7 +1808,7 @@ async function _scheduleMonthlyNotification(cfg){
       showDialog({
         icon:'●',
         title:'通知を設定しました',
-        msg:`毎月1日 朝9時にお知らせします。\n\n次回: ${next1st.getMonth()+1}月${next1st.getDate()}日 9:00`,
+        msg:`毎月1日 朝9時にお知らせします。<br><br>次回: ${next1st.getMonth()+1}月${next1st.getDate()}日 9:00`,
         buttons:[{label:'OK', cls:'ok'}]
       });
     }catch(e){
@@ -1814,7 +1819,7 @@ async function _scheduleMonthlyNotification(cfg){
     showDialog({
       icon:'●',
       title:'通知を設定しました（Web版）',
-      msg:'Web版ではアプリを開いた際に見直しバナーを表示します。\n\nバックグラウンド通知はCapacitorアプリ版で対応しています。',
+      msg:'Web版ではアプリを開いた際に見直しバナーを表示します。<br><br>バックグラウンド通知はCapacitorアプリ版で対応しています。',
       buttons:[{label:'OK', cls:'ok'}]
     });
   }
@@ -2362,6 +2367,7 @@ function clearSatFilter(){
 
 const _dismissedAlertCats = new Set();
 
+
 function checkAlerts(){
   const box=document.getElementById('alerts');
   box.innerHTML='';
@@ -2385,18 +2391,22 @@ function checkAlerts(){
     });
   }
 
-  // ② 同カテゴリ複数アラート
+  // ② 同カテゴリ複数アラート → warn-section の上に表示
   const catGroups={};
   subs.filter(s=>s.freq!=='単発（買い切り）').forEach(s=>{
     catGroups[s.cat]=(catGroups[s.cat]||0)+1;
   });
-  Object.entries(catGroups).filter(([,v])=>v>=2).filter(([cat])=>!_dismissedAlertCats.has(cat)).forEach(([cat])=>{
-    const ci=catMap[cat]||catMap['その他'];
-    const el=document.createElement('div');
-    el.className='alert-box';
-    el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="_dismissedAlertCats.add('${cat}');this.parentNode.remove()">✕</button>`;
-    box.appendChild(el);
-  });
+  const catAlertBox = document.getElementById('cat-alert-box');
+  if(catAlertBox) {
+    catAlertBox.innerHTML='';
+    Object.entries(catGroups).filter(([,v])=>v>=2).filter(([cat])=>!_dismissedAlertCats.has(cat)).forEach(([cat])=>{
+      const ci=catMap[cat]||catMap['その他'];
+      const el=document.createElement('div');
+      el.className='alert-box';
+      el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="_dismissedAlertCats.add('${cat}');this.parentNode.remove()">✕</button>`;
+      catAlertBox.appendChild(el);
+    });
+  }
 
   // ② 解約検討（満足度★1〜3）
   const warns=subs.filter(s=>!s.paused&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）').sort((a,b)=>b.price-a.price);
@@ -2707,6 +2717,7 @@ function renderList(){
       <div class="sub-right">
         <div class="sub-price">¥${s.price.toLocaleString()}</div>
         <div class="sub-freq">${freqLbl}</div>
+        ${s.freq!=='単発（買い切り）'?`<div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right">年間 ¥${yrFromSub(s).toLocaleString()}</div>`:''}
       </div>
     `;
     // 休止中バッジ
@@ -2986,6 +2997,11 @@ function editSub(id){
     }
     document.getElementById('btn-submit').textContent='更新する';
     document.getElementById('btn-cancel').style.display='block';
+    // 編集時のみ休止ボタンを表示
+    const pauseBtn = document.getElementById('btn-pause-toggle');
+    pauseBtn.style.display='block';
+    pauseBtn.textContent = s.paused ? '▶ 再開する' : '⏸ 休止にする';
+    pauseBtn.style.color = s.paused ? 'var(--p)' : 'var(--ts)';
     window.scrollTo(0,0);
   },50);
 }
@@ -2999,10 +3015,26 @@ function openCancelUrl(){
   if(url) window.open(url,'_blank');
 }
 
+async function togglePauseFromForm(){
+  if(!editId) return;
+  const s = subs.find(x=>x.id===editId);
+  if(!s) return;
+  s.paused = !s.paused;
+  if(s.paused){ s.pausedDate = new Date().toISOString().slice(0,10); }
+  else { delete s.pausedDate; }
+  await save();
+  // ボタンのラベルを更新
+  const pauseBtn = document.getElementById('btn-pause-toggle');
+  pauseBtn.textContent = s.paused ? '▶ 再開する' : '⏸ 休止にする';
+  pauseBtn.style.color = s.paused ? 'var(--p)' : 'var(--ts)';
+  showToast(s.paused ? `${s.name} を休止しました` : `${s.name} を再開しました`);
+}
+
 function cancelEdit(){
   editId=null;
   document.getElementById('btn-submit').textContent='登録する';
   document.getElementById('btn-cancel').style.display='none';
+  document.getElementById('btn-pause-toggle').style.display='none';
   resetForm();
   backToStep1();
 }
@@ -3195,17 +3227,36 @@ function parseCSVLine(line){
 /* ============================================================
    テーマ（ライト / 自動 / ダーク）
 ============================================================ */
+// 時間帯に応じてダーク/ライトを決定（18:00〜6:00はダーク）
+function _timeBasedDark(){
+  const h = new Date().getHours();
+  return h >= 18 || h < 6;
+}
+
+function _applyTheme(mode){
+  const root = document.documentElement;
+  root.classList.remove('light','dark');
+  if(mode === 'light'){ root.classList.add('light'); }
+  else if(mode === 'dark'){ root.classList.add('dark'); }
+  else {
+    // auto: 時間帯で決定
+    if(_timeBasedDark()) root.classList.add('dark');
+    else root.classList.add('light');
+  }
+}
+
 function setTheme(mode){
-  const html=document.documentElement;
-  html.classList.remove('light','dark');
-  if(mode==='light') html.classList.add('light');
-  else if(mode==='dark') html.classList.add('dark');
+  _applyTheme(mode);
   ['light','auto','dark'].forEach(m=>{
     document.getElementById('th-'+m)?.classList.toggle('on', m===mode);
     document.getElementById('hd-th-'+m)?.classList.toggle('on', m===mode);
   });
-  // Storeを使ってCapacitor/localStorage両対応
   Store.set('subly_theme', mode);
+  // autoの場合は1時間ごとに再チェック（既存タイマーをクリア）
+  if(window._themeTimer) clearInterval(window._themeTimer);
+  if(mode === 'auto'){
+    window._themeTimer = setInterval(()=>_applyTheme('auto'), 60 * 1000);
+  }
 }
 
 async function loadTheme(){
