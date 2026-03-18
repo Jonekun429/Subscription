@@ -687,8 +687,21 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="s-arr">›</span>
       </div>
     </div>
-    <div id="settings-body" style="padding:0 18px 14px"></div>
+    <div id="settings-body" style="padding:0 18px 14px;display:none"></div>
+    <div id="settings-static">
     <div style="padding:4px 18px 22px;text-align:center;font-size:12px;color:var(--ts)">Subly v1.0</div>
+    </div>
+  </div>
+</div>
+
+<!-- 節約のヒントシート -->
+<div class="overlay hidden" id="saving-hints-ov" onclick="if(event.target===this)closeSavingHints()">
+  <div class="sheet">
+    <div class="sheet-hdr">
+      <span class="sheet-ttl">💰 節約のヒント</span>
+      <button class="sheet-close" onclick="closeSavingHints()">✕</button>
+    </div>
+    <div id="saving-hints-body" style="padding:16px 18px 24px"></div>
   </div>
 </div>
 
@@ -1116,8 +1129,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <option value="通信費">通信費</option>
         <option value="保険">保険</option>
         <option value="ローン">ローン</option>
-        <option value="休止中">休止中</option>
         <option value="その他">その他</option>
+        <option value="休止中">休止中</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
@@ -1979,51 +1992,46 @@ function closeHdrop(){
 // 旧設定シート（PCサイドバーの設定ボタン用に残す）
 
 function openSavingHints(){
-  const sheet = document.getElementById('settings-ov');
-  const body  = document.getElementById('settings-body');
-  document.getElementById('settings-ttl').textContent = '節約のヒント';
+  const body = document.getElementById('saving-hints-body');
   body.innerHTML = '';
 
-  // 登録済みサブスクのうちキャンペーン対象のみ先に表示
+  // 登録済みサブスクのうちキャンペーン対象
   const matched = subs.filter(s => findCampaign(s.name));
-  const matchedSection = document.createElement('div');
   if(matched.length){
+    const sec = document.createElement('div');
     const lbl = document.createElement('div');
-    lbl.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin:0 0 8px';
-    lbl.textContent = '登録済みで対象のサービス';
-    matchedSection.appendChild(lbl);
-    matched.forEach(s => {
+    lbl.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin:0 0 10px';
+    lbl.textContent = '登録済みの対象サービス';
+    sec.appendChild(lbl);
+    matched.forEach((s, idx) => {
       const c = findCampaign(s.name);
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);gap:10px';
+      row.style.cssText = `display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:${idx<matched.length-1?'1px solid var(--bd)':'none'};gap:10px`;
       row.innerHTML = `
         <div style="flex:1;min-width:0">
           <div style="font-size:14px;font-weight:700;color:var(--tx)">${s.name}</div>
           <div style="font-size:12px;color:var(--p);font-weight:700;margin-top:2px">${c.discount}</div>
         </div>
-        <button onclick="closeSettings();showSavingHint(findCampaign('${s.name.replace(/'/g,"\'")}'),'${s.name.replace(/'/g,"\'")}');event.stopPropagation()"
+        <button onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\'")}'),'${s.name.replace(/'/g,"\'")}');event.stopPropagation()"
           style="flex-shrink:0;background:var(--p);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">
           詳しく見る
         </button>`;
-      matchedSection.appendChild(row);
+      sec.appendChild(row);
     });
-    // 最後のborder削除
-    const rows = matchedSection.querySelectorAll('div[style*="border-bottom"]');
-    if(rows.length) rows[rows.length-1].style.borderBottom = 'none';
-    body.appendChild(matchedSection);
+    body.appendChild(sec);
   }
 
   // 全キャンペーン一覧
-  const allSection = document.createElement('div');
-  allSection.style.marginTop = matched.length ? '20px' : '0';
+  const allSec = document.createElement('div');
+  allSec.style.marginTop = matched.length ? '20px' : '0';
   const lbl2 = document.createElement('div');
-  lbl2.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px';
-  lbl2.textContent = '対象サービス一覧（10件）';
-  allSection.appendChild(lbl2);
+  lbl2.style.cssText = 'font-size:11px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px';
+  lbl2.textContent = `対象サービス一覧（${campaignData.length}件）`;
+  allSec.appendChild(lbl2);
 
   campaignData.forEach((c, i) => {
     const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);gap:10px';
+    row.style.cssText = `display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:${i<campaignData.length-1?'1px solid var(--bd)':'none'};gap:10px`;
     row.innerHTML = `
       <div style="flex:1;min-width:0">
         <div style="font-size:14px;font-weight:700;color:var(--tx)">${c.name}</div>
@@ -2033,12 +2041,13 @@ function openSavingHints(){
         style="flex-shrink:0;background:var(--bg);color:var(--p);border:1.5px solid var(--p);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">
         詳細
       </button>`;
-    if(i === campaignData.length-1) row.style.borderBottom = 'none';
-    allSection.appendChild(row);
+    allSec.appendChild(row);
   });
-  body.appendChild(allSection);
-  sheet.classList.remove('hidden');
+  body.appendChild(allSec);
+
+  document.getElementById('saving-hints-ov').classList.remove('hidden');
 }
+function closeSavingHints(){ document.getElementById('saving-hints-ov').classList.add('hidden'); }
 
 function openSettings(){document.getElementById('settings-ov').classList.remove('hidden')}
 function closeSettings(){document.getElementById('settings-ov').classList.add('hidden')}
