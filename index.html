@@ -2707,8 +2707,8 @@ function renderList(){
             const today=new Date(); today.setHours(0,0,0,0);
             const diffDay=Math.round((np-today)/86400000);
             const label='次回: '+dateMD(np);
-            if(diffDay===0) return label+'<span class="pay-today">今日</span>';
-            if(diffDay<=7) return label+'<span class="pay-soon">'+diffDay+'日後</span>';
+            if(diffDay===0) return label+' <span class="pay-today">今日</span>';
+            if(diffDay<=7) return label+' <span class="pay-soon">あと'+diffDay+'日</span>';
             return label;
           })()}</span>
           ${s.sat?`<span>${'★'.repeat(s.sat)}</span>`:''}
