@@ -159,12 +159,13 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 /* ── サマリー ── */
 .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.sum-tile{background:linear-gradient(135deg,var(--card) 0%,var(--pl) 100%);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;transition:box-shadow .15s,transform .12s;-webkit-tap-highlight-color:transparent;border:2px solid var(--p)}
+.sum-tile{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;transition:box-shadow .15s,transform .12s;-webkit-tap-highlight-color:transparent;border-top:4px solid var(--p);position:relative;overflow:hidden}
+.sum-tile::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:var(--pl);border-radius:0 0 0 60px;opacity:.6}
 .sum-tile:hover{box-shadow:var(--shl);transform:translateY(-1px)}
 .sum-tile:active{transform:scale(.97)}
-.sum-lbl{font-size:13px;color:var(--p);font-weight:700;margin-bottom:6px;letter-spacing:.3px}
-.sum-amt{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--tx);line-height:1}
-.sum-amt sup{font-size:60%;margin-right:1px;color:var(--p)}
+.sum-lbl{font-size:12px;color:var(--ts);font-weight:600;margin-bottom:8px;letter-spacing:.3px}
+.sum-amt{font-size:clamp(22px,6vw,32px);font-weight:800;color:var(--tx);line-height:1}
+.sum-amt sup{font-size:55%;margin-right:2px;color:var(--p);font-weight:700}
 
 /* ── 円グラフ ── */
 .chart-wrap{position:relative;height:clamp(160px,30vw,220px)}
@@ -288,7 +289,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .saving-badge{font-size:14px;cursor:pointer;display:inline-block;margin-left:4px;vertical-align:middle;transition:transform .15s;-webkit-tap-highlight-color:transparent}
 .saving-badge:hover,.saving-badge:active{transform:scale(1.3)}
 .sub-meta{font-size:14px;color:var(--ts);margin-top:1px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.badge{font-size:15px;font-weight:700;padding:1px 6px;border-radius:4px;color:#fff;white-space:nowrap;flex-shrink:0}
+.badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;color:#fff;white-space:nowrap;flex-shrink:0;letter-spacing:.3px}
 .sub-right{text-align:right;flex-shrink:0}
 .sub-price{font-size:15px;font-weight:700;color:var(--p);white-space:nowrap}
 .sub-freq{font-size:14px;color:var(--ts)}
@@ -366,7 +367,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .custom-cat-wrap{display:none;margin-top:8px;display:grid;grid-template-columns:1fr auto;gap:8px}
 .custom-cat-wrap.hidden{display:none!important}
 /* ボタン */
-.btn-submit{width:100%;padding:14px;background:var(--p);color:#fff;font-size:15px;font-weight:700;font-family:inherit;border:none;border-radius:12px;cursor:pointer;margin-top:6px;transition:background .15s,transform .1s;box-shadow:0 4px 14px rgba(92,142,132,.28);letter-spacing:.3px}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--p) 0%,var(--pd) 100%);color:#fff;font-size:16px;font-weight:700;font-family:inherit;border:none;border-radius:14px;cursor:pointer;margin-top:8px;transition:background .15s,transform .1s,box-shadow .15s;box-shadow:0 6px 20px rgba(62,107,98,.45);letter-spacing:.5px;position:relative;overflow:hidden}
+.btn-submit::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .2s}
+.btn-submit:hover::after{background:rgba(255,255,255,.08)}
+.btn-submit:active{transform:scale(.97);box-shadow:0 2px 8px rgba(62,107,98,.3)}
 .btn-submit:hover{background:var(--pd)}
 .btn-submit:active{transform:scale(.98)}
 .btn-cancel{width:100%;padding:12px;background:#fff;color:var(--ts);font-size:14px;font-weight:700;font-family:inherit;border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;margin-top:7px;-webkit-tap-highlight-color:transparent}
@@ -869,6 +873,18 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div id="ot-note" style="display:none;font-size:12px;color:var(--ts);margin-bottom:10px;margin-top:-6px;text-align:right">※ 買い切りは年間合計にのみ加算</div>
     <div id="alerts"></div>
+    <!-- サブスク件数バナー -->
+    <div id="sub-count-banner" style="display:flex;align-items:center;justify-content:space-between;background:var(--p);border-radius:12px;padding:10px 16px;margin-bottom:10px;cursor:pointer" onclick="goto('list')">
+      <div style="display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.9)">登録中のサブスク</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span id="sub-total-count" style="font-size:26px;font-weight:800;color:#fff;line-height:1">0</span>
+        <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.75)">件</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.6)" style="margin-left:4px"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </div>
+    </div>
     <div class="sum-row">
       <div class="sum-tile" onclick="goto('list')">
         <div class="sum-lbl">月間の支払い</div>
@@ -880,8 +896,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
     </div>
     <div class="card">
-      <div class="card-ttl">カテゴリ別支出（月換算）</div>
-      <div class="chart-wrap" style="position:relative">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-ttl" id="chart-ttl" style="margin-bottom:0">カテゴリ別支出（月換算）</div>
+        <div style="display:flex;background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;overflow:hidden">
+          <button id="chart-mo-btn" onclick="setChartMode('month')" style="padding:5px 14px;font-size:12px;font-weight:700;font-family:inherit;border:none;cursor:pointer;background:var(--p);color:#fff;transition:all .15s">月額</button>
+          <button id="chart-yr-btn" onclick="setChartMode('year')"  style="padding:5px 14px;font-size:12px;font-weight:700;font-family:inherit;border:none;cursor:pointer;background:transparent;color:var(--ts);transition:all .15s">年額</button>
+        </div>
+      </div>
+      <div class="chart-wrap" style="position:relative" id="chart-swipe">
         <canvas id="chart"></canvas>
         <div id="chart-center" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:54%">
           <div id="cc-icon" style="font-size:20px;line-height:1;margin-bottom:2px"></div>
@@ -1009,6 +1031,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <input type="text" id="f-memo" placeholder="例：家族共有" maxlength="60">
       </div>
       <div class="f-row">
+        <label>解約ページURL <span style="font-weight:400;font-size:11px;color:var(--ts)">任意</span></label>
+        <input type="url" id="f-url" placeholder="例：https://..." oninput="toggleUrlBtn()">
+        <button type="button" id="url-btn" onclick="openCancelUrl()" style="display:none;margin-top:6px;width:100%;padding:9px;background:var(--pl);color:var(--p);border:1.5px solid var(--p);border-radius:9px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">🔗 解約ページを開く</button>
+      </div>
+      <div class="f-row">
         <label>満足度（任意）</label>
         <div class="star-row" id="stars"></div>
       </div>
@@ -1080,6 +1107,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <option value="習い事">習い事</option>
         <option value="通信費">通信費</option>
         <option value="保険">保険</option>
+        <option value="ローン">ローン</option>
+        <option value="休止中">休止中</option>
         <option value="その他">その他</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
@@ -1088,6 +1117,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <option value="price-a">金額（安い順）</option>
         <option value="sat">満足度順</option>
       </select>
+    </div>
+    <div id="sat-filter-bar" style="display:none;background:var(--pl);border:1.5px solid var(--p);border-radius:10px;padding:8px 14px;margin-bottom:10px;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--p)">
+      <span id="sat-filter-label">★フィルター中</span>
+      <button onclick="clearSatFilter()" style="background:none;border:none;color:var(--ts);font-size:14px;cursor:pointer;font-weight:700;font-family:inherit;padding:0 4px">✕ 解除</button>
     </div>
     <div id="list-items"></div>
   </div>
@@ -1155,6 +1188,7 @@ let subs = [];
 
 let myChart=null, editId=null, calYear, calMonth, calFilter='all';
 let inclOt = false;
+let chartMode = 'month'; // 'month' or 'year'
 let satOpen=true;
 const MAX=200;
 const today=new Date();
@@ -1232,6 +1266,13 @@ function freqLabel(freq){
 }
 
 // カテゴリ別SVGアイコン（ソリッド）
+function _catEmoji(cat){
+  const m={'動画・配信':'🎬','音楽':'🎵','電子書籍・雑誌':'📖','仕事・ツール':'💻','ゲーム':'🎮',
+    '健康・フィットネス':'💪','金融・年会費':'💳','習い事':'🎓','通信費':'📱','保険':'🛡️',
+    'ローン':'💰','その他':'✨'};
+  return m[cat]||'📦';
+}
+
 function _catSvg(path, color, size){
   size=size||18;
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}">${path}</svg>`;
@@ -1247,6 +1288,7 @@ const _CP={
   school:  '<path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.76 2.24 5 5 5s5-2.24 5-5v-4.27l2-1.09V17h2V9L12 3zm3 13.12c0 1.65-1.35 3-3 3s-3-1.35-3-3v-3.73l3 1.64 3-1.64v3.73z"/>',
   phone:   '<path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>',
   shield:  '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>',
+  loan:    '<path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>',
   more:    '<path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>',
 };
 const catMap={
@@ -1260,6 +1302,7 @@ const catMap={
   "習い事":            {color:"#5E8C7A",icon:(c,s)=>_catSvg(_CP.school, c||"#5E8C7A",s)},
   "通信費":            {color:"#4A8A78",icon:(c,s)=>_catSvg(_CP.phone,  c||"#4A8A78",s)},
   "保険":              {color:"#6B8E82",icon:(c,s)=>_catSvg(_CP.shield, c||"#6B8E82",s)},
+  "ローン":            {color:"#7B6EA0",icon:(c,s)=>_catSvg(_CP.loan,   c||"#7B6EA0",s)},
   "その他":            {color:"#8A9E96",icon:(c,s)=>_catSvg(_CP.more,   c||"#8A9E96",s)},
 };
 
@@ -1407,6 +1450,20 @@ const qData={
       {label:"2,000円コース",    price:2000},
       {label:"4,000円コース",    price:4000}
     ], freq:"月額"}
+  ],
+  "ローン":[
+    {name:"住宅ローン", plans:[
+      {label:"変動金利（目安）",  price:70000},
+      {label:"固定金利（目安）",  price:85000}
+    ], freq:"月額"},
+    {name:"カーローン", plans:[
+      {label:"コンパクトカー（目安）", price:20000},
+      {label:"ミニバン（目安）",       price:35000}
+    ], freq:"月額"},
+    {name:"奨学金（第一種）",          price:13000, freq:"月額"},
+    {name:"奨学金（第二種）",          price:20000, freq:"月額"},
+    {name:"教育ローン",                price:15000, freq:"月額"},
+    {name:"フリーローン",              price:10000, freq:"月額"}
   ],
   "その他":[
     {name:"DAZN",                       price:4200,  freq:"月額"},
@@ -1744,6 +1801,10 @@ async function _scheduleMonthlyNotification(cfg){
 
 // アプリ起動時: Web版の見直しバナー表示（月初のみ）
 async function checkMonthlyReviewBanner(){
+  // 「今後表示しない」が設定済みならスキップ
+  const disabled = await Store.get('reviewBannerDisabled');
+  if(disabled) return;
+
   const raw = await Store.get('notifyConfig');
   if(!raw) return;
   const cfg = JSON.parse(raw);
@@ -1779,7 +1840,7 @@ async function checkMonthlyReviewBanner(){
     title:'今月のサブスク見直しタイム',
     msg,
     buttons:[
-      {label:'あとで', cls:'cancel'},
+      {label:'今後表示しない', cls:'cancel', onClick: async ()=>{ await Store.set('reviewBannerDisabled','1'); }},
       {label:'確認する', cls:'ok', onClick:()=>goto('dashboard')}
     ]
   });
@@ -1938,7 +1999,7 @@ async function resetAll(){
 /* ============================================================
    保存
 ============================================================ */
-async function save(){ await Store.set('subsData', JSON.stringify(subs)); }
+async function save(){ await Store.set('subsData', JSON.stringify(subs)); updateFilterCounts(); }
 
 /* ============================================================
    ダッシュボード
@@ -1956,6 +2017,31 @@ function toggleSat(){
   document.getElementById('sat-arrow').classList.toggle('open',satOpen);
 }
 
+// チャートスワイプ（左→年額、右→月額）
+function _initChartSwipe(){
+  const el=document.getElementById('chart-swipe');
+  if(!el)return;
+  let _sx=0,_sy=0;
+  el.addEventListener('touchstart',e=>{_sx=e.touches[0].clientX;_sy=e.touches[0].clientY;},{passive:true});
+  el.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-_sx;
+    const dy=e.changedTouches[0].clientY-_sy;
+    if(Math.abs(dy)>40||Math.abs(dx)<40)return;
+    if(dx<0&&chartMode==='month') setChartMode('year');
+    else if(dx>0&&chartMode==='year') setChartMode('month');
+  },{passive:true});
+}
+
+function setChartMode(mode){
+  chartMode = mode;
+  document.getElementById('chart-mo-btn').style.background = mode==='month' ? 'var(--p)' : 'transparent';
+  document.getElementById('chart-mo-btn').style.color      = mode==='month' ? '#fff' : 'var(--ts)';
+  document.getElementById('chart-yr-btn').style.background = mode==='year'  ? 'var(--p)' : 'transparent';
+  document.getElementById('chart-yr-btn').style.color      = mode==='year'  ? '#fff' : 'var(--ts)';
+  document.getElementById('chart-ttl').textContent = mode==='month' ? 'カテゴリ別支出（月換算）' : 'カテゴリ別支出（年換算）';
+  renderDashboard();
+}
+
 function renderDashboard(){
   let monthly=0,yearly=0;
   const cmap={};
@@ -1963,18 +2049,29 @@ function renderDashboard(){
     if(s.freq==='単発（買い切り）'){
       if(!inclOt)return;
       yearly+=s.price;
+      if(chartMode==='year'){
+        const key=catMap[s.cat]?s.cat:'その他';
+        cmap[key]=(cmap[key]||0)+s.price;
+      }
       return;
     }
     const mo=moFromSub(s);
     const yr=yrFromSub(s);
     monthly+=mo; yearly+=yr;
-    if(mo>0){
+    const val=chartMode==='month'?mo:yr;
+    if(val>0){
       const key=catMap[s.cat]?s.cat:'その他';
-      cmap[key]=(cmap[key]||0)+mo;
+      cmap[key]=(cmap[key]||0)+val;
     }
   });
   document.getElementById('ttl-m').innerHTML=`<sup>¥</sup>${monthly.toLocaleString()}`;
   document.getElementById('ttl-y').innerHTML=`<sup>¥</sup>${yearly.toLocaleString()}`;
+  // サブスク件数バナー更新（休止中含む全件）
+  const activeCnt = subs.filter(s=>s.freq!=='単発（買い切り）').length;
+  document.getElementById('sub-total-count').textContent = activeCnt;
+  // 0件のときはバナーをグレーに
+  const banner = document.getElementById('sub-count-banner');
+  banner.style.background = activeCnt > 0 ? 'var(--p)' : 'var(--ts)';
   drawChart(cmap);
   renderSatChart();
   checkAlerts();
@@ -2038,7 +2135,7 @@ function drawChart(obj){
       <span class="leg-dot" style="background:${ci.color}"></span>
       <span class="leg-name">${ci.icon(ci.color,16)} ${cat}</span>
       <span class="leg-pct">${pct}%</span>
-      <span class="leg-amt">¥${val.toLocaleString()}</span>
+      <span class="leg-amt">¥${val.toLocaleString()}<span style="font-size:11px;font-weight:400;color:var(--ts)">/${chartMode==='year'?'年':'月'}</span></span>
     `;
     row.onclick=()=>{
       _setCenterSelected(cat, val, total, ci.color);
@@ -2056,7 +2153,7 @@ function drawChart(obj){
 // 中央：デフォルト表示（合計）
 function _setCenterDefault(total){
   document.getElementById('cc-icon').textContent='';
-  document.getElementById('cc-name').textContent='月額合計';
+  document.getElementById('cc-name').textContent=chartMode==='year'?'年額合計':'月額合計';
   document.getElementById('cc-amt').innerHTML=`<span style="font-size:60%;color:var(--p)">¥</span>${total.toLocaleString()}`;
   document.getElementById('cc-pct').textContent='';
   document.getElementById('cc-goto').style.display='none';
@@ -2067,10 +2164,11 @@ function _setCenterDefault(total){
 function _setCenterSelected(cat, val, total, color){
   const ci=catMap[cat]||catMap['その他'];
   const pct=total>0?Math.round(val/total*100):0;
+  const unit=chartMode==='year'?'年':'月';
   document.getElementById('cc-icon').innerHTML=ci.icon(ci.color,22);
   document.getElementById('cc-name').textContent=cat;
   document.getElementById('cc-amt').innerHTML=`<span style="font-size:60%;color:${color}">¥</span>${val.toLocaleString()}`;
-  document.getElementById('cc-pct').textContent=`${pct}% / 月`;
+  document.getElementById('cc-pct').textContent=`${pct}% / ${unit}`;
   const btn=document.getElementById('cc-goto');
   btn.style.display='inline-block';
   btn.style.background=color;
@@ -2124,7 +2222,7 @@ function renderSatChart(){
     const pct=maxV>0?Math.round(g.total/maxV*100):0;
     const bar_colors=['','#C07070','#B8956A','#A8A860','#7AAB82','#4E8B82'];
     const stars='★'.repeat(k)+'☆'.repeat(5-k);
-    html+=`<div class="sat-band" onclick="goto('list')">
+    html+=`<div class="sat-band" onclick="filterBySat(${k})" style="cursor:pointer">
       <span class="sat-stars">${stars}</span>
       <div class="sat-bw"><div class="sat-b" style="width:${pct}%;background:${bar_colors[k]||'#8A9890'}"></div></div>
       <div class="sat-info">
@@ -2140,6 +2238,24 @@ function renderSatChart(){
     html+=`<div class="sat-insight">満足度が低いサブスクに <b>¥${low.toLocaleString()}/月</b>。解約すると年間 <b>¥${(low*12).toLocaleString()}</b> 節約できます。</div>`;
   }
   area.innerHTML=html;
+}
+
+function filterBySat(star){
+  goto('list');
+  currentSatFilter = star;
+  const bar=document.getElementById('sat-filter-bar');
+  if(bar){ bar.style.display='flex'; document.getElementById('sat-filter-label').textContent=`${'★'.repeat(star)} のサブスクを表示中`; }
+  renderList();
+  showToast(`★${star} のサブスクを表示中`);
+}
+
+let currentSatFilter = null;
+
+function clearSatFilter(){
+  currentSatFilter = null;
+  const bar=document.getElementById('sat-filter-bar');
+  if(bar) bar.style.display='none';
+  renderList();
 }
 
 function checkAlerts(){
@@ -2188,7 +2304,7 @@ function checkAlerts(){
 
   const hdr=document.createElement('div');
   hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
-  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> 解約を検討してみては？</span><span style="font-size:13px;color:var(--ts)">${warns.length}件</span>`;
+  hdr.innerHTML=`<span class="card-ttl" style="margin-bottom:0;color:var(--dn)"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> 一度休止を検討してみましょう</span><span style="font-size:13px;color:var(--ts)">${warns.length}件</span>`;
   section.appendChild(hdr);
 
   warns.forEach(s=>{
@@ -2238,6 +2354,22 @@ function renderCalendar(){
 
   let target=subs.filter(s=>s.freq!=='単発（買い切り）');
   if(calFilter==='warn') target=target.filter(s=>s.sat>=1&&s.sat<=3);
+
+  // 休止中は「今月以降」非表示（今月中に休止した場合も含め翌月から除外）
+  const calViewStart = new Date(y, m, 1);
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  target = target.filter(s=>{
+    if(!s.paused) return true;
+    // pausedDateが設定されていれば、その月以降は非表示
+    if(s.pausedDate){
+      const pd = new Date(s.pausedDate);
+      // 休止した月の翌月以降は非表示
+      const pausedMonthStart = new Date(pd.getFullYear(), pd.getMonth()+1, 1);
+      return calViewStart < pausedMonthStart;
+    }
+    // pausedDateなし（旧データ互換）は今月以降非表示
+    return calViewStart < new Date(today0.getFullYear(), today0.getMonth(), 1);
+  });
 
   // 日付→イベントマップ
   const lastDay=new Date(y,m+1,0).getDate();
@@ -2358,9 +2490,9 @@ function showCalDetail(y,m,d,evs){
     row.className='cal-detail-row';
     row.innerHTML=`
       <div class="cal-detail-bar" style="background:${ci.color};min-height:36px"></div>
-      <div class="cal-detail-icon">${ci.icon(ci.color,20)}</div>
+      <div class="cal-detail-icon" style="font-size:18px;width:24px;text-align:center">${_catEmoji(s.cat)}</div>
       <div class="cal-detail-body">
-        <div class="cal-detail-name">${isWarn?`<svg width="13" height="13" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> `:''}{s.name}</div>
+        <div class="cal-detail-name">${isWarn?`<svg width="13" height="13" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> `:''}${s.name}</div>
         <div class="cal-detail-meta">${s.cat}${s.sat?' · <span style="color:var(--p)">'+'★'.repeat(s.sat)+'</span><span style="color:var(--bd)">'+'☆'.repeat(5-s.sat)+'</span>':''}</div>
       </div>
       <div class="cal-detail-price">${dispAmt}</div>`;
@@ -2382,10 +2514,45 @@ function closeCalSheet(){
 /* ============================================================
    明細
 ============================================================ */
+function updateFilterCounts(){
+  const sel=document.getElementById('fl-cat');
+  const counts={};
+  subs.forEach(s=>{
+    const key=catMap[s.cat]?s.cat:'その他';
+    counts[key]=(counts[key]||0)+1;
+  });
+  counts['休止中']=subs.filter(s=>s.paused).length;
+  counts['all']=subs.length;
+  Array.from(sel.options).forEach(opt=>{
+    const base=opt.dataset.base||(opt.dataset.base=opt.text.replace(/（\d+件）/,''));
+    const n=opt.value==='all'?counts['all']:(counts[opt.value]||0);
+    if(opt.value==='all'){
+      opt.text=`すべてのカテゴリ（${n}件）`;
+    } else if(n>0){
+      opt.text=`${base}（${n}件）`;
+      opt.style.display='';
+    } else {
+      opt.text=base;
+      opt.style.display='none'; // 0件は非表示
+    }
+  });
+}
+
 function renderList(){
   const cat=document.getElementById('fl-cat').value;
   const sort=document.getElementById('fl-sort').value;
-  let list=subs.filter(s=>cat==='all'||s.cat===cat||(cat==='その他'&&!catMap[s.cat]));
+  let list;
+  if(cat==='休止中'){
+    list=subs.filter(s=>s.paused);
+  } else if(cat==='all'){
+    list=[...subs];
+  } else if(cat==='その他'){
+    list=subs.filter(s=>!catMap[s.cat]);
+  } else {
+    list=subs.filter(s=>s.cat===cat);
+  }
+  // 満足度フィルター（sat-bandタップ時）
+  if(currentSatFilter!==null) list=list.filter(s=>s.sat===currentSatFilter);
   if(sort==='price-d')list.sort((a,b)=>b.price-a.price);
   else if(sort==='price-a')list.sort((a,b)=>a.price-b.price);
   else if(sort==='sat')list.sort((a,b)=>(b.sat||0)-(a.sat||0));
@@ -2475,6 +2642,7 @@ function renderList(){
     row.style.cssText='display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent';
     box.appendChild(wrapper);
   });
+  updateFilterCounts();
 }
 
 /* ============================================================
@@ -2485,7 +2653,7 @@ function buildQuickAdd(){
   if(tabs.children.length)return; // 初回のみ構築
 
   // カテゴリ表示順（使いやすい順）
-  const CAT_ORDER=['動画・配信','音楽','通信費','ゲーム','電子書籍・雑誌','仕事・ツール','健康・フィットネス','保険','金融・年会費','習い事','その他'];
+  const CAT_ORDER=['動画・配信','音楽','通信費','ゲーム','電子書籍・雑誌','仕事・ツール','健康・フィットネス','保険','ローン','金融・年会費','習い事','その他'];
   const orderedCats=CAT_ORDER.filter(c=>qData[c]);
 
   orderedCats.forEach((cat,i)=>{
@@ -2619,6 +2787,7 @@ async function submitForm(){
   const freq=document.getElementById('f-freq').value;
   const date=document.getElementById('f-date').value;
   const memo=document.getElementById('f-memo').value.trim();
+  const cancelUrl=document.getElementById('f-url').value.trim();
   const satEl=document.querySelectorAll('.star-btn.on');
   const sat=satEl.length;
   if(!name){ showAlert('','サービス名を入力してください','サービス名は必須です'); return}
@@ -2628,7 +2797,7 @@ async function submitForm(){
   const isEdit=!!editId;
   if(isEdit){
     const idx=subs.findIndex(s=>s.id===editId);
-    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,sat};
+    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,sat,cancelUrl};
     editId=null;
     document.getElementById('btn-submit').textContent='登録する';
     document.getElementById('btn-cancel').style.display='none';
@@ -2640,7 +2809,7 @@ async function submitForm(){
     gaEvent('subscription_updated', { category: cat, price: price, freq: freq });
     showToast('更新しました');
   } else {
-    subs.push({id:Date.now(),name,cat,price,freq,date,memo,sat,paused:false});
+    subs.push({id:Date.now(),name,cat,price,freq,date,memo,sat,cancelUrl,paused:false});
     await save();
     // GA: 新規登録イベント（カテゴリ別・金額・頻度を計測）
     gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length });
@@ -2673,6 +2842,8 @@ function resetForm(){
   document.getElementById('f-freq').value='月額';
   document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   document.getElementById('f-memo').value='';
+  document.getElementById('f-url').value='';
+  document.getElementById('url-btn').style.display='none';
   document.getElementById('f-cat').value='動画・配信';
   document.getElementById('custom-cat-wrap').classList.add('hidden');
   document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('on'));
@@ -2696,6 +2867,8 @@ function editSub(id){
     document.getElementById('f-freq').value=s.freq;
     document.getElementById('f-date').value=s.date;
     document.getElementById('f-memo').value=s.memo||'';
+    document.getElementById('f-url').value=s.cancelUrl||'';
+    toggleUrlBtn();
     if(s.sat){
       document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<s.sat));
     }
@@ -2703,6 +2876,15 @@ function editSub(id){
     document.getElementById('btn-cancel').style.display='block';
     window.scrollTo(0,0);
   },50);
+}
+
+function toggleUrlBtn(){
+  const v=document.getElementById('f-url').value.trim();
+  document.getElementById('url-btn').style.display=v?'block':'none';
+}
+function openCancelUrl(){
+  const url=document.getElementById('f-url').value.trim();
+  if(url) window.open(url,'_blank');
 }
 
 function cancelEdit(){
@@ -2718,11 +2900,17 @@ async function togglePause(id){
   const s=subs.find(x=>x.id===id);
   if(!s)return;
   s.paused=!s.paused;
+  if(s.paused){
+    // 休止した日付を記録
+    s.pausedDate = new Date().toISOString().slice(0,10);
+  } else {
+    // 復活時はpausedDateをクリア
+    delete s.pausedDate;
+  }
   await save();
   renderDashboard();
   renderList();
-  showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);
-}
+  showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);\n}
 
 async function delSub(id){
   const s = subs.find(x=>x.id===id);
@@ -2946,8 +3134,10 @@ async function init(){
 
   if(!onboarded) showOnboarding();
   goto('dashboard');
+  updateFilterCounts();
 
   // Web版: 月初の見直しバナー表示（onboarding後に少し遅らせて表示）
+  _initChartSwipe();
   if(onboarded) setTimeout(()=>checkMonthlyReviewBanner(), 1200);
 }
 
