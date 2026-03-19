@@ -453,19 +453,18 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 <!-- ============================================================
      Google Analytics 4
-     ★ 本番環境に切り替える際は G-XXXXXXXXXX を実際の測定IDに変更してください
+     測定ID: G-8YLL4H8GYL  / ストリーム: GitHub Pages (subly)
 ============================================================ -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YLL4H8GYL"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){ dataLayer.push(arguments); }
   gtag('js', new Date());
 
   // ページビュー計測（セッション・デバイス種別・滞在時間はGAが自動取得）
-  gtag('config', 'G-XXXXXXXXXX', {
-    // ページタイトルをそのまま使用
+  gtag('config', 'G-8YLL4H8GYL', {
     page_title: document.title,
-    // デバッグ用（本番環境では false に変更）
+    send_page_view: false,  // SPAのため手動でpage_viewを送信
     debug_mode: false
   });
 
@@ -716,7 +715,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <button class="sheet-close" onclick="closePrivacy()">✕</button>
     </div>
     <div style="padding:18px;font-size:13px;color:var(--tx);line-height:1.8">
-      <p style="margin:0 0 4px;color:var(--ts);font-size:13px">制定日：2026年4月1日</p>
+      <p style="margin:0 0 4px;color:var(--ts);font-size:13px">制定日：2026年4月1日　最終更新日：2026年4月1日</p>
       <p style="margin:0 0 18px;color:var(--ts);font-size:13px">本アプリケーション「Subly」における情報の取り扱いについて、Jone Lab（以下、「当方」といいます）は以下の通りプライバシーポリシーを定めます。</p>
 
       <div style="margin-bottom:18px">
@@ -730,27 +729,44 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
 
       <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">3. 第三者提供について</div>
-        <p style="margin:0;color:var(--ts)">当方は、ユーザーの同意を得ることなく、個人情報を第三者に提供することはありません。また、データは端末内に留まるため、当方がその内容を閲覧・取得することもありません。</p>
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">3. アクセス解析ツールの利用（Google Analytics）</div>
+        <p style="margin:0;color:var(--ts)">本アプリでは、サービス改善を目的として、Google LLC が提供するアクセス解析ツール「Google Analytics 4」を利用しています。</p>
+        <br>
+        <p style="margin:0;color:var(--ts)">Google Analytics は、Cookie や端末識別情報等を用いて、以下のような利用状況データを収集・分析します。</p>
+        <ul style="margin:8px 0 0 16px;color:var(--ts);line-height:2">
+          <li>アプリの閲覧ページ・画面遷移</li>
+          <li>機能の利用状況（登録・削除・フィルター操作など）</li>
+          <li>利用デバイス・OS・ブラウザの種類</li>
+          <li>セッション数・滞在時間</li>
+        </ul>
+        <br>
+        <p style="margin:0;color:var(--ts)">収集されるデータには、氏名・住所・電話番号・メールアドレスなどの個人を特定できる情報は含まれません。また、ユーザーが入力したサブスクリプション内容（サービス名・金額等）は Google Analytics に送信されません。</p>
+        <br>
+        <p style="margin:0;color:var(--ts)">Google Analytics のデータ収集・処理の詳細については、Google のプライバシーポリシー（<a href="https://policies.google.com/privacy" style="color:var(--p)" target="_blank">https://policies.google.com/privacy</a>）をご確認ください。Google Analytics のオプトアウトを希望される場合は、<a href="https://tools.google.com/dlpage/gaoptout" style="color:var(--p)" target="_blank">Google Analytics オプトアウトアドオン</a>をご利用ください。</p>
       </div>
 
       <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">4. バックアップ機能（CSV）について</div>
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">4. 第三者提供について</div>
+        <p style="margin:0;color:var(--ts)">当方は、ユーザーの同意を得ることなく、個人情報を第三者に提供することはありません。また、ユーザーが入力したサブスクデータは端末内に留まるため、当方がその内容を閲覧・取得することもありません。なお、第3条に定めるアクセス解析データについては、Google LLC との間でデータ処理が行われます。</p>
+      </div>
+
+      <div style="margin-bottom:18px">
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">5. バックアップ機能（CSV）について</div>
         <p style="margin:0;color:var(--ts)">本アプリのCSVエクスポート・インポート機能は、ユーザーの明示的な操作があった場合にのみ、端末のストレージへアクセスします。</p>
       </div>
 
       <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">5. 免責事項</div>
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">6. 免責事項</div>
         <p style="margin:0;color:var(--ts)">本アプリは細心の注意を払って開発されていますが、ご利用の端末やOSのバージョン、画面設定（フォントサイズ等）によっては、画面表示（UI）が正しく表示されない場合があります。<br>本アプリの利用により生じた損害等について、開発者は一切の責任を負わないものとします。正確なデータ管理はユーザーご自身で行っていただくようお願いいたします。</p>
       </div>
 
       <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">6. お問い合わせ先</div>
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">7. お問い合わせ先</div>
         <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒150-0043 東京都渋谷区道玄坂1丁目10番8号<br>渋谷道玄坂東急ビル2F-C<br>Mail: jone.lab.app&#64;gmail.com</p>
       </div>
 
       <div style="margin-bottom:8px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">7. プライバシーポリシーの変更</div>
+        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">8. プライバシーポリシーの変更</div>
         <p style="margin:0;color:var(--ts)">当方は、法令の変更や本アプリの機能追加等に伴い、必要に応じて本プライバシーポリシーを変更することがあります。変更後のプライバシーポリシーは、本ページに掲示された時点から効力を生じるものとします。</p>
       </div>
     </div>
@@ -880,7 +896,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
   <!-- ボタン -->
   <div class="ob-footer">
-    <button class="ob-btn-skip" id="ob-skip" onclick="closeOb()">スキップ</button>
+    <button class="ob-btn-skip" id="ob-skip" onclick="gaEvent('onboarding_skip',{});closeOb()">スキップ</button>
     <button class="ob-btn-next" id="ob-next" onclick="obNext()">次へ</button>
   </div>
 
@@ -2087,6 +2103,8 @@ function obNext(){
 async function closeOb(){
   document.getElementById('ob-ov').classList.add('hidden');
   await Store.set('onboarded','1');
+  // GA: オンボーディング完了（新規ユーザーの定着率を計測）
+  gaEvent('onboarding_complete', { method: 'completed' });
 }
 
 async function resetAll(){
@@ -2147,6 +2165,8 @@ function setChartMode(mode){
   document.getElementById('chart-yr-btn').style.background = mode==='year'  ? 'var(--p)' : 'transparent';
   document.getElementById('chart-yr-btn').style.color      = mode==='year'  ? '#fff' : 'var(--ts)';
   document.getElementById('chart-ttl').textContent = mode==='month' ? 'カテゴリ別支出（月換算）' : 'カテゴリ別支出（年換算）';
+  // GA: 月額/年額切り替え（ユーザーがどちらの視点を好むか）
+  gaEvent('chart_period_switch', { period: mode });
   renderDashboard();
 }
 
@@ -2656,6 +2676,8 @@ function updateFilterCounts(){
 function renderList(){
   const cat=document.getElementById('fl-cat').value;
   const sort=document.getElementById('fl-sort').value;
+  // GA: フィルター使用（'all'以外のカテゴリ選択のみ計測）
+  if(cat !== 'all') gaEvent('filter_used', { category: cat, sort: sort });
   let list;
   if(cat==='休止中'){
     list=subs.filter(s=>s.paused);
@@ -3023,6 +3045,8 @@ async function togglePauseFromForm(){
   s.paused = !s.paused;
   if(s.paused){ s.pausedDate = new Date().toISOString().slice(0,10); }
   else { delete s.pausedDate; }
+  // GA: 休止/再開の利用（機能活用度を計測）
+  gaEvent('pause_toggle', { action: s.paused ? 'pause' : 'resume', category: s.cat });
   await save();
   // ボタンのラベルを更新
   const pauseBtn = document.getElementById('btn-pause-toggle');
@@ -3082,6 +3106,8 @@ async function delSub(id){
    CSV
 ============================================================ */
 async function exportCSV(){
+  // GA: CSVエクスポート（データを活用しているヘビーユーザーの計測）
+  gaEvent('csv_export', { count: subs.length });
   if(!subs.length){ showAlert('','データがありません','登録されたサブスクがありません'); return; }
   const BOM='\uFEFF';
   const header='ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度,休止';
