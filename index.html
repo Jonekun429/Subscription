@@ -12,25 +12,68 @@
 <script>(function(){const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';s.onerror=()=>{window._chartJsFailed=true};document.head.appendChild(s);})();</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+/* ── テーマ共通 ── */
 :root {
-  --p:     #5C8E84;
-  --pd:    #3E6B62;
-  --pl:    #EDF4F2;
-  --bg:    #F6F7F5;
-  --card:  #FFFFFF;
-  --tx:    #2B3830;
-  --ts:    #7E928C;
-  --bd:    #E5EBE8;
-  --dn:    #B36060;
-  --wbg:   #FDF6EE;
-  --wtx:   #8A6030;
-  --nh:    clamp(74px, 10svh, 90px);
-  --r:     14px;
-  --sh:    0 2px 10px rgba(0,0,0,.06);
-  --shl:   0 6px 20px rgba(0,0,0,.10);
+  --nh: clamp(74px, 10svh, 90px);
+  --r:  14px;
 }
-/* ダークモード変数 */
-.dark {
+
+/* ── ライト（デフォルト） ── */
+:root, .theme-light {
+  --p:    #5C8E84;
+  --pd:   #3A6B60;
+  --pl:   #E8F0ED;
+  --bg:   #F5F5F0;
+  --card: #FFFFFF;
+  --tx:   #2B3830;
+  --ts:   #6E847C;
+  --bd:   #D8E0DC;
+  --dn:   #C06060;
+  --wbg:  #FDF8F0;
+  --wtx:  #8A6838;
+  --sh:   0 2px 10px rgba(0,0,0,.05);
+  --shl:  0 6px 20px rgba(0,0,0,.10);
+}
+
+/* ── オーシャン ── */
+.theme-ocean {
+  --p:    #4A90D0;
+  --pd:   #2A6BAA;
+  --pl:   #E8F0FA;
+  --bg:   #F0F5FA;
+  --card: #FFFFFF;
+  --tx:   #1E3350;
+  --ts:   #5A7A9A;
+  --bd:   #D0DDE8;
+  --dn:   #D06070;
+  --wbg:  #FDF8EE;
+  --wtx:  #8A7030;
+  --sh:   0 2px 10px rgba(0,40,80,.06);
+  --shl:  0 6px 20px rgba(0,40,80,.12);
+}
+
+/* ── パステル ── */
+.theme-pastel {
+  --p:    #E8A0BF;
+  --pd:   #D4789E;
+  --pl:   #FFF0F5;
+  --bg:   #F8F4F9;
+  --card: rgba(255,255,255,.85);
+  --tx:   #4A3B5C;
+  --ts:   #8A7A9A;
+  --bd:   #E8DDF0;
+  --dn:   #E08080;
+  --wbg:  #FFF8EE;
+  --wtx:  #B8864A;
+  --sh:   0 2px 10px rgba(180,140,200,.10);
+  --shl:  0 6px 20px rgba(180,140,200,.18);
+}
+.theme-pastel body {
+  background: linear-gradient(180deg,#F0E8F5,#E8F0FA,#F5EDF0,#F8F4F9) fixed;
+}
+
+/* ── ダーク ── */
+.theme-dark {
   --p:    #6BA99F;
   --pd:   #8EC8BE;
   --pl:   #1E3230;
@@ -42,26 +85,42 @@
   --dn:   #D08080;
   --wbg:  #2A2218;
   --wtx:  #C89A60;
-  --sh:   0 2px 10px rgba(0,0,0,.25);
+  --sh:   0 2px 10px rgba(0,0,0,.20);
   --shl:  0 6px 20px rgba(0,0,0,.40);
 }
-/* システム連動（手動設定なし＝autoモード） */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light):not(.dark) {
-    --p:    #6BA99F;
-    --pd:   #8EC8BE;
-    --pl:   #1E3230;
-    --bg:   #121816;
-    --card: #1E2622;
-    --tx:   #C8D8D2;
-    --ts:   #7A9A91;
-    --bd:   #2E3E3A;
-    --dn:   #D08080;
-    --wbg:  #2A2218;
-    --wtx:  #C89A60;
-    --sh:   0 2px 10px rgba(0,0,0,.25);
-    --shl:  0 6px 20px rgba(0,0,0,.40);
-  }
+
+/* ── ナイト ── */
+.theme-night {
+  --p:    #5B8DEF;
+  --pd:   #8AB4FF;
+  --pl:   #1A2040;
+  --bg:   #0E1525;
+  --card: #161D30;
+  --tx:   #C8D4E8;
+  --ts:   #6880A8;
+  --bd:   #243050;
+  --dn:   #E07070;
+  --wbg:  #2A2218;
+  --wtx:  #D4A860;
+  --sh:   0 2px 10px rgba(0,0,30,.30);
+  --shl:  0 6px 20px rgba(0,0,30,.50);
+}
+
+/* ── パープル ── */
+.theme-purple {
+  --p:    #A78BFA;
+  --pd:   #C4B5FD;
+  --pl:   #1E1830;
+  --bg:   #120E1E;
+  --card: #1C1630;
+  --tx:   #D4CCE8;
+  --ts:   #7A6A9A;
+  --bd:   #2E2445;
+  --dn:   #D4A0D4;
+  --wbg:  #2A1828;
+  --wtx:  #C8A0D4;
+  --sh:   0 2px 10px rgba(20,0,40,.30);
+  --shl:  0 6px 20px rgba(20,0,40,.50);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;
@@ -308,11 +367,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* ── 追加フォーム ── */
 .sec-lbl{font-size:14px;font-weight:700;color:var(--ts);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
 /* カテゴリタブ */
-.cat-tabs-wrap{position:relative;margin-bottom:8px}
-.cat-tabs-wrap::after{content:'';position:absolute;right:0;top:0;bottom:4px;width:28px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none}
-.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.cat-tabs::-webkit-scrollbar{display:none}
-.cat-tab{flex-shrink:0;padding:6px 12px;border-radius:18px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--bd);background:var(--card);color:var(--ts);transition:all .15s;-webkit-tap-highlight-color:transparent}
+.cat-tabs-wrap{margin-bottom:12px}
+.cat-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-tab{padding:10px 8px;border-radius:12px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid transparent;background:var(--tab-color,var(--p));color:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;opacity:0.55}
+.cat-tab.on{opacity:1;border-color:#fff;transform:scale(1.03);box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .q-note{display:none;font-size:15px;color:var(--pd);background:var(--pl);border-radius:7px;padding:7px 10px;margin-bottom:8px;line-height:1.6}
 /* q-gridをflex+wrapに変更 → plan-ddがカード内展開しても隣に影響しない */
 .q-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
@@ -416,6 +474,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .s-arr{color:var(--ts);font-size:18px;font-weight:300}
 .th-btn{padding:5px 10px;border-radius:8px;font-size:13px;font-weight:700;font-family:inherit;border:1.5px solid var(--bd);background:var(--bg);color:var(--ts);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .th-btn.on{background:var(--p);color:#fff;border-color:var(--p)}
+/* テーマ選択ボタン（プレビュー丸付き） */
+.hd-theme-btn,.s-theme-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border-radius:10px;border:1.5px solid transparent;background:rgba(255,255,255,.08);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.hd-theme-btn span{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);line-height:1}
+.s-theme-btn span{font-size:11px;font-weight:600;color:var(--ts);line-height:1}
+.hd-theme-btn.on{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.18)}
+.s-theme-btn.on{border-color:var(--p);background:var(--pl)}
+.s-theme-btn.on span{color:var(--p)}
+.hd-theme-dot,.s-theme-dot{width:32px;height:32px;border-radius:50%;flex-shrink:0}
 
 /* ── ガイドシート ── */
 .guide-body{padding:18px}
@@ -531,13 +597,33 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
       <div><div class="hd-lbl">更新日通知</div><div class="hd-sub" id="hd-notify-sub">タップして設定</div></div>
     </button>
-    <div class="hd-row" style="cursor:default">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
-      <div style="flex:1"><div class="hd-lbl">テーマ</div></div>
-      <div style="display:flex;gap:4px">
-        <button class="th-btn" id="hd-th-light" onclick="setTheme('light')">ライト</button>
-        <button class="th-btn" id="hd-th-auto"  onclick="setTheme('auto')">自動</button>
-        <button class="th-btn" id="hd-th-dark"  onclick="setTheme('dark')">ダーク</button>
+        <div style="padding:12px 20px">
+      <div class="hd-lbl" style="margin-bottom:10px">テーマ</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="hd-theme-grid">
+        <button class="hd-theme-btn" onclick="setTheme('light')"   id="hd-th-light"  data-theme="light">
+          <div class="hd-theme-dot" style="background:#F5F5F0;border:2px solid #5C8E84"></div>
+          <span>ライト</span>
+        </button>
+        <button class="hd-theme-btn" onclick="setTheme('ocean')"   id="hd-th-ocean"  data-theme="ocean">
+          <div class="hd-theme-dot" style="background:#F0F5FA;border:2px solid #4A90D0"></div>
+          <span>オーシャン</span>
+        </button>
+        <button class="hd-theme-btn" onclick="setTheme('pastel')"  id="hd-th-pastel" data-theme="pastel">
+          <div class="hd-theme-dot" style="background:linear-gradient(135deg,#F5E6F0,#E8F0FA,#FFF0F5);border:2px solid #E8A0BF"></div>
+          <span>パステル</span>
+        </button>
+        <button class="hd-theme-btn" onclick="setTheme('dark')"    id="hd-th-dark"   data-theme="dark">
+          <div class="hd-theme-dot" style="background:#121816;border:2px solid #6BA99F"></div>
+          <span>ダーク</span>
+        </button>
+        <button class="hd-theme-btn" onclick="setTheme('night')"   id="hd-th-night"  data-theme="night">
+          <div class="hd-theme-dot" style="background:#0E1525;border:2px solid #5B8DEF"></div>
+          <span>ナイト</span>
+        </button>
+        <button class="hd-theme-btn" onclick="setTheme('purple')"  id="hd-th-purple" data-theme="purple">
+          <div class="hd-theme-dot" style="background:#1A0E2E;border:2px solid #A78BFA"></div>
+          <span>パープル</span>
+        </button>
       </div>
     </div>
 
@@ -630,14 +716,35 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="s-sec">外観</div>
     <div class="s-grp">
       <div style="padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
           <div class="s-ico" style="background:#F0F0F8;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
           <div class="s-title">テーマ</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <button id="th-light" class="th-btn" onclick="setTheme('light')" style="padding:10px 0;border-radius:10px;font-size:13px">☀️ ライト</button>
-          <button id="th-auto"  class="th-btn" onclick="setTheme('auto')"  style="padding:10px 0;border-radius:10px;font-size:13px">🌓 自動<div style="font-size:9px;opacity:.6;margin-top:1px">時間連動</div></button>
-          <button id="th-dark"  class="th-btn" onclick="setTheme('dark')"  style="padding:10px 0;border-radius:10px;font-size:13px">🌙 ダーク</button>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <button class="s-theme-btn" onclick="setTheme('light')"  id="th-light"  data-theme="light">
+            <div class="s-theme-dot" style="background:#F5F5F0;border:2.5px solid #5C8E84"></div>
+            <span>ライト</span>
+          </button>
+          <button class="s-theme-btn" onclick="setTheme('ocean')"  id="th-ocean"  data-theme="ocean">
+            <div class="s-theme-dot" style="background:#F0F5FA;border:2.5px solid #4A90D0"></div>
+            <span>オーシャン</span>
+          </button>
+          <button class="s-theme-btn" onclick="setTheme('pastel')" id="th-pastel" data-theme="pastel">
+            <div class="s-theme-dot" style="background:linear-gradient(135deg,#F5E6F0,#E8F0FA,#FFF0F5);border:2.5px solid #E8A0BF"></div>
+            <span>パステル</span>
+          </button>
+          <button class="s-theme-btn" onclick="setTheme('dark')"   id="th-dark"   data-theme="dark">
+            <div class="s-theme-dot" style="background:#121816;border:2.5px solid #6BA99F"></div>
+            <span>ダーク</span>
+          </button>
+          <button class="s-theme-btn" onclick="setTheme('night')"  id="th-night"  data-theme="night">
+            <div class="s-theme-dot" style="background:#0E1525;border:2.5px solid #5B8DEF"></div>
+            <span>ナイト</span>
+          </button>
+          <button class="s-theme-btn" onclick="setTheme('purple')" id="th-purple" data-theme="purple">
+            <div class="s-theme-dot" style="background:#1A0E2E;border:2.5px solid #A78BFA"></div>
+            <span>パープル</span>
+          </button>
         </div>
       </div>
     </div>
@@ -824,74 +931,95 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   <!-- スライドコンテナ（4ステップ） -->
   <div class="ob-slides" id="ob-slides" style="width:400%">
 
-    <!-- ページ1: 把握 -->
+    <!-- ページ1: 問題提起 -->
     <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <rect x="20" y="18" width="70" height="74" rx="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-          <rect x="30" y="32" width="50" height="8" rx="4" fill="rgba(255,255,255,0.9)"/>
-          <rect x="30" y="46" width="40" height="8" rx="4" fill="rgba(255,255,255,0.65)"/>
-          <rect x="30" y="60" width="44" height="8" rx="4" fill="rgba(255,255,255,0.65)"/>
-          <rect x="30" y="74" width="34" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>
-          <circle cx="82" cy="82" r="18" fill="#fff"/>
-          <path d="M74 82 Q80 76 82 82 Q84 88 90 82" stroke="var(--p)" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- 水が漏れるバケツ -->
+          <rect x="28" y="30" width="54" height="48" rx="6" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <!-- 水滴（漏れている） -->
+          <ellipse cx="55" cy="26" rx="8" ry="4" fill="rgba(255,255,255,0.4)"/>
+          <path d="M40 78 Q38 90 36 96" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M55 78 Q55 92 55 98" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M70 78 Q72 90 74 96" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- ¥マーク -->
+          <text x="55" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="rgba(255,255,255,0.85)" font-family="sans-serif">¥</text>
+          <!-- 波線（水面） -->
+          <path d="M34 52 Q42 46 50 52 Q58 58 66 52 Q74 46 76 52" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
         </svg>
       </div>
-      <div class="ob-badge">Step 1 · 把握</div>
-      <div class="ob-ttl">サブスクを<br><em>全部書き出す。</em></div>
-      <div class="ob-desc">まず全サブスクを一覧化することが第一歩。「気づかない支出」を見えるようにしましょう。Netflix・Spotifyなど定番はワンタップで登録できます。</div>
+      <div class="ob-badge">知ってますか？</div>
+      <div class="ob-ttl">毎月、知らないうちに<br><em>お金が消えている。</em></div>
+      <div class="ob-desc">カード引き落としは「支払いの痛み」を感じにくく、使っていないサブスクに気づかず払い続けてしまいがちです。まず全部を「見える化」することが家計改善の第一歩です。</div>
     </div>
 
     <!-- ページ2: 見える化 -->
     <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <circle cx="55" cy="52" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="16"/>
-          <path d="M55 18 A34 34 0 0 1 89 52" stroke="rgba(255,255,255,0.9)" stroke-width="16" stroke-linecap="round"/>
-          <path d="M89 52 A34 34 0 0 1 67 82" stroke="rgba(255,255,255,0.6)" stroke-width="16" stroke-linecap="round"/>
-          <path d="M67 82 A34 34 0 0 1 38 79" stroke="rgba(255,255,255,0.4)" stroke-width="16" stroke-linecap="round"/>
-          <circle cx="55" cy="52" r="20" fill="var(--p)"/>
-          <text x="55" y="58" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" font-family="sans-serif">¥</text>
+          <!-- ラベル「1日あたり」 -->
+          <text x="55" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="rgba(255,255,255,0.6)" font-family="sans-serif">1日あたり</text>
+          <!-- カード -->
+          <rect x="18" y="26" width="74" height="36" rx="10" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <text x="55" y="52" text-anchor="middle" font-size="22" font-weight="900" fill="#fff" font-family="sans-serif">約 ¥150</text>
+          <!-- 矢印 -->
+          <path d="M55 68 L55 76 M49 72 L55 78 L61 72" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- 年間ラベル -->
+          <rect x="20" y="82" width="70" height="18" rx="9" fill="rgba(255,255,255,0.15)"/>
+          <text x="55" y="95" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">年間 約 ¥54,750</text>
         </svg>
       </div>
-      <div class="ob-badge">Step 2 · 見える化</div>
-      <div class="ob-ttl">月額・年額を<br><em>一目でわかる。</em></div>
-      <div class="ob-desc">カテゴリ別グラフで支出を可視化。月いくら・年いくら・1日あたり何円かが自動で計算されます。</div>
+      <div class="ob-badge">見える化</div>
+      <div class="ob-ttl">「1日いくら」で<br><em>本当の重さがわかる。</em></div>
+      <div class="ob-desc">月額・年額だけでなく「1日あたり何円」かを自動計算。小さく見えた金額が、実は年間で大きな出費になっていることに気づけます。</div>
     </div>
 
     <!-- ページ3: 見直し -->
     <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <circle cx="55" cy="48" r="30" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-          <path d="M42 40 L55 55 L75 32" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="18" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.9)"/>
-          <rect x="44" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.55)"/>
-          <rect x="70" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.3)"/>
-          <text x="29" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="var(--p)" font-family="sans-serif">必要</text>
-          <text x="55" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.8)" font-family="sans-serif">検討</text>
-          <text x="81" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.5)" font-family="sans-serif">解約</text>
+          <!-- 天秤風 -->
+          <line x1="55" y1="22" x2="55" y2="55" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
+          <line x1="22" y1="42" x2="88" y2="42" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- 左皿（必要） -->
+          <ellipse cx="28" cy="58" rx="16" ry="6" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="22" y1="42" x2="22" y2="52" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="34" y1="42" x2="34" y2="52" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <text x="28" y="62" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif">必要</text>
+          <!-- 右皿（不要） -->
+          <ellipse cx="82" cy="62" rx="16" ry="6" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="76" y1="42" x2="76" y2="56" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="88" y1="42" x2="88" y2="56" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="82" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.5)" font-family="sans-serif">解約</text>
+          <!-- 星マーク -->
+          <text x="55" y="90" text-anchor="middle" font-size="22" font-family="sans-serif">⭐</text>
         </svg>
       </div>
-      <div class="ob-badge">Step 3 · 見直し</div>
-      <div class="ob-ttl">いらないサブスクを<br><em>特定する。</em></div>
-      <div class="ob-desc">満足度★で各サービスを評価。低評価のサブスクを解約して、浮いたお金を毎月の積立に回しましょう。</div>
+      <div class="ob-badge">見直し</div>
+      <div class="ob-ttl">満足度★で<br><em>いるもの・いらないものを仕分ける。</em></div>
+      <div class="ob-desc">各サブスクに満足度★をつけて管理。低評価のサブスクを解約すれば、毎月の固定費が減り、浮いたお金を貯金や投資に回せます。</div>
     </div>
 
     <!-- ページ4: はじめる -->
     <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <circle cx="55" cy="50" r="32" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-          <path d="M45 50 L65 50 M56 40 L66 50 L56 60" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="55" cy="50" r="18" fill="rgba(255,255,255,0.1)"/>
-          <rect x="24" y="88" width="62" height="14" rx="7" fill="#fff"/>
-          <text x="55" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="var(--p)" font-family="sans-serif">今すぐはじめる</text>
+          <!-- 貯金箱風 -->
+          <ellipse cx="55" cy="60" rx="32" ry="26" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <ellipse cx="55" cy="34" rx="14" ry="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <rect x="48" y="30" width="14" height="6" rx="3" fill="rgba(255,255,255,0.3)"/>
+          <!-- コイン投入スロット -->
+          <rect x="48" y="38" width="14" height="3" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+          <!-- ¥マーク -->
+          <text x="55" y="68" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="sans-serif">¥</text>
+          <!-- 足 -->
+          <rect x="40" y="84" width="8" height="10" rx="4" fill="rgba(255,255,255,0.4)"/>
+          <rect x="62" y="84" width="8" height="10" rx="4" fill="rgba(255,255,255,0.4)"/>
         </svg>
       </div>
       <div class="ob-badge">完全無料・広告なし</div>
-      <div class="ob-ttl">登録は<em>30秒。</em><br>今すぐはじめよう。</div>
-      <div class="ob-desc">すべての機能が完全無料。広告なし・個人情報不取得。あなたのデータはあなたの端末だけに保存されます。</div>
+      <div class="ob-ttl">登録は<em>30秒。</em><br>今日から家計を変えよう。</div>
+      <div class="ob-desc">完全無料・広告なし・個人情報不取得。まずサブスクを全部登録して、毎月いくら払っているか確認してみましょう。</div>
     </div>
 
   </div>
@@ -1345,20 +1473,19 @@ const _CP={
   more:    '<path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>',
 };
 const catMap={
-  "動画・配信":        {color:"#4E8B82",icon:(c,s)=>_catSvg(_CP.video,  c||"#4E8B82",s)},
-  "音楽":              {color:"#6B9E95",icon:(c,s)=>_catSvg(_CP.music,  c||"#6B9E95",s)},
-  "電子書籍・雑誌":    {color:"#5B8FA8",icon:(c,s)=>_catSvg(_CP.book,   c||"#5B8FA8",s)},
-  "仕事・ツール":      {color:"#4A7A9B",icon:(c,s)=>_catSvg(_CP.pc,     c||"#4A7A9B",s)},
-  "ゲーム":            {color:"#7A9E7E",icon:(c,s)=>_catSvg(_CP.game,   c||"#7A9E7E",s)},
-  "健康・フィットネス":{color:"#3D8C7A",icon:(c,s)=>_catSvg(_CP.health, c||"#3D8C7A",s)},
-  "金融・年会費":      {color:"#7A9B8A",icon:(c,s)=>_catSvg(_CP.card,   c||"#7A9B8A",s)},
-  "習い事":            {color:"#5E8C7A",icon:(c,s)=>_catSvg(_CP.school, c||"#5E8C7A",s)},
-  "通信費":            {color:"#4A8A78",icon:(c,s)=>_catSvg(_CP.phone,  c||"#4A8A78",s)},
-  "保険":              {color:"#6B8E82",icon:(c,s)=>_catSvg(_CP.shield, c||"#6B8E82",s)},
-  "ローン":            {color:"#7B6EA0",icon:(c,s)=>_catSvg(_CP.loan,   c||"#7B6EA0",s)},
-  "その他":            {color:"#8A9E96",icon:(c,s)=>_catSvg(_CP.more,   c||"#8A9E96",s)},
+  "動画・配信":        {color:"#E05C5C",icon:(c,s)=>_catSvg(_CP.video,  c||"#E05C5C",s)},
+  "音楽":              {color:"#2A9D8F",icon:(c,s)=>_catSvg(_CP.music,  c||"#2A9D8F",s)},
+  "電子書籍・雑誌":    {color:"#E9A400",icon:(c,s)=>_catSvg(_CP.book,   c||"#E9A400",s)},
+  "仕事・ツール":      {color:"#4A7EC8",icon:(c,s)=>_catSvg(_CP.pc,     c||"#4A7EC8",s)},
+  "ゲーム":            {color:"#9B59B6",icon:(c,s)=>_catSvg(_CP.game,   c||"#9B59B6",s)},
+  "健康・フィットネス":{color:"#27AE60",icon:(c,s)=>_catSvg(_CP.health, c||"#27AE60",s)},
+  "金融・年会費":      {color:"#F39C12",icon:(c,s)=>_catSvg(_CP.card,   c||"#F39C12",s)},
+  "習い事":            {color:"#16A085",icon:(c,s)=>_catSvg(_CP.school, c||"#16A085",s)},
+  "通信費":            {color:"#2980B9",icon:(c,s)=>_catSvg(_CP.phone,  c||"#2980B9",s)},
+  "保険":              {color:"#8E44AD",icon:(c,s)=>_catSvg(_CP.shield, c||"#8E44AD",s)},
+  "ローン":            {color:"#C0392B",icon:(c,s)=>_catSvg(_CP.loan,   c||"#C0392B",s)},
+  "その他":            {color:"#7F8C8D",icon:(c,s)=>_catSvg(_CP.more,   c||"#7F8C8D",s)},
 };
-
 const qData={
   "動画・配信":[
     {name:"Amazon Prime",       price:600,  freq:"月額"},
@@ -2873,7 +3000,7 @@ function buildQuickAdd(){
   if(tabs.children.length)return; // 初回のみ構築
 
   // カテゴリ表示順（使いやすい順）
-  const CAT_ORDER=['動画・配信','音楽','通信費','ゲーム','電子書籍・雑誌','仕事・ツール','健康・フィットネス','保険','ローン','金融・年会費','習い事','その他'];
+  const CAT_ORDER=['動画・配信','音楽','仕事・ツール','通信費','健康・フィットネス','ゲーム','電子書籍・雑誌','金融・年会費','習い事','保険','ローン','その他'];
   const orderedCats=CAT_ORDER.filter(c=>qData[c]);
 
   orderedCats.forEach((cat,i)=>{
@@ -2881,10 +3008,9 @@ function buildQuickAdd(){
     const t=document.createElement('button');
     t.type='button';t.className='cat-tab'+(i===0?' on':'');t.textContent=cat;
     t.style.setProperty('--tab-color',color);
-    if(i===0){t.style.background=color;t.style.color='#fff';t.style.borderColor=color}
     t.onclick=()=>{
-      document.querySelectorAll('.cat-tab').forEach(x=>{x.classList.remove('on');x.style.background='';x.style.color='';x.style.borderColor=''});
-      t.classList.add('on');t.style.background=color;t.style.color='#fff';t.style.borderColor=color;
+      document.querySelectorAll('.cat-tab').forEach(x=>{x.classList.remove('on');});
+      t.classList.add('on');
       buildQItems(cat);
       const note=document.getElementById('q-note');
       if(cat==='金融・年会費'){note.style.display='block';note.textContent='クレカ年会費は固定費として管理できます。更新日管理に便利です。'}
@@ -3329,40 +3455,40 @@ function parseCSVLine(line){
    テーマ（ライト / 自動 / ダーク）
 ============================================================ */
 // 時間帯に応じてダーク/ライトを決定（18:00〜6:00はダーク）
-function _timeBasedDark(){
-  const h = new Date().getHours();
-  return h >= 18 || h < 6;
-}
-
-function _applyTheme(mode){
-  const root = document.documentElement;
-  root.classList.remove('light','dark');
-  if(mode === 'light'){ root.classList.add('light'); }
-  else if(mode === 'dark'){ root.classList.add('dark'); }
-  else {
-    // auto: 時間帯で決定
-    if(_timeBasedDark()) root.classList.add('dark');
-    else root.classList.add('light');
-  }
-}
+// 6テーマの定義
+const THEMES = {
+  light:  { cls: 'theme-light',  dark: false },
+  ocean:  { cls: 'theme-ocean',  dark: false },
+  pastel: { cls: 'theme-pastel', dark: false },
+  dark:   { cls: 'theme-dark',   dark: true  },
+  night:  { cls: 'theme-night',  dark: true  },
+  purple: { cls: 'theme-purple', dark: true  },
+};
+const THEME_KEYS = Object.keys(THEMES);
 
 function setTheme(mode){
-  _applyTheme(mode);
-  ['light','auto','dark'].forEach(m=>{
-    document.getElementById('th-'+m)?.classList.toggle('on', m===mode);
-    document.getElementById('hd-th-'+m)?.classList.toggle('on', m===mode);
+  const root = document.documentElement;
+  // 全テーマクラスを削除
+  THEME_KEYS.forEach(k => root.classList.remove('theme-'+k));
+  // 旧クラスも削除
+  root.classList.remove('light','dark');
+
+  const t = THEMES[mode] || THEMES.light;
+  root.classList.add(t.cls);
+
+  // ボタンのon状態を更新（設定シート・ドロワー両方）
+  THEME_KEYS.forEach(k => {
+    document.getElementById('th-'+k)?.classList.toggle('on', k===mode);
+    document.getElementById('hd-th-'+k)?.classList.toggle('on', k===mode);
   });
+
   Store.set('subly_theme', mode);
-  // autoの場合は1時間ごとに再チェック（既存タイマーをクリア）
   if(window._themeTimer) clearInterval(window._themeTimer);
-  if(mode === 'auto'){
-    window._themeTimer = setInterval(()=>_applyTheme('auto'), 60 * 1000);
-  }
 }
 
 async function loadTheme(){
-  const saved = (await Store.get('subly_theme')) || 'auto';
-  setTheme(saved);
+  const saved = (await Store.get('subly_theme')) || 'dark';
+  setTheme(THEME_KEYS.includes(saved) ? saved : 'dark');
 }
 
 /* ============================================================
