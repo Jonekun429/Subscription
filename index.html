@@ -525,7 +525,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="hd-sec">設定</div>
     <button class="hd-row" onclick="closeHdrop();setTimeout(openNotifySettings,150)">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
-      <div><div class="hd-lbl">月次見直し通知</div><div class="hd-sub" id="hd-notify-sub">毎月1日 朝9時にお知らせ</div></div>
+      <div><div class="hd-lbl">更新日通知</div><div class="hd-sub" id="hd-notify-sub">タップして設定</div></div>
     </button>
     <div class="hd-row" style="cursor:default">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg></div>
@@ -1687,78 +1687,108 @@ function goto(page, filterCat=null){
 }
 
 /* ============================================================
-   月次見直し通知
-   - 毎月1日 朝9時に1通だけ送る
-   - ★（sat）が設定値以下のサービスをまとめて通知
+   更新日事前通知
+   - 各サブスクの更新日ごとに通知（14日前・7日前・3日前・1日前・当日）
+   - 複数タイミングを同時設定可能
    - Capacitor: バックグラウンド通知
-   - Web: アプリ起動時にバナー表示（代替）
+   - Web: Notification API でブラウザ通知（許可が必要）
 ============================================================ */
+
+// 通知タイミングの選択肢（日数）
+const NOTIFY_TIMINGS = [
+  { days: 0,  label: '当日' },
+  { days: 1,  label: '1日前' },
+  { days: 3,  label: '3日前' },
+  { days: 7,  label: '7日前' },
+  { days: 14, label: '14日前' },
+];
 
 // 通知設定を開く
 async function openNotifySettings(){
-  // 現在の設定を読み込む
-  const raw = await Store.get('notifyConfig');
-  const cfg = raw ? JSON.parse(raw) : { enabled: false, starThreshold: 3 };
+  const raw = await Store.get('notifyConfig2');
+  const cfg = raw ? JSON.parse(raw) : { enabled: false, timings: [1, 3], hour: 9 };
 
-  // 設定シートを表示
   showDialog({
-    icon: '●',
-    title: '月次見直し通知',
+    icon: '🔔',
+    title: '更新日通知',
     msg: `<div style="text-align:left">
-      <div style="margin-bottom:14px;font-size:13px;color:var(--ts);line-height:1.6">毎月1日 朝9時に、見直し対象のサブスクをまとめてお知らせします。</div>
+      <div style="margin-bottom:14px;font-size:13px;color:var(--ts);line-height:1.6">
+        各サブスクの更新日前にお知らせします。
+      </div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)">
         <span style="font-size:14px;font-weight:600">通知を受け取る</span>
-        <label class="sw" style="width:40px;height:24px"><input type="checkbox" id="dlg-notify-toggle" ${cfg.enabled?'checked':''}><span class="sw-t"></span></label>
+        <label class="sw" style="width:40px;height:24px">
+          <input type="checkbox" id="dlg-notify-toggle" ${cfg.enabled?'checked':''}>
+          <span class="sw-t"></span>
+        </label>
       </div>
       <div style="padding:12px 0;border-bottom:1px solid var(--bd)">
-        <div style="font-size:14px;font-weight:600;margin-bottom:10px">通知対象</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px">通知タイミング（複数選択可）</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          ${[3,2,1].map(n=>`
+          ${NOTIFY_TIMINGS.map(t=>`
           <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <input type="radio" name="dlg-star" value="${n}" ${cfg.starThreshold===n?'checked':''} style="accent-color:var(--p);width:16px;height:16px">
-            <span style="font-size:13px">★${n}以下のサービス</span>
+            <input type="checkbox" name="dlg-timing" value="${t.days}"
+              ${(cfg.timings||[]).includes(t.days)?'checked':''}
+              style="accent-color:var(--p);width:16px;height:16px">
+            <span style="font-size:13px">${t.label}</span>
           </label>`).join('')}
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <input type="radio" name="dlg-star" value="5" ${cfg.starThreshold===5?'checked':''} style="accent-color:var(--p);width:16px;height:16px">
-            <span style="font-size:13px">全件（満足度に関わらず）</span>
-          </label>
         </div>
       </div>
-      <div style="margin-top:10px;font-size:13px;color:var(--ts);line-height:1.6">
-        アプリ版：バックグラウンドでも通知が届きます<br>
-        Web版：アプリを開いた際にバナーで表示
+      <div style="padding:12px 0;border-bottom:1px solid var(--bd)">
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px">通知時刻</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <select id="dlg-notify-hour" style="padding:6px 10px;border:1.5px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:13px;font-family:inherit">
+            ${[7,8,9,10,11,12,18,20,21,22].map(h=>`
+            <option value="${h}" ${cfg.hour===h?'selected':''}>${h}:00</option>`).join('')}
+          </select>
+          <span style="font-size:13px;color:var(--ts)">に通知</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--ts);line-height:1.6">
+        📱 アプリ版：バックグラウンドでも通知<br>
+        🌐 Web版：ブラウザの通知許可が必要です
       </div>
     </div>`,
     buttons:[
       {label:'キャンセル', cls:'cancel'},
-      {label:'保存する', cls:'ok', onClick: ()=> _saveNotifyConfig()}
+      {label:'保存する',   cls:'ok', onClick: ()=>_saveNotifyConfig2()}
     ]
   });
 }
 
 // 設定を保存してスケジュール
-async function _saveNotifyConfig(){
+async function _saveNotifyConfig2(){
   const enabled = document.getElementById('dlg-notify-toggle')?.checked || false;
-  const starEl  = document.querySelector('input[name="dlg-star"]:checked');
-  const starThreshold = starEl ? parseInt(starEl.value) : 3;
-  const cfg = { enabled, starThreshold };
-  await Store.set('notifyConfig', JSON.stringify(cfg));
+  const timingEls = document.querySelectorAll('input[name="dlg-timing"]:checked');
+  const timings = Array.from(timingEls).map(el=>parseInt(el.value));
+  const hour = parseInt(document.getElementById('dlg-notify-hour')?.value || '9');
 
-  // ラベル更新
+  if(enabled && timings.length === 0){
+    showToast('通知タイミングを1つ以上選択してください');
+    return;
+  }
+
+  const cfg = { enabled, timings, hour };
+  await Store.set('notifyConfig2', JSON.stringify(cfg));
+
+  // ドロワーのサブテキスト更新
   const lbl = document.getElementById('hd-notify-sub');
-  if(lbl) lbl.textContent = enabled
-    ? `毎月1日 朝9時・★${starThreshold===5?'全件':starThreshold+'以下'}対象`
-    : 'オフ';
+  if(lbl){
+    if(!enabled){
+      lbl.textContent = 'オフ';
+    } else {
+      const labels = timings.map(d=>NOTIFY_TIMINGS.find(t=>t.days===d)?.label||'').filter(Boolean);
+      lbl.textContent = labels.join('・') + ' ' + hour + ':00';
+    }
+  }
 
   if(!enabled){
-    // 通知OFFにしたらCapacitor通知をキャンセル
     _cancelNativeNotifications();
     showToast('通知をオフにしました');
     return;
   }
 
-  // 通知をスケジュール
-  await _scheduleMonthlyNotification(cfg);
+  await _scheduleUpdateNotifications(cfg);
 }
 
 // Capacitorネイティブ通知をキャンセル
@@ -1771,26 +1801,12 @@ async function _cancelNativeNotifications(){
   }catch(e){}
 }
 
-// 月次通知をスケジュール（毎月1日 9:00）
-async function _scheduleMonthlyNotification(cfg){
+// 各サブスクの更新日に応じた通知をスケジュール
+async function _scheduleUpdateNotifications(cfg){
   const isNativeApp = !!(window.Capacitor?.isNativePlatform?.());
 
-  // 通知本文を作成
-  const targets = subs.filter(s=>{
-    if(s.freq==='単発（買い切り）') return false;
-    if(cfg.starThreshold === 5) return true;
-    return (s.sat||0) > 0 && s.sat <= cfg.starThreshold;
-  });
-  const monthly = subs.reduce((a,s)=>{
-    if(s.freq==='単発（買い切り）') return a;
-    return a + (s.freq==='月額'?s.price:Math.round(s.price/12));
-  },0);
-  const body = targets.length
-    ? `見直し候補 ${targets.length}件 / 月額合計 ¥${monthly.toLocaleString()}`
-    : `月額合計 ¥${monthly.toLocaleString()} をチェックしましょう`;
-
   if(isNativeApp){
-    // ── Capacitorアプリ: 毎月1日9時に繰り返し通知 ──
+    // ── Capacitorアプリ版 ──
     try{
       const LN = window.Capacitor?.Plugins?.LocalNotifications;
       if(!LN) throw new Error('plugin not found');
@@ -1801,93 +1817,132 @@ async function _scheduleMonthlyNotification(cfg){
         return;
       }
 
-      // 既存通知をクリア
       await _cancelNativeNotifications();
 
-      // 次の1日 9:00 を計算
-      const now = new Date();
-      const next1st = new Date(now.getFullYear(), now.getMonth()+1, 1, 9, 0, 0);
+      const notifications = [];
+      let idCounter = 2000;
+      const today = new Date(); today.setHours(0,0,0,0);
 
-      await LN.schedule({notifications:[{
-        id: 1001,
-        title: '今月のサブスク見直しタイムです',
-        body,
-        schedule: {
-          at: next1st,
-          every: 'month',   // 毎月繰り返し
-          count: 12         // 1年分スケジュール
-        },
-        sound: null,
-        actionTypeId: '',
-        smallIcon: 'ic_notification'
-      }]});
-
-      showDialog({
-        icon:'●',
-        title:'通知を設定しました',
-        msg:`毎月1日 朝9時にお知らせします。<br><br>次回: ${next1st.getMonth()+1}月${next1st.getDate()}日 9:00`,
-        buttons:[{label:'OK', cls:'ok'}]
+      subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused).forEach(s=>{
+        const np = nextPayDate(s);
+        if(!np) return;
+        cfg.timings.forEach(daysBefore=>{
+          const notifyDate = new Date(np);
+          notifyDate.setDate(notifyDate.getDate() - daysBefore);
+          notifyDate.setHours(cfg.hour, 0, 0, 0);
+          if(notifyDate <= today) return; // 過去はスキップ
+          const label = daysBefore === 0 ? '本日' : `${daysBefore}日前`;
+          notifications.push({
+            id: idCounter++,
+            title: `${s.name} の更新${label}`,
+            body: `¥${s.price.toLocaleString()} / ${s.freq} の更新日${daysBefore===0?'です':'が近づいています'}`,
+            schedule: { at: notifyDate },
+            sound: null,
+            actionTypeId: '',
+            smallIcon: 'ic_notification'
+          });
+        });
       });
+
+      if(notifications.length){
+        await LN.schedule({ notifications });
+        showDialog({
+          icon:'🔔',
+          title:'通知を設定しました',
+          msg:`${subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused).length}件のサブスクに対して通知を設定しました。`,
+          buttons:[{label:'OK', cls:'ok'}]
+        });
+      } else {
+        showToast('通知対象のサブスクがありません');
+      }
     }catch(e){
       showAlert('','設定に失敗しました', e.message.replace(/</g,'&lt;').replace(/>/g,'&gt;'));
     }
+
   } else {
-    // ── Web版: アプリ起動時バナーで代替 ──
+    // ── Web版: Notification API ──
+    if(!('Notification' in window)){
+      showDialog({
+        icon:'🔔',
+        title:'通知を設定しました（Web版）',
+        msg:'このブラウザは通知に対応していません。<br>Androidアプリ版では完全対応予定です。',
+        buttons:[{label:'OK', cls:'ok'}]
+      });
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if(permission !== 'granted'){
+      showDialog({
+        icon:'⚠️',
+        title:'通知の許可が必要です',
+        msg:'ブラウザの設定から通知を許可してください。<br><br>許可後、もう一度設定してください。',
+        buttons:[{label:'OK', cls:'ok'}]
+      });
+      return;
+    }
+
+    // Web版は起動時チェックで代替（Service Worker未使用）
+    await Store.set('notifyConfigSaved', '1');
     showDialog({
-      icon:'●',
-      title:'通知を設定しました（Web版）',
-      msg:'Web版ではアプリを開いた際に見直しバナーを表示します。<br><br>バックグラウンド通知はCapacitorアプリ版で対応しています。',
+      icon:'🔔',
+      title:'通知を設定しました',
+      msg:'アプリを開いた際に更新日が近いサブスクをお知らせします。<br><br>より確実な通知はAndroidアプリ版をご利用ください。',
       buttons:[{label:'OK', cls:'ok'}]
     });
   }
 }
 
-// アプリ起動時: Web版の見直しバナー表示（月初のみ）
-async function checkMonthlyReviewBanner(){
-  // 「今後表示しない」が設定済みならスキップ
-  const disabled = await Store.get('reviewBannerDisabled');
-  if(disabled) return;
-
-  const raw = await Store.get('notifyConfig');
+// ── 起動時チェック: 更新日が近いサブスクをバナー表示 ──
+async function checkUpcomingPayments(){
+  const raw = await Store.get('notifyConfig2');
   if(!raw) return;
   const cfg = JSON.parse(raw);
   if(!cfg.enabled) return;
 
-  // 今月すでに表示済みならスキップ
-  const lastShown = await Store.get('notifyLastShown');
-  const now = new Date();
-  const thisMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
-  if(lastShown === thisMonth) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const maxDays = Math.max(...(cfg.timings||[1]));
 
-  // 月の最初の3日間だけ表示
-  if(now.getDate() > 3) return;
-
-  await Store.set('notifyLastShown', thisMonth);
-
-  const targets = subs.filter(s=>{
-    if(s.freq==='単発（買い切り）') return false;
-    if(cfg.starThreshold === 5) return true;
-    return (s.sat||0) > 0 && s.sat <= cfg.starThreshold;
+  const upcoming = subs.filter(s=>{
+    if(s.freq==='単発（買い切り）'||s.paused) return false;
+    const np = nextPayDate(s);
+    if(!np) return false;
+    const diff = Math.round((np - today) / 86400000);
+    return diff >= 0 && diff <= maxDays;
+  }).sort((a,b)=>{
+    const da = nextPayDate(a), db = nextPayDate(b);
+    return da - db;
   });
-  const monthly = subs.reduce((a,s)=>{
-    if(s.freq==='単発（買い切り）') return a;
-    return a + (s.freq==='月額'?s.price:Math.round(s.price/12));
-  },0);
 
-  const msg = targets.length
-    ? `見直し候補 ${targets.length}件（★${cfg.starThreshold===5?'全件':cfg.starThreshold+'以下'}）\n月額合計 ¥${monthly.toLocaleString()}`
-    : `月額合計 ¥${monthly.toLocaleString()}\n今月のサブスクを確認しましょう。`;
+  if(!upcoming.length) return;
 
-  showDialog({
-    icon:'',
-    title:'今月のサブスク見直しタイム',
-    msg,
-    buttons:[
-      {label:'今後表示しない', cls:'cancel', onClick: async ()=>{ await Store.set('reviewBannerDisabled','1'); }},
-      {label:'確認する', cls:'ok', onClick:()=>goto('dashboard')}
-    ]
-  });
+  // すでに今日表示済みならスキップ
+  const shownKey = 'payNotifyShown_' + today.toISOString().slice(0,10);
+  const shown = await Store.get(shownKey);
+  if(shown) return;
+  await Store.set(shownKey, '1');
+
+  // アラートエリアに通知バナーを追加
+  const box = document.getElementById('alerts');
+  if(!box) return;
+  const banner = document.createElement('div');
+  banner.className = 'alert-box';
+  banner.style.cssText = 'background:linear-gradient(135deg,#EDF4F2,#E0F0EB);border-left:3px solid var(--p);border-radius:10px;padding:12px 14px;margin-bottom:10px;position:relative;padding-right:32px;';
+  const items = upcoming.slice(0,3).map(s=>{
+    const np = nextPayDate(s);
+    const diff = Math.round((np - today) / 86400000);
+    const label = diff === 0 ? '今日' : `あと${diff}日`;
+    return `<b>${s.name}</b>（${label}）`;
+  }).join('、');
+  const more = upcoming.length > 3 ? `ほか${upcoming.length-3}件` : '';
+  banner.innerHTML = `
+    <button class="alert-x" onclick="this.parentNode.remove()">✕</button>
+    <div style="font-size:13px;font-weight:700;color:var(--p);margin-bottom:4px">🔔 更新日が近いサブスクがあります</div>
+    <div style="font-size:12px;color:var(--tx);line-height:1.6">${items}${more}</div>`;
+  box.insertBefore(banner, box.firstChild);
 }
+
+// アプリ起動時: Web版の見直しバナー表示（月初のみ）
 
 // showDialog({ icon, title, msg, buttons:[{label, cls, onClick}] })
 function showDialog({icon='', title='', msg='', buttons=[]}){
@@ -3329,7 +3384,7 @@ async function init(){
 
   // Web版: 月初の見直しバナー表示（onboarding後に少し遅らせて表示）
   _initChartSwipe();
-  if(onboarded) setTimeout(()=>checkMonthlyReviewBanner(), 1200);
+  if(onboarded) setTimeout(()=>checkUpcomingPayments(), 1200);
 }
 
 /* ============================================================
