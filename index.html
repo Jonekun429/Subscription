@@ -289,6 +289,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .sub-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .saving-badge{font-size:14px;cursor:pointer;display:inline-block;margin-left:4px;vertical-align:middle;transition:transform .15s;-webkit-tap-highlight-color:transparent}
 .saving-badge:hover,.saving-badge:active{transform:scale(1.3)}
+.pay-today{display:inline-block;margin-left:5px;background:#E53E3E;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;letter-spacing:.3px}
+.pay-soon-3{display:inline-block;margin-left:5px;background:#DD6B20;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;letter-spacing:.3px}
+.pay-soon-7{display:inline-block;margin-left:5px;background:#D69E2E;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;letter-spacing:.3px}
+.pay-soon{display:inline-block;margin-left:5px;background:#D69E2E;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;letter-spacing:.3px}
 .sub-meta{font-size:14px;color:var(--ts);margin-top:1px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;color:#fff;white-space:nowrap;flex-shrink:0;letter-spacing:.3px}
 .sub-right{text-align:right;flex-shrink:0}
@@ -817,72 +821,77 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 <!-- オンボーディング -->
 <div class="ob-overlay hidden" id="ob-ov">
 
-  <!-- スライドコンテナ -->
-  <div class="ob-slides" id="ob-slides">
+  <!-- スライドコンテナ（4ステップ） -->
+  <div class="ob-slides" id="ob-slides" style="width:400%">
 
-    <!-- ページ1: ウェルカム / 国産・安心 -->
-    <div class="ob-slide">
+    <!-- ページ1: 把握 -->
+    <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <!-- 盾アイコン（安心感） -->
-          <path d="M55 10 L90 24 L90 52 C90 72 72 88 55 95 C38 88 20 72 20 52 L20 24 Z" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
-          <path d="M55 22 L80 33 L80 52 C80 67 68 80 55 86 C42 80 30 67 30 52 L30 33 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <!-- チェックマーク -->
-          <path d="M40 55 L50 65 L70 43" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- 日本国旗モチーフ（小さく右下に） -->
-          <circle cx="82" cy="82" r="14" fill="rgba(255,255,255,0.9)"/>
-          <circle cx="82" cy="82" r="5" fill="#C8363A"/>
+          <rect x="20" y="18" width="70" height="74" rx="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <rect x="30" y="32" width="50" height="8" rx="4" fill="rgba(255,255,255,0.9)"/>
+          <rect x="30" y="46" width="40" height="8" rx="4" fill="rgba(255,255,255,0.65)"/>
+          <rect x="30" y="60" width="44" height="8" rx="4" fill="rgba(255,255,255,0.65)"/>
+          <rect x="30" y="74" width="34" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>
+          <circle cx="82" cy="82" r="18" fill="#fff"/>
+          <path d="M74 82 Q80 76 82 82 Q84 88 90 82" stroke="var(--p)" stroke-width="3" stroke-linecap="round" fill="none"/>
         </svg>
       </div>
-      <div class="ob-badge">Made in Japan</div>
-      <div class="ob-ttl">あなたの大切なお金を<br><em>まもります。</em></div>
-      <div class="ob-desc">Sublyは日本人が作った、日本人のためのサブスク管理アプリです。すべてのデータはあなたの端末の中だけに保存されます。</div>
+      <div class="ob-badge">Step 1 · 把握</div>
+      <div class="ob-ttl">サブスクを<br><em>全部書き出す。</em></div>
+      <div class="ob-desc">まず全サブスクを一覧化することが第一歩。「気づかない支出」を見えるようにしましょう。Netflix・Spotifyなど定番はワンタップで登録できます。</div>
     </div>
 
-    <!-- ページ2: グラフで見える化 -->
-    <div class="ob-slide">
+    <!-- ページ2: 見える化 -->
+    <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <!-- ドーナツグラフ風 -->
           <circle cx="55" cy="52" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="16"/>
           <path d="M55 18 A34 34 0 0 1 89 52" stroke="rgba(255,255,255,0.9)" stroke-width="16" stroke-linecap="round"/>
           <path d="M89 52 A34 34 0 0 1 67 82" stroke="rgba(255,255,255,0.6)" stroke-width="16" stroke-linecap="round"/>
           <path d="M67 82 A34 34 0 0 1 38 79" stroke="rgba(255,255,255,0.4)" stroke-width="16" stroke-linecap="round"/>
-          <!-- 中央の円 -->
           <circle cx="55" cy="52" r="20" fill="var(--p)"/>
-          <!-- ¥マーク -->
           <text x="55" y="58" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" font-family="sans-serif">¥</text>
-          <!-- 凡例 -->
-          <rect x="14" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.9)"/>
-          <rect x="34" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.6)"/>
-          <rect x="54" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.4)"/>
-          <rect x="74" y="92" width="10" height="10" rx="3" fill="rgba(255,255,255,0.2)"/>
         </svg>
       </div>
-      <div class="ob-badge">Visualize</div>
-      <div class="ob-ttl">毎月いくら払ってる？<br><em>一目でわかる。</em></div>
-      <div class="ob-desc">カテゴリ別の円グラフで支出を可視化。月額・年額を自動で換算して合計します。知らなかった出費に気づけます。</div>
+      <div class="ob-badge">Step 2 · 見える化</div>
+      <div class="ob-ttl">月額・年額を<br><em>一目でわかる。</em></div>
+      <div class="ob-desc">カテゴリ別グラフで支出を可視化。月いくら・年いくら・1日あたり何円かが自動で計算されます。</div>
     </div>
 
-    <!-- ページ3: かんたん登録 -->
-    <div class="ob-slide">
+    <!-- ページ3: 見直し -->
+    <div class="ob-slide" style="width:25%">
       <div class="ob-illust">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-          <!-- スマホ風フレーム -->
-          <rect x="28" y="12" width="54" height="86" rx="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-          <!-- リスト行 -->
-          <rect x="36" y="28" width="38" height="8" rx="4" fill="rgba(255,255,255,0.8)"/>
-          <rect x="36" y="42" width="30" height="8" rx="4" fill="rgba(255,255,255,0.55)"/>
-          <rect x="36" y="56" width="34" height="8" rx="4" fill="rgba(255,255,255,0.55)"/>
-          <rect x="36" y="70" width="26" height="8" rx="4" fill="rgba(255,255,255,0.35)"/>
-          <!-- 追加ボタン（+） -->
-          <circle cx="82" cy="88" r="16" fill="#fff"/>
-          <path d="M82 80 L82 96 M74 88 L90 88" stroke="var(--p)" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="55" cy="48" r="30" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <path d="M42 40 L55 55 L75 32" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="18" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.9)"/>
+          <rect x="44" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.55)"/>
+          <rect x="70" y="82" width="22" height="16" rx="6" fill="rgba(255,255,255,0.3)"/>
+          <text x="29" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="var(--p)" font-family="sans-serif">必要</text>
+          <text x="55" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.8)" font-family="sans-serif">検討</text>
+          <text x="81" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.5)" font-family="sans-serif">解約</text>
         </svg>
       </div>
-      <div class="ob-badge">Get Started</div>
+      <div class="ob-badge">Step 3 · 見直し</div>
+      <div class="ob-ttl">いらないサブスクを<br><em>特定する。</em></div>
+      <div class="ob-desc">満足度★で各サービスを評価。低評価のサブスクを解約して、浮いたお金を毎月の積立に回しましょう。</div>
+    </div>
+
+    <!-- ページ4: はじめる -->
+    <div class="ob-slide" style="width:25%">
+      <div class="ob-illust">
+        <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
+          <circle cx="55" cy="50" r="32" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <path d="M45 50 L65 50 M56 40 L66 50 L56 60" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="55" cy="50" r="18" fill="rgba(255,255,255,0.1)"/>
+          <rect x="24" y="88" width="62" height="14" rx="7" fill="#fff"/>
+          <text x="55" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="var(--p)" font-family="sans-serif">今すぐはじめる</text>
+        </svg>
+      </div>
+      <div class="ob-badge">完全無料・広告なし</div>
       <div class="ob-ttl">登録は<em>30秒。</em><br>今すぐはじめよう。</div>
-      <div class="ob-desc">Netflix・Spotify・Amazon Primeなど定番サービスはワンタップで登録。自分だけのサブスクも自由に追加できます。</div>
+      <div class="ob-desc">すべての機能が完全無料。広告なし・個人情報不取得。あなたのデータはあなたの端末だけに保存されます。</div>
     </div>
 
   </div>
@@ -892,6 +901,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="ob-dot on" onclick="obGoto(0)"></div>
     <div class="ob-dot" onclick="obGoto(1)"></div>
     <div class="ob-dot" onclick="obGoto(2)"></div>
+    <div class="ob-dot" onclick="obGoto(3)"></div>
   </div>
 
   <!-- ボタン -->
@@ -2062,7 +2072,7 @@ function closeHdrop(){
     const dx=e.changedTouches[0].clientX-_ox;
     const dy=e.changedTouches[0].clientY-_oy;
     if(Math.abs(dy)>60) return;
-    if(dx<-50 && _obPage<2) obGoto(_obPage+1);
+    if(dx<-50 && _obPage<3) obGoto(_obPage+1);
     else if(dx>50 && _obPage>0) obGoto(_obPage-1);
   },{passive:true});
 })();
@@ -2145,14 +2155,14 @@ function obGoto(n){
   const nextBtn=document.getElementById('ob-next');
   const skipBtn=document.getElementById('ob-skip');
   if(!slides) return;
-  slides.style.transform=`translateX(${-n*33.333}%)`;
+  slides.style.transform=`translateX(${-n*25}%)`;
   dots.forEach((d,i)=>d.classList.toggle('on',i===n));
-  const isLast=(n===2);
+  const isLast=(n===3);
   if(nextBtn) nextBtn.textContent=isLast?'はじめる':'次へ';
   if(skipBtn) skipBtn.style.display=isLast?'none':'';
 }
 function obNext(){
-  if(_obPage<2){ obGoto(_obPage+1); }
+  if(_obPage<3){ obGoto(_obPage+1); }
   else { closeOb(); }
 }
 async function closeOb(){
@@ -2784,8 +2794,9 @@ function renderList(){
             const today=new Date(); today.setHours(0,0,0,0);
             const diffDay=Math.round((np-today)/86400000);
             const label='次回: '+dateMD(np);
-            if(diffDay===0) return label+' <span class="pay-today">今日</span>';
-            if(diffDay<=7) return label+' <span class="pay-soon">あと'+diffDay+'日</span>';
+            if(diffDay===0) return label+' <span class="pay-today">🔴 今日</span>';
+            if(diffDay<=3) return label+' <span class="pay-soon-3">🟠 あと'+diffDay+'日</span>';
+            if(diffDay<=7) return label+' <span class="pay-soon-7">🟡 あと'+diffDay+'日</span>';
             return label;
           })()}</span>
           ${s.sat?`<span>${'★'.repeat(s.sat)}</span>`:''}
@@ -2795,7 +2806,15 @@ function renderList(){
       <div class="sub-right">
         <div class="sub-price">¥${s.price.toLocaleString()}</div>
         <div class="sub-freq">${freqLbl}</div>
-        ${s.freq!=='単発（買い切り）'?`<div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right">年間 ¥${yrFromSub(s).toLocaleString()}</div>`:''}
+        ${(()=>{
+          if(s.freq==='単発（買い切り）') return '';
+          const yr = yrFromSub(s);
+          const perDay = (yr / 365).toFixed(1);
+          return `<div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;line-height:1.6">
+            年間 ¥${yr.toLocaleString()}<br>
+            <span style="color:var(--p);font-weight:700">1日 約¥${perDay}</span>
+          </div>`;
+        })()}
       </div>
     `;
     // 休止中バッジ
