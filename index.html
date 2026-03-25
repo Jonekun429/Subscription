@@ -1441,6 +1441,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <label>解約ページURL <span style="font-weight:400;font-size:11px;color:var(--ts)">任意</span></label>
         <input type="url" id="f-url" placeholder="例：https://..." oninput="toggleUrlBtn()">
         <button type="button" id="url-btn" onclick="openCancelUrl()" style="display:none;margin-top:6px;width:100%;padding:9px;background:var(--pl);color:var(--p);border:1.5px solid var(--p);border-radius:9px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">🔗 解約ページを開く</button>
+        <button type="button" id="url-search-btn" onclick="searchCancelUrlFromForm()" style="display:none;margin-top:6px;width:100%;padding:9px;background:var(--bg);color:var(--ts);border:1.5px solid var(--bd);border-radius:9px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">🔍 解約方法をGoogleで検索</button>
       </div>
       <div class="f-row">
         <label>満足度（任意）</label>
@@ -2087,6 +2088,7 @@ const NOTIFY_TIMINGS = [
 
 // 通知設定を開く
 async function openNotifySettings(){
+  gaEvent('notify_settings_open', {});
   const raw = await Store.get('notifyConfig2');
   const cfg = raw ? JSON.parse(raw) : { enabled: false, timings: [1, 3], hour: 9 };
 
@@ -2152,6 +2154,7 @@ async function _saveNotifyConfig2(){
 
   const cfg = { enabled, timings, hour };
   await Store.set('notifyConfig2', JSON.stringify(cfg));
+  gaEvent('notify_settings_saved', { enabled, timings: timings.join(','), hour });
 
   // ドロワーのサブテキスト更新
   const lbl = document.getElementById('hd-notify-sub');
@@ -2364,7 +2367,10 @@ function toggleHdrop(e){
   const bg=document.getElementById('hdrop-bg');
   const isOpen=drop.classList.contains('open');
   if(isOpen){ closeHdrop(); }
-  else { drop.classList.add('open'); bg.classList.add('open'); }
+  else {
+    drop.classList.add('open'); bg.classList.add('open');
+    gaEvent('drawer_open', {});
+  }
 }
 function closeHdrop(){
   document.getElementById('hdrop').classList.remove('open');
@@ -2510,9 +2516,9 @@ function closeSavingHints(){ document.getElementById('saving-hints-ov').classLis
 
 function openSettings(){document.getElementById('settings-ov').classList.remove('hidden')}
 function closeSettings(){document.getElementById('settings-ov').classList.add('hidden')}
-function openGuide(){document.getElementById('guide-ov').classList.remove('hidden')}
+function openGuide(){document.getElementById('guide-ov').classList.remove('hidden');gaEvent('guide_open',{})}
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
-function openPrivacy(){closeSettings();setTimeout(()=>document.getElementById('privacy-ov').classList.remove('hidden'),200)}
+function openPrivacy(){closeSettings();setTimeout(()=>{document.getElementById('privacy-ov').classList.remove('hidden');gaEvent('privacy_open',{});},200)}
 function closePrivacy(){document.getElementById('privacy-ov').classList.add('hidden')}
 
 // ── シェア機能 ──────────────────────────────────────────
@@ -3135,6 +3141,7 @@ function showCalDetail(y,m,d,evs){
   const DOW=['日','月','火','水','木','金','土'];
   const dow=new Date(y,m,d).getDay();
   const dayTotal=evs.reduce((a,sub)=>a+moFromSub(sub),0);
+  gaEvent('calendar_day_tap', { date: `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, event_count: evs.length });
 
   // ボトムシートに内容を構築
   const sheet=document.getElementById('cal-sheet');
@@ -3294,8 +3301,13 @@ function renderList(){
     actions.className='sub-actions';
     const pauseLabel=s.paused?'再開':'休止';
     const pauseCls=s.paused?'btn-pause active':'btn-pause';
+    // 解約URLがあれば「解約ページを開く」、なければ「解約方法を検索」
+    const cancelBtnHtml = s.cancelUrl
+      ? `<button class="btn-e" onclick="window.open('${s.cancelUrl}','_blank');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔗 解約ページ</button>`
+      : `<button class="btn-e" onclick="searchCancelUrl('${s.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${(s.cat||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔍 解約方法を検索</button>`;
     actions.innerHTML=`
       <button class="${pauseCls}" onclick="togglePause(${s.id});event.stopPropagation()">${pauseLabel}</button>
+      ${cancelBtnHtml}
       <button class="btn-e" onclick="editSub(${s.id});event.stopPropagation()">編集</button>
       <button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">削除</button>`;
     const wrapper=document.createElement('div');
@@ -3307,7 +3319,10 @@ function renderList(){
     const toggleActions=()=>{
       const isOpen=actions.classList.contains('open');
       document.querySelectorAll('.sub-actions.open').forEach(a=>a.classList.remove('open'));
-      if(!isOpen)actions.classList.add('open');
+      if(!isOpen){
+        actions.classList.add('open');
+        gaEvent('detail_expand', { service_name: s.name, category: s.cat });
+      }
     };
     wrapper.onclick=toggleActions;
 
@@ -3547,6 +3562,7 @@ function resetForm(){
 function editSub(id){
   const s=subs.find(x=>x.id===id);if(!s)return;
   editId=id;
+  gaEvent('edit_start', { service_name: s.name, category: s.cat });
   goto('add');
   setTimeout(()=>{
     // STEP2を表示
@@ -3582,10 +3598,27 @@ function editSub(id){
 function toggleUrlBtn(){
   const v=document.getElementById('f-url').value.trim();
   document.getElementById('url-btn').style.display=v?'block':'none';
+  // URLが空のときだけ検索ボタンを表示（サービス名があれば）
+  const name=document.getElementById('f-name').value.trim();
+  const searchBtn=document.getElementById('url-search-btn');
+  if(searchBtn) searchBtn.style.display=(!v && name)?'block':'none';
 }
 function openCancelUrl(){
   const url=document.getElementById('f-url').value.trim();
   if(url) window.open(url,'_blank');
+}
+// 明細一覧の検索ボタン用
+function searchCancelUrl(name, cat){
+  const q=encodeURIComponent(name+' 解約');
+  window.open('https://www.google.com/search?q='+q,'_blank');
+  gaEvent('search_cancel_url',{service_name:name, category:cat});
+}
+// 編集フォームの検索ボタン用
+function searchCancelUrlFromForm(){
+  const name=document.getElementById('f-name').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  if(!name) return;
+  searchCancelUrl(name, cat);
 }
 
 async function togglePauseFromForm(){
@@ -3782,6 +3815,7 @@ function _processImportFile(file){
         {label:'キャンセル', cls:'cancel'},
         {label:'インポート', cls:'ok', onClick: async ()=>{
           subs=imported; await save(); closeSettings(); goto('dashboard');
+          gaEvent('csv_import', { count: imported.length });
           showToast(`${imported.length}件をインポートしました`);
         }}
       ]
@@ -3833,6 +3867,7 @@ function setTheme(mode){
   });
 
   Store.set('subly_theme', mode);
+  gaEvent('theme_change', { theme_name: mode });
   if(window._themeTimer) clearInterval(window._themeTimer);
 
 }
@@ -3847,23 +3882,31 @@ async function loadTheme(){
    登録促進ポップアップ（3件登録後に表示）
 ============================================================ */
 async function checkNudge(){
-  if(subs.length < 3) return;
-  var dismissed = await Store.get('nudgeDismissed');
+  const count = subs.length;
+  // 3件目 or 10件目のときだけチェック
+  if(count !== 3 && count !== 10) return;
+  const key = count === 3 ? 'nudgeDismissed3' : 'nudgeDismissed10';
+  const trigger = count === 3 ? '3rd_registration' : '10th_registration';
+  const dismissed = await Store.get(key);
   if(dismissed) return;
-  var hasFixed = subs.some(function(s){
+  // 固定費系がすでに登録済みなら表示しない
+  const hasFixed = subs.some(function(s){
     return /スマホ|携帯|ネット|光回線|Wi-?Fi|家賃|住宅ローン|カーローン|車/.test(s.name);
   });
   if(hasFixed) return;
   document.getElementById('nudge-ov').classList.remove('hidden');
-  gaEvent('nudge_shown', { trigger: '3rd_registration', total_count: subs.length });
+  gaEvent('nudge_shown', { trigger: trigger, total_count: count });
 }
- 
+
 async function closeNudge(){
   document.getElementById('nudge-ov').classList.add('hidden');
-  await Store.set('nudgeDismissed', '1');
+  // 現在の件数に対応したキーをdismissed済みにする
+  const count = subs.length;
+  if(count <= 3) await Store.set('nudgeDismissed3', '1');
+  else await Store.set('nudgeDismissed10', '1');
   gaEvent('nudge_dismissed', {});
 }
- 
+
 function nudgeTap(name, cat){
   closeNudge();
   gaEvent('nudge_tap', { service_name: name, category: cat });
@@ -3911,6 +3954,17 @@ async function init(){
   if(!onboarded) showOnboarding();
   goto('dashboard');
   updateFilterCounts();
+
+  // ── リピーター追跡：起動回数・登録件数をユーザープロパティにセット ──
+  const openCountRaw = await Store.get('appOpenCount');
+  const appOpenCount = (parseInt(openCountRaw) || 0) + 1;
+  await Store.set('appOpenCount', String(appOpenCount));
+  if(typeof gtag === 'function'){
+    gtag('set', 'user_properties', {
+      app_open_count: appOpenCount,
+      subs_count: subs.length
+    });
+  }
 
   // Web版: 月初の見直しバナー表示（onboarding後に少し遅らせて表示）
   _initChartSwipe();
