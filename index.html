@@ -767,7 +767,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   <button class="nb on" id="nb-dashboard" onclick="goto('dashboard')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L2 12h3v8h5v-5h4v5h5v-8h3L12 3z"/></svg>ホーム
   </button>
-  <button class="nb" id="nb-add" onclick="goto('add')">
+  <button class="nb" id="nb-add" onclick="gotoAdd()">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>登録
   </button>
   <button class="nb" id="nb-calendar" onclick="goto('calendar')">
@@ -2048,6 +2048,24 @@ function goto(page, filterCat=null){
     }
     buildQuickAdd();
   }
+}
+
+/* ── 登録ナビタップ時のモーダル ── */
+function gotoAdd(){
+  showDialog({
+    icon:'',
+    title:'サブスクを登録する',
+    msg:'',
+    buttons:[
+      {label:'⭐ 定番から選ぶ', cls:'ok', onClick:()=>{
+        goto('add');
+      }},
+      {label:'✏️ 自分で入力', cls:'cancel', onClick:()=>{
+        goto('add');
+        setTimeout(()=>openManualForm(null,null), 100);
+      }}
+    ]
+  });
 }
 
 /* ============================================================
@@ -3484,7 +3502,6 @@ async function submitForm(){
     await save();
     // GA: 新規登録イベント（カテゴリ別・金額・頻度を計測）
     gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length });
-checkNudge();
     // 初回登録後は手順バナーを非表示
     document.getElementById('how-to-box').style.display='none';
     // 登録完了 → 続けて追加 or ホームへ のダイアログ
@@ -3502,6 +3519,7 @@ checkNudge();
           resetForm();
           backToStep1();
           goto('dashboard');
+          setTimeout(()=>checkNudge(), 400);
         }}
       ]
     });
@@ -3824,7 +3842,7 @@ async function loadTheme(){
    登録促進ポップアップ（3件登録後に表示）
 ============================================================ */
 async function checkNudge(){
-  if(subs.length !== 3) return;
+  if(subs.length < 3) return;
   var dismissed = await Store.get('nudgeDismissed');
   if(dismissed) return;
   var hasFixed = subs.some(function(s){
