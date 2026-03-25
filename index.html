@@ -23,6 +23,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Subly">
 <meta name="mobile-web-app-capable" content="yes">
+
+
+
+
 <style>
 /* ── テーマ共通 ── */
 :root {
@@ -561,7 +565,33 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* PCサイドバー設定ボタン */
 .nb-settings{display:none}
 @media(min-width:768px){.nb-settings{display:flex;margin-top:auto!important;border-top:1px solid var(--bd);padding-top:12px!important}}
+
+/* ── 登録促進ポップアップ ── */
+.nudge-ov{position:fixed;inset:0;z-index:9400;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .18s ease}
+.nudge-ov.hidden{display:none}
+.nudge{background:var(--card);border-radius:18px;padding:0;max-width:360px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.18);animation:fadeUp .22s ease;overflow:hidden}
+.nudge-hdr{background:linear-gradient(135deg,var(--p),var(--pd));padding:18px 20px 14px;position:relative}
+.nudge-hdr-ttl{font-size:16px;font-weight:800;color:#fff;line-height:1.4}
+.nudge-hdr-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px}
+.nudge-close{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+.nudge-body{padding:16px 20px 20px}
+.nudge-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.nudge-item:last-child{margin-bottom:0}
+.nudge-item:hover{border-color:var(--p);background:var(--pl)}
+.nudge-item:active{transform:scale(.97)}
+.nudge-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nudge-lbl{flex:1}
+.nudge-name{font-size:14px;font-weight:700;color:var(--tx)}
+.nudge-hint{font-size:11px;color:var(--ts);margin-top:2px}
+.nudge-arr{color:var(--p);font-size:16px;font-weight:700}
+.nudge-footer{padding:0 20px 16px;text-align:center}
+.nudge-skip{background:none;border:none;font-size:13px;color:var(--ts);cursor:pointer;font-family:inherit;padding:8px 16px}
+
 </style>
+
+
+
+
 
 <!-- ============================================================
      Google Analytics 4
@@ -1165,6 +1195,63 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 </div>
 
 <!-- メインコンテンツ -->
+
+<!-- 登録促進ポップアップ -->
+<div class="nudge-ov hidden" id="nudge-ov" onclick="if(event.target===this)closeNudge()">
+  <div class="nudge">
+    <div class="nudge-hdr">
+      <button class="nudge-close" onclick="closeNudge()">✕</button>
+      <div class="nudge-hdr-ttl">こちらは入れましたか？</div>
+      <div class="nudge-hdr-sub">サブスクと思ってなくても、毎月払っている固定費です</div>
+    </div>
+    <div class="nudge-body">
+      <div class="nudge-item" onclick="nudgeTap('スマホ代','通信費')">
+        <div class="nudge-ico" style="background:#2980B922">📱</div>
+        <div class="nudge-lbl">
+          <div class="nudge-name">スマホ代</div>
+          <div class="nudge-hint">ドコモ・au・ソフトバンク・格安SIMなど</div>
+        </div>
+        <span class="nudge-arr">›</span>
+      </div>
+      <div class="nudge-item" onclick="nudgeTap('ネット回線','通信費')">
+        <div class="nudge-ico" style="background:#4A7EC822">🌐</div>
+        <div class="nudge-lbl">
+          <div class="nudge-name">ネット回線</div>
+          <div class="nudge-hint">光回線・Wi-Fiなど</div>
+        </div>
+        <span class="nudge-arr">›</span>
+      </div>
+      <div class="nudge-item" onclick="nudgeTap('家賃','その他')">
+        <div class="nudge-ico" style="background:#E9A40022">🏠</div>
+        <div class="nudge-lbl">
+          <div class="nudge-name">家賃</div>
+          <div class="nudge-hint">毎月の家賃・管理費</div>
+        </div>
+        <span class="nudge-arr">›</span>
+      </div>
+      <div class="nudge-item" onclick="nudgeTap('住宅ローン','ローン')">
+        <div class="nudge-ico" style="background:#C0392B22">🏡</div>
+        <div class="nudge-lbl">
+          <div class="nudge-name">住宅ローン</div>
+          <div class="nudge-hint">月々の返済額</div>
+        </div>
+        <span class="nudge-arr">›</span>
+      </div>
+      <div class="nudge-item" onclick="nudgeTap('車のローン','ローン')">
+        <div class="nudge-ico" style="background:#8E44AD22">🚗</div>
+        <div class="nudge-lbl">
+          <div class="nudge-name">車のローン</div>
+          <div class="nudge-hint">カーローン・リース代</div>
+        </div>
+        <span class="nudge-arr">›</span>
+      </div>
+    </div>
+    <div class="nudge-footer">
+      <button class="nudge-skip" onclick="closeNudge()">あとで確認する</button>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
 
   <!-- ① ホーム -->
@@ -3397,6 +3484,7 @@ async function submitForm(){
     await save();
     // GA: 新規登録イベント（カテゴリ別・金額・頻度を計測）
     gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length });
+checkNudge();
     // 初回登録後は手順バナーを非表示
     document.getElementById('how-to-box').style.display='none';
     // 登録完了 → 続けて追加 or ホームへ のダイアログ
@@ -3723,12 +3811,47 @@ function setTheme(mode){
 
   Store.set('subly_theme', mode);
   if(window._themeTimer) clearInterval(window._themeTimer);
+
 }
 
 async function loadTheme(){
   const saved = (await Store.get('subly_theme')) || 'dark';
   setTheme(THEME_KEYS.includes(saved) ? saved : 'dark');
 }
+
+ 
+/* ============================================================
+   登録促進ポップアップ（3件登録後に表示）
+============================================================ */
+async function checkNudge(){
+  if(subs.length !== 3) return;
+  var dismissed = await Store.get('nudgeDismissed');
+  if(dismissed) return;
+  var hasFixed = subs.some(function(s){
+    return /スマホ|携帯|ネット|光回線|Wi-?Fi|家賃|住宅ローン|カーローン|車/.test(s.name);
+  });
+  if(hasFixed) return;
+  document.getElementById('nudge-ov').classList.remove('hidden');
+  gaEvent('nudge_shown', { trigger: '3rd_registration', total_count: subs.length });
+}
+ 
+async function closeNudge(){
+  document.getElementById('nudge-ov').classList.add('hidden');
+  await Store.set('nudgeDismissed', '1');
+  gaEvent('nudge_dismissed', {});
+}
+ 
+function nudgeTap(name, cat){
+  closeNudge();
+  gaEvent('nudge_tap', { service_name: name, category: cat });
+  setTimeout(function(){
+    goto('add');
+    setTimeout(function(){
+      openManualForm({ name: name, price: 0, freq: '月額' }, cat);
+    }, 100);
+  }, 200);
+}
+
 
 /* ============================================================
    初期化（非同期：Capacitor Preferences対応）
