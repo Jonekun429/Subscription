@@ -579,7 +579,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .nudge-item:last-child{margin-bottom:0}
 .nudge-item:hover{border-color:var(--p);background:var(--pl)}
 .nudge-item:active{transform:scale(.97)}
-.nudge-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nudge-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nudge-lbl{flex:1}
 .nudge-name{font-size:14px;font-weight:700;color:var(--tx)}
 .nudge-hint{font-size:11px;color:var(--ts);margin-top:2px}
@@ -1206,7 +1206,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div class="nudge-body">
       <div class="nudge-item" onclick="nudgeTap('スマホ代','通信費')">
-        <div class="nudge-ico" style="background:#2980B922">📱</div>
+        <div class="nudge-ico" style="background:#2980B922">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#2980B9"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        </div>
         <div class="nudge-lbl">
           <div class="nudge-name">スマホ代</div>
           <div class="nudge-hint">ドコモ・au・ソフトバンク・格安SIMなど</div>
@@ -1214,7 +1216,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="nudge-arr">›</span>
       </div>
       <div class="nudge-item" onclick="nudgeTap('ネット回線','通信費')">
-        <div class="nudge-ico" style="background:#4A7EC822">🌐</div>
+        <div class="nudge-ico" style="background:#4A7EC822">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#4A7EC8"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        </div>
         <div class="nudge-lbl">
           <div class="nudge-name">ネット回線</div>
           <div class="nudge-hint">光回線・Wi-Fiなど</div>
@@ -1222,7 +1226,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="nudge-arr">›</span>
       </div>
       <div class="nudge-item" onclick="nudgeTap('家賃','その他')">
-        <div class="nudge-ico" style="background:#E9A40022">🏠</div>
+        <div class="nudge-ico" style="background:#E9A40022">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#E9A400"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </div>
         <div class="nudge-lbl">
           <div class="nudge-name">家賃</div>
           <div class="nudge-hint">毎月の家賃・管理費</div>
@@ -1230,7 +1236,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="nudge-arr">›</span>
       </div>
       <div class="nudge-item" onclick="nudgeTap('住宅ローン','ローン')">
-        <div class="nudge-ico" style="background:#C0392B22">🏡</div>
+        <div class="nudge-ico" style="background:#C0392B22">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#C0392B"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
         <div class="nudge-lbl">
           <div class="nudge-name">住宅ローン</div>
           <div class="nudge-hint">月々の返済額</div>
@@ -1238,7 +1246,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <span class="nudge-arr">›</span>
       </div>
       <div class="nudge-item" onclick="nudgeTap('車のローン','ローン')">
-        <div class="nudge-ico" style="background:#8E44AD22">🚗</div>
+        <div class="nudge-ico" style="background:#8E44AD22">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#8E44AD"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+        </div>
         <div class="nudge-lbl">
           <div class="nudge-name">車のローン</div>
           <div class="nudge-hint">カーローン・リース代</div>
