@@ -357,6 +357,51 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-sheet-ov.hidden{display:none}
 .cal-sheet-inner{width:100%;max-width:420px;background:var(--card);border-radius:16px;overflow:hidden;max-height:80vh;overflow-y:auto;transform:scale(.93) translateY(10px);transition:transform .22s cubic-bezier(.32,1,.23,1);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .cal-sheet-ov.open .cal-sheet-inner{transform:scale(1) translateY(0)}
+/* ── 明細サマリーカード ── */
+.ls-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden;border-left:4px solid var(--p)}
+/* 閉じた状態：1行コンパクト */
+.ls-closed{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.ls-closed:active{background:var(--pl)}
+.ls-closed-l{display:flex;align-items:baseline;gap:6px}
+.ls-closed-amt{font-size:22px;font-weight:800;color:var(--tx);line-height:1}
+.ls-closed-amt sup{font-size:55%;color:var(--p);font-weight:700;margin-right:1px}
+.ls-closed-unit{font-size:13px;font-weight:600;color:var(--ts)}
+.ls-closed-r{display:flex;align-items:center;gap:10px}
+.ls-closed-count{font-size:13px;font-weight:700;color:var(--ts);background:var(--bg);border-radius:20px;padding:3px 10px}
+.ls-toggle-arrow{font-size:11px;color:var(--ts);transition:transform .25s}
+.ls-toggle-arrow.open{transform:rotate(180deg)}
+/* 開いた状態 */
+.ls-expand{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
+.ls-expand.open{max-height:300px}
+.ls-expand-inner{border-top:1px solid var(--bd);padding:14px 16px}
+/* 4タイル横並び */
+.ls-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.ls-stat{background:var(--bg);border-radius:10px;padding:10px 8px;text-align:center}
+.ls-stat-label{font-size:10px;font-weight:700;color:var(--ts);letter-spacing:.3px;margin-bottom:4px}
+.ls-stat-val{font-size:clamp(13px,3.5vw,16px);font-weight:800;color:var(--tx);line-height:1;white-space:nowrap}
+.ls-stat-val sup{font-size:55%;color:var(--p);font-weight:700}
+.ls-stat.accent .ls-stat-val{color:var(--p)}
+/* 満足度ボタン */
+.ls-sat-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--pl);color:var(--p);font-size:14px;font-weight:700;font-family:inherit;border:1.5px solid var(--p);border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.ls-sat-btn:active{background:var(--p);color:#fff}
+
+/* ── 満足度一括更新ポップアップ ── */
+.sat-popup-ov{position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .18s ease}
+.sat-popup-ov.hidden{display:none}
+.sat-popup{background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:680px;max-height:82vh;overflow-y:auto;animation:fadeUp .22s ease;padding-bottom:env(safe-area-inset-bottom)}
+.sat-popup-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--card);z-index:1}
+.sat-popup-ttl{font-size:15px;font-weight:700}
+.sat-popup-body{padding:12px 16px 20px}
+.sat-popup-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.sat-popup-row:last-child{border-bottom:none}
+.sat-popup-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sat-popup-name{flex:1;font-size:14px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sat-popup-stars{display:flex;gap:2px;flex-shrink:0}
+.sat-popup-star{font-size:20px;background:none;border:none;cursor:pointer;opacity:.25;color:var(--ts);padding:1px;line-height:1;transition:opacity .1s,transform .1s}
+.sat-popup-star.on{opacity:1;color:#F4C430}
+.sat-popup-star:active{transform:scale(1.2)}
+.sat-popup-save{width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;font-size:15px;font-weight:700;font-family:inherit;border:none;border-radius:12px;cursor:pointer;margin-top:14px;-webkit-tap-highlight-color:transparent}
+.sat-popup-save:active{opacity:.8}
 /* ── 明細 ── */
 .list-ctrl{display:flex;gap:7px;margin-bottom:12px}
 .list-ctrl select{flex:1;padding:8px 10px;font-size:14px;font-family:inherit;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%237E928C"><path d="M7 10l5 5 5-5z"/></svg>');background-repeat:no-repeat;background-position:right 7px center;padding-right:24px}
@@ -530,6 +575,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .ob-btn-next{flex:1;padding:15px;background:#fff;color:var(--p);border:none;border-radius:14px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
 .ob-btn-next:active{opacity:.8}
 .ob-btn-skip{padding:15px 16px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);border:none;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* PC対応：中央モーダル風に */
+@media(min-width:768px){
+  .ob-overlay{align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+  .ob-inner-wrap{width:480px;max-height:88vh;background:var(--p);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.3)}
+  .ob-slides{border-radius:0}
+  .ob-slide{padding:32px 40px 12px}
+  .ob-illust{width:120px;height:120px;margin-bottom:16px}
+  .ob-footer{padding:12px 40px 24px;border-radius:0 0 24px 24px}
+  .ob-dots{padding:20px 0 8px}
+  .ob-home-hint{display:none}
+}
 
 /* PCサイドバー設定ボタン */
 .nb-settings{display:none}
@@ -1017,6 +1073,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
 <!-- オンボーディング -->
 <div class="ob-overlay hidden" id="ob-ov">
+  <div class="ob-inner-wrap">
 
   <!-- スライドコンテナ（4ステップ） -->
   <div class="ob-slides" id="ob-slides" style="width:400%">
@@ -1111,8 +1168,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="ob-ttl">登録は<em>30秒。</em><br>今日から家計を変えよう。</div>
       <div class="ob-desc">完全無料・広告なし・個人情報不取得。まずサブスクを全部登録して、毎月いくら払っているか確認してみましょう。</div>
 
-      <!-- ホーム画面追加の案内 -->
-      <div style="margin-top:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px;text-align:left;width:100%">
+      <!-- ホーム画面追加の案内（スマホのみ表示） -->
+      <div class="ob-home-hint" style="margin-top:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px;text-align:left;width:100%">
         <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:10px;letter-spacing:.5px">ホーム画面に追加すると便利です</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:12px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:8px">
@@ -1144,6 +1201,18 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <button class="ob-btn-next" id="ob-next" onclick="obNext()">次へ</button>
   </div>
 
+  </div><!-- /ob-inner-wrap -->
+</div>
+
+<!-- 満足度一括更新ポップアップ -->
+<div class="sat-popup-ov hidden" id="sat-popup-ov" onclick="if(event.target===this)closeSatPopup()">
+  <div class="sat-popup">
+    <div class="sat-popup-hdr">
+      <span class="sat-popup-ttl">⭐ 満足度を一括更新</span>
+      <button class="sheet-close" onclick="closeSatPopup()">✕</button>
+    </div>
+    <div class="sat-popup-body" id="sat-popup-body"></div>
+  </div>
 </div>
 
 <!-- メインコンテンツ -->
@@ -1470,6 +1539,48 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
   <!-- ④ 明細 -->
   <div id="pg-list" class="page">
+    <!-- サマリーカード -->
+    <div class="ls-card" id="list-summary-card">
+      <!-- 閉じた状態（常時表示） -->
+      <div class="ls-closed" onclick="toggleListSummary()">
+        <div class="ls-closed-l">
+          <div class="ls-closed-amt" id="ls-monthly"><sup>¥</sup>0</div>
+          <div class="ls-closed-unit">/月</div>
+        </div>
+        <div class="ls-closed-r">
+          <span class="ls-closed-count" id="ls-count">0件</span>
+          <span class="ls-toggle-arrow" id="ls-arrow">▼</span>
+        </div>
+      </div>
+      <!-- 開いた状態（アコーディオン） -->
+      <div class="ls-expand" id="ls-expand">
+        <div class="ls-expand-inner">
+          <div class="ls-stats">
+            <div class="ls-stat">
+              <div class="ls-stat-label">1日</div>
+              <div class="ls-stat-val" id="ls-daily"><sup>¥</sup>0</div>
+            </div>
+            <div class="ls-stat accent">
+              <div class="ls-stat-label">月額</div>
+              <div class="ls-stat-val" id="ls-monthly2"><sup>¥</sup>0</div>
+            </div>
+            <div class="ls-stat">
+              <div class="ls-stat-label">年間</div>
+              <div class="ls-stat-val" id="ls-yearly"><sup>¥</sup>0</div>
+            </div>
+            <div class="ls-stat">
+              <div class="ls-stat-label">件数</div>
+              <div class="ls-stat-val" id="ls-count2">0</div>
+            </div>
+          </div>
+          <div id="ls-members"></div>
+          <button class="ls-sat-btn" onclick="openSatPopupReport()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            満足度を一括更新
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="list-ctrl">
       <select id="fl-cat" onchange="renderList()">
         <option value="all">すべてのカテゴリ</option>
@@ -3150,6 +3261,146 @@ function updateFilterCounts(){
   });
 }
 
+/* ============================================================
+   明細サマリーカード
+============================================================ */
+let _lsOpen = false;
+
+function toggleListSummary(){
+  _lsOpen = !_lsOpen;
+  document.getElementById('ls-expand').classList.toggle('open', _lsOpen);
+  document.getElementById('ls-arrow').classList.toggle('open', _lsOpen);
+  if(_lsOpen) renderListSummaryMembers();
+  gaEvent('list_summary_toggle', { open: _lsOpen });
+}
+
+function renderListSummary(){
+  const cat = document.getElementById('fl-cat').value;
+  let list;
+  if(cat === '休止中'){
+    list = subs.filter(s => s.paused);
+  } else if(cat === 'all'){
+    list = subs.filter(s => !s.paused);
+  } else if(cat === 'その他'){
+    list = subs.filter(s => !catMap[s.cat] && !s.paused);
+  } else {
+    list = subs.filter(s => s.cat === cat && !s.paused);
+  }
+  if(currentSatFilter !== null) list = list.filter(s => s.sat === currentSatFilter);
+
+  const active = list.filter(s => s.freq !== '単発（買い切り）');
+  const monthly = active.reduce((a, s) => a + moFromSub(s), 0);
+  const yearly  = active.reduce((a, s) => a + yrFromSub(s), 0);
+  const daily   = Math.round(yearly / 365);
+  const count   = active.length;
+
+  // 閉じた状態（常時表示）
+  document.getElementById('ls-monthly').innerHTML = `<sup>¥</sup>${monthly.toLocaleString()}`;
+  document.getElementById('ls-count').textContent = `${count}件`;
+  // 開いた状態（4タイル）
+  document.getElementById('ls-daily').innerHTML   = `<sup>¥</sup>${daily.toLocaleString()}`;
+  document.getElementById('ls-monthly2').innerHTML = `<sup>¥</sup>${monthly.toLocaleString()}`;
+  document.getElementById('ls-yearly').innerHTML  = `<sup>¥</sup>${yearly.toLocaleString()}`;
+  document.getElementById('ls-count2').textContent = `${count}`;
+
+  if(_lsOpen) renderListSummaryMembers();
+}
+
+function renderListSummaryMembers(){
+  const mbEl = document.getElementById('ls-members');
+  if(!mbEl) return;
+  // Freeプラン（familyMembersなし）：内訳なし、ボタンだけ表示
+  if(typeof familyMembers === 'undefined' || familyMembers.length === 0){
+    mbEl.innerHTML = '';
+    return;
+  }
+  // Familyプラン：メンバー別内訳
+  const cat = document.getElementById('fl-cat').value;
+  let list = cat === '休止中' ? subs.filter(s => s.paused)
+           : cat === 'all'    ? subs.filter(s => !s.paused)
+           : cat === 'その他' ? subs.filter(s => !catMap[s.cat] && !s.paused)
+           :                    subs.filter(s => s.cat === cat && !s.paused);
+
+  const memberTotals = familyMembers.map(m => ({
+    name: m.name,
+    total: list.filter(s => s.memberId === m.id && s.freq !== '単発（買い切り）')
+               .reduce((a, s) => a + moFromSub(s), 0)
+  }));
+
+  mbEl.innerHTML = memberTotals.map(m => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--bd)">
+      <span style="color:var(--ts);font-weight:600">${m.name}</span>
+      <span style="font-weight:700;color:var(--p)">¥${m.total.toLocaleString()}/月</span>
+    </div>`).join('') + '<div style="height:12px"></div>';
+}
+
+/* ============================================================
+   満足度一括更新ポップアップ
+============================================================ */
+function openSatPopupReport(){
+  const body = document.getElementById('sat-popup-body');
+  // 満足度登録可能なサブスク（休止中・買い切りを除く）
+  const targets = subs.filter(s => !s.paused && s.freq !== '単発（買い切り）');
+
+  if(!targets.length){
+    showToast('対象のサブスクがありません');
+    return;
+  }
+
+  // 一時的な満足度データ（編集用）
+  const tmpSat = {};
+  targets.forEach(s => { tmpSat[s.id] = s.sat || 0; });
+
+  body.innerHTML = '';
+  targets.forEach(s => {
+    const ci = catMap[s.cat] || catMap['その他'];
+    const row = document.createElement('div');
+    row.className = 'sat-popup-row';
+    row.innerHTML = `
+      <div class="sat-popup-icon" style="background:${ci.color}22">${ci.icon(ci.color, 18)}</div>
+      <div class="sat-popup-name">${s.name}</div>
+      <div class="sat-popup-stars" id="pstars-${s.id}"></div>`;
+    body.appendChild(row);
+
+    // 星ボタンを生成
+    const starsEl = row.querySelector(`#pstars-${s.id}`);
+    for(let i = 1; i <= 5; i++){
+      const btn = document.createElement('button');
+      btn.className = 'sat-popup-star' + (i <= tmpSat[s.id] ? ' on' : '');
+      btn.textContent = '★';
+      btn.onclick = () => {
+        tmpSat[s.id] = i;
+        starsEl.querySelectorAll('.sat-popup-star').forEach((b, j) => {
+          b.classList.toggle('on', j < i);
+        });
+      };
+      starsEl.appendChild(btn);
+    }
+  });
+
+  // 保存ボタン
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sat-popup-save';
+  saveBtn.textContent = '保存する';
+  saveBtn.onclick = async () => {
+    targets.forEach(s => { s.sat = tmpSat[s.id]; });
+    await save();
+    closeSatPopup();
+    renderDashboard();
+    renderList();
+    gaEvent('sat_bulk_update', { count: targets.length });
+    showToast('満足度を更新しました');
+  };
+  body.appendChild(saveBtn);
+
+  document.getElementById('sat-popup-ov').classList.remove('hidden');
+  gaEvent('sat_popup_open', {});
+}
+
+function closeSatPopup(){
+  document.getElementById('sat-popup-ov').classList.add('hidden');
+}
+
 function renderList(){
   const cat=document.getElementById('fl-cat').value;
   const sort=document.getElementById('fl-sort').value;
@@ -3283,6 +3534,7 @@ function renderList(){
     box.appendChild(wrapper);
   });
   updateFilterCounts();
+  renderListSummary();
 }
 
 /* ============================================================
