@@ -294,46 +294,55 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-wd{text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);padding:5px 0}
 .cal-wd:first-child{color:#FFB3B3}
 .cal-wd:last-child{color:#B8D4FF}
-.cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);min-height:clamp(52px,10vw,80px);padding:4px 3px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:stretch;gap:1px}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:auto;align-items:start}
+.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:3px 2px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:stretch;gap:1px;overflow:hidden;box-sizing:border-box;min-height:clamp(72px,14vw,100px)}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day.other .cal-dn{color:#C8D4D0}
 .cal-day.today{background:linear-gradient(135deg,#E8F5F2 0%,#D4EDE8 100%)}
 .cal-day.has-ev{cursor:pointer}
 .cal-day.has-ev:active{background:var(--pl)}
 .cal-day.selected{background:var(--pl);outline:2px solid var(--p)}
-.cal-dn{font-size:13px;font-weight:700;color:var(--tx);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
+.cal-dn{font-size:clamp(10px,2.5vw,13px);font-weight:700;color:var(--tx);width:clamp(18px,5vw,22px);height:clamp(18px,5vw,22px);display:flex;align-items:center;justify-content:center;margin-bottom:1px;border-radius:50%;flex-shrink:0;align-self:flex-start}
 .cal-day.today .cal-dn{background:var(--p);color:#fff;box-shadow:0 2px 6px rgba(92,142,132,.5)}
 .cal-dn.sun{color:#C06060}
 .cal-dn.sat{color:#507AAA}
 .cal-day.today .cal-dn.sun,.cal-day.today .cal-dn.sat{color:#fff}
 /* TimeTree風チップ */
 .cal-chip{
-  font-size:clamp(8px,1.8vw,10px);
+  font-size:clamp(6px,1.4vw,10px);
   font-weight:700;
   border-radius:3px;
-  padding:1px 4px;
-  margin-top:2px;
+  padding:1px 2px;
+  margin-top:0;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   max-width:100%;
-  line-height:1.4;
+  line-height:1.25;
   border-left-width:2px;
   border-left-style:solid;
+  flex-shrink:0;
 }
 .cal-chip-more{
-  font-size:clamp(7px,1.5vw,9px);
+  font-size:clamp(6px,1.4vw,9px);
   font-weight:700;
   color:var(--ts);
-  margin-top:2px;
-  line-height:1.3;
+  margin-top:0;
+  line-height:1.25;
+  flex-shrink:0;
 }
+.cal-day[data-count="high"] .cal-chip{
+  font-size:clamp(5px,1.2vw,8px);
+  padding:0px 2px;
+  line-height:1.2;
+}
+.cal-day[data-count="high"]{gap:0px}
 .cal-day-amt{
-  font-size:clamp(7px,1.5vw,9px);
+  font-size:clamp(6px,1.4vw,9px);
   font-weight:700;
   color:var(--p);
-  margin-top:2px;
+  margin-top:auto;
+  padding-top:1px;
   line-height:1.3;
   text-align:center;
 }
@@ -751,7 +760,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
       <div><div class="hd-lbl">お問い合わせ</div><div class="hd-sub">不具合・ご意見はこちら</div></div>
     </button>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'privacy'});setTimeout(openPrivacy,150)">
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'privacy'});openPrivacyNewTab()">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg></div>
       <div><div class="hd-lbl">プライバシーポリシー</div><div class="hd-sub">データの取り扱いについて</div></div>
     </button>
@@ -762,11 +771,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div><div class="hd-lbl" style="color:#ffaaaa">全データを削除</div><div class="hd-sub">この操作は元に戻せません</div></div>
     </button>
 
-    <!-- プライバシーバッジ -->
-    <div class="hdrop-privacy-badge">
-      <div class="hdrop-privacy-badge-ttl"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> プライバシー保護</div>
-      <div class="hdrop-privacy-badge-txt">全データは端末内にのみ保存。外部送信なし。</div>
-    </div>
+
+
 
   </div>
 </div>
@@ -890,7 +896,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div class="s-body"><div class="s-title">お問い合わせ</div><div class="s-sub">不具合・ご意見はこちら</div></div>
         <span class="s-arr">›</span>
       </div>
-      <div class="s-row" onclick="openPrivacy()">
+      <div class="s-row" onclick="openPrivacyNewTab()">
         <div class="s-ico" style="background:#F0FDF4"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg></div>
         <div class="s-body"><div class="s-title">プライバシーポリシー</div><div class="s-sub">データの取り扱いについて</div></div>
         <span class="s-arr">›</span>
@@ -1584,19 +1590,6 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="list-ctrl">
       <select id="fl-cat" onchange="renderList()">
         <option value="all">すべてのカテゴリ</option>
-        <option value="動画・配信">動画・配信</option>
-        <option value="音楽">音楽</option>
-        <option value="電子書籍・雑誌">電子書籍・雑誌</option>
-        <option value="仕事・ツール">仕事・ツール</option>
-        <option value="ゲーム">ゲーム</option>
-        <option value="健康・フィットネス">健康・フィットネス</option>
-        <option value="金融・年会費">金融・年会費</option>
-        <option value="習い事">習い事</option>
-        <option value="通信費">通信費</option>
-        <option value="保険">保険</option>
-        <option value="ローン">ローン</option>
-        <option value="その他">その他</option>
-        <option value="休止中">休止中</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
@@ -1673,7 +1666,9 @@ let inclOt = false;
 let chartMode = 'month'; // 'month' or 'year'
 let satOpen=true;
 const MAX=200;
-const today=new Date();
+// today は毎回現在日時を返す関数として定義（日付跨ぎ対応）
+function getToday(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+const today=getToday(); // 後方互換のため変数も維持（renderCalendarで都度再取得）
 calYear=today.getFullYear(); calMonth=today.getMonth();
 
 
@@ -2587,6 +2582,16 @@ function openGuide(){document.getElementById('guide-ov').classList.remove('hidde
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
 function openPrivacy(){closeSettings();setTimeout(()=>{document.getElementById('privacy-ov').classList.remove('hidden');gaEvent('privacy_open',{});},200)}
 function closePrivacy(){document.getElementById('privacy-ov').classList.add('hidden')}
+function openPrivacyNewTab(){
+  closeHdrop&&closeHdrop();
+  gaEvent('privacy_open',{});
+  const privDiv=document.getElementById('privacy-ov').querySelector('.sheet > div:last-child');
+  const content=privDiv?privDiv.innerHTML:'';
+  const html=`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>プライバシーポリシー - Subly</title><style>body{font-family:'Noto Sans JP',sans-serif;max-width:720px;margin:0 auto;padding:24px 20px 48px;color:#333;background:#fff;line-height:1.8}h1{font-size:18px;color:#5C8E84;margin-bottom:4px}p{margin:0 0 10px;font-size:13px;color:#555}a{color:#5C8E84}.sec-ttl{font-weight:700;color:#5C8E84;margin:18px 0 6px;font-size:14px}ul{margin:6px 0 10px 18px;color:#555;font-size:13px}</style></head><body><h1>プライバシーポリシー</h1>${content}</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  window.open(url,'_blank');
+}
 
 // ── シェア機能 ──────────────────────────────────────────
 const SUBLY_SHARE_URL = 'https://jonekun429.github.io/subly_lp/';
@@ -3061,6 +3066,7 @@ function setCalFilter(f){
 }
 
 function renderCalendar(){
+  const todayNow=getToday(); // 毎回現在日付を取得（日付跨ぎ対応）
   const y=calYear, m=calMonth;
   document.getElementById('cal-label').textContent=`${y}年${m+1}月`;
 
@@ -3069,7 +3075,7 @@ function renderCalendar(){
 
   // 休止中は「今月以降」非表示（今月中に休止した場合も含め翌月から除外）
   const calViewStart = new Date(y, m, 1);
-  const today0 = new Date(); today0.setHours(0,0,0,0);
+  const today0 = todayNow;
   target = target.filter(s=>{
     if(!s.paused) return true;
     // pausedDateが設定されていれば、その月以降は非表示
@@ -3101,7 +3107,7 @@ function renderCalendar(){
   });
 
   let monthTotal=0,chipCount=0,remainTotal=0;
-  const todayD=today.getFullYear()===y&&today.getMonth()===m?today.getDate():null;
+  const todayD=todayNow.getFullYear()===y&&todayNow.getMonth()===m?todayNow.getDate():null;
   Object.entries(events).forEach(([d,evs])=>{
     evs.forEach(s=>{
       monthTotal+=moFromSub(s)||s.price; // 月換算（年額等は月割り）
@@ -3129,7 +3135,7 @@ function renderCalendar(){
   }
   for(let d=1;d<=lastDay;d++){
     const dow=new Date(y,m,d).getDay();
-    const isToday=(y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate());
+    const isToday=(y===todayNow.getFullYear()&&m===todayNow.getMonth()&&d===todayNow.getDate());
     const evs=events[d]||[];
     const hasEv=evs.length>0;
 
@@ -3145,23 +3151,27 @@ function renderCalendar(){
     cell.appendChild(dn);
 
     if(hasEv){
-      // TimeTree風：サービス名の短縮チップを最大2件表示 + 超過件数
-      evs.slice(0,2).forEach(sub=>{
+      // 件数に応じてチップ表示数を動的に調整
+      // 4件以下→全表示、5-7件→3件+more、8件以上→2件+more
+      if(evs.length>=5) cell.dataset.count='high';
+      const maxChips = evs.length<=4 ? evs.length : evs.length<=7 ? 3 : 2;
+      evs.slice(0,maxChips).forEach(sub=>{
         const color=(catMap[sub.cat]||catMap['その他']).color;
         const chip=document.createElement('div');
         chip.className='cal-chip';
         chip.style.background=color+'22';
         chip.style.borderLeft=`2px solid ${color}`;
         chip.style.color=color;
-        // 名前を短縮（6文字まで）
-        const shortName=sub.name.length>6?sub.name.slice(0,5)+'…':sub.name;
+        // 件数多い場合はより短縮
+        const maxLen = maxChips>=4 ? 4 : 5;
+        const shortName=sub.name.length>maxLen+1?sub.name.slice(0,maxLen)+'…':sub.name;
         chip.textContent=shortName;
         cell.appendChild(chip);
       });
-      if(evs.length>2){
+      if(evs.length>maxChips){
         const more=document.createElement('div');
         more.className='cal-chip-more';
-        more.textContent=`+${evs.length-2}件`;
+        more.textContent=`+${evs.length-maxChips}件`;
         cell.appendChild(more);
       }
       // 合計金額（小さく下部に）
@@ -3239,6 +3249,7 @@ function closeCalSheet(){
 ============================================================ */
 function updateFilterCounts(){
   const sel=document.getElementById('fl-cat');
+  const currentVal=sel.value;
   const counts={};
   subs.forEach(s=>{
     const key=catMap[s.cat]?s.cat:'その他';
@@ -3246,19 +3257,33 @@ function updateFilterCounts(){
   });
   counts['休止中']=subs.filter(s=>s.paused).length;
   counts['all']=subs.length;
-  Array.from(sel.options).forEach(opt=>{
-    const base=opt.dataset.base||(opt.dataset.base=opt.text.replace(/（\d+件）/,''));
-    const n=opt.value==='all'?counts['all']:(counts[opt.value]||0);
-    if(opt.value==='all'){
-      opt.text=`すべてのカテゴリ（${n}件）`;
-    } else if(n>0){
-      opt.text=`${base}（${n}件）`;
-      opt.style.display='';
-    } else {
-      opt.text=base;
-      opt.style.display='none'; // 0件は非表示
+
+  // カテゴリ表示順（固定）
+  const catOrder=['動画・配信','音楽','電子書籍・雑誌','仕事・ツール','ゲーム','健康・フィットネス','金融・年会費','習い事','通信費','保険','ローン','その他','休止中'];
+
+  // selectを再構築（登録済みカテゴリのみ）
+  sel.innerHTML='';
+  const allOpt=document.createElement('option');
+  allOpt.value='all';
+  allOpt.text=`すべてのカテゴリ（${counts['all']}件）`;
+  sel.appendChild(allOpt);
+
+  catOrder.forEach(cat=>{
+    const n=counts[cat]||0;
+    if(n>0){
+      const opt=document.createElement('option');
+      opt.value=cat;
+      opt.text=`${cat}（${n}件）`;
+      sel.appendChild(opt);
     }
   });
+
+  // 選択状態を復元（なければallに戻す）
+  if(Array.from(sel.options).some(o=>o.value===currentVal)){
+    sel.value=currentVal;
+  } else {
+    sel.value='all';
+  }
 }
 
 /* ============================================================
@@ -3469,13 +3494,16 @@ function renderList(){
       <div class="sub-right">
         <div class="sub-price">¥${s.price.toLocaleString()}</div>
         <div class="sub-freq">${freqLbl}</div>
+        ${s.freq==='年額' ? `<div style="font-size:11px;font-weight:600;color:var(--ts);text-align:right;margin-top:1px">月額換算 ¥${moFromSub(s).toLocaleString()}</div>` : ''}
         ${(()=>{
           if(s.freq==='単発（買い切り）') return '';
           const yr = yrFromSub(s);
+          const mo = moFromSub(s);
           const perDay = (yr / 365).toFixed(1);
+          const moLine = (s.freq!=='月額' && s.freq!=='年額') ? `月額 ¥${mo.toLocaleString()}<br>` : '';
+          const yrLine = s.freq!=='年額' ? `年間 ¥${yr.toLocaleString()}<br>` : '';
           return `<div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;line-height:1.6">
-            年間 ¥${yr.toLocaleString()}<br>
-            <span style="color:var(--p);font-weight:700">1日 約¥${perDay}</span>
+            ${moLine}${yrLine}<span style="color:var(--p);font-weight:700">1日 約¥${perDay}</span>
           </div>`;
         })()}
       </div>
