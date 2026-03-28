@@ -525,16 +525,16 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .sheet-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--card);z-index:1}
 .sheet-ttl{font-size:15px;font-weight:700}
 .sheet-close{width:28px;height:28px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ts)}
-.s-sec{font-size:14px;font-weight:700;color:var(--ts);letter-spacing:.7px;text-transform:uppercase;padding:14px 18px 7px}
-.s-grp{margin:0 14px 10px;background:var(--card);border-radius:11px;overflow:hidden;box-shadow:var(--sh)}
-.s-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--bd);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.s-sec{font-size:12px;font-weight:700;color:var(--ts);letter-spacing:1px;text-transform:uppercase;padding:18px 20px 8px}
+.s-grp{margin:0 16px 12px;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+.s-row{display:flex;align-items:center;gap:16px;padding:15px 18px;border-bottom:1px solid var(--bd);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
 .s-row:last-child{border-bottom:none}
 .s-row:active{background:var(--pl)}
-.s-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.s-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .s-body{flex:1}
-.s-title{font-size:14px;font-weight:600;color:var(--tx)}
-.s-sub{font-size:13px;color:var(--ts);margin-top:1px}
-.s-arr{color:var(--ts);font-size:18px;font-weight:300}
+.s-title{font-size:16px;font-weight:600;color:var(--tx)}
+.s-sub{font-size:13px;color:var(--ts);margin-top:2px}
+.s-arr{color:var(--ts);font-size:20px;font-weight:300}
 /* テーマ選択ボタン（プレビュー丸付き） */
 .hd-theme-btn,.s-theme-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border-radius:10px;border:1.5px solid transparent;background:rgba(255,255,255,.08);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .hd-theme-btn span{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);line-height:1}
@@ -544,7 +544,25 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .s-theme-btn.on span{color:var(--p)}
 .hd-theme-dot,.s-theme-dot{width:32px;height:32px;border-radius:50%;flex-shrink:0}
 
-/* ── ガイドシート ── */
+/* ── 使い方ガイド（スライド型モーダル） ── */
+.howto-ov{position:fixed;inset:0;z-index:9300;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .18s ease}
+.howto-ov.hidden{display:none}
+.howto-modal{background:#fff;border-radius:24px;width:100%;max-width:380px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18);animation:fadeUp .22s ease}
+.howto-dots{display:flex;gap:8px;justify-content:center;padding:20px 0 0}
+.howto-dot{width:8px;height:8px;border-radius:50%;background:#D1D5DB;transition:all .25s}
+.howto-dot.on{background:var(--p);width:24px;border-radius:4px}
+.howto-slides{display:flex;width:400%;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.howto-slide{width:25%;padding:20px 28px 28px;box-sizing:border-box;flex-shrink:0}
+.howto-step-lbl{font-size:12px;font-weight:700;color:var(--p);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.howto-slide-icon{width:52px;height:52px;border-radius:16px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;flex-shrink:0}
+.howto-slide-ttl{font-size:22px;font-weight:800;color:#1a1a1a;line-height:1.3;margin-bottom:14px}
+.howto-slide-desc{font-size:15px;color:#6B7280;line-height:1.75}
+.howto-slide-tip{margin-top:16px;padding:12px 14px;background:#F0FDF4;border-radius:10px;font-size:13px;color:#2D7A5A;line-height:1.6}
+.howto-footer{padding:20px 28px 28px;display:flex;flex-direction:column;gap:10px}
+.howto-btn-next{width:100%;padding:16px;background:var(--p);color:#fff;font-size:16px;font-weight:700;font-family:inherit;border:none;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.howto-btn-next:active{opacity:.85}
+.howto-btn-skip{width:100%;padding:10px;background:none;color:#9CA3AF;font-size:14px;font-weight:600;font-family:inherit;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* ── 使い方ガイド ── */
 .guide-body{padding:18px}
 .guide-step{display:flex;gap:12px;margin-bottom:20px}
 .guide-num{width:26px;height:26px;border-radius:50%;background:var(--p);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
@@ -557,9 +575,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .ob-overlay.hidden{display:none}
 /* スライドラッパー */
 .ob-slides{display:flex;width:400%;flex:1;overflow:hidden;transition:transform .38s cubic-bezier(.4,0,.2,1)}
-.ob-slide{width:25%;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:24px 28px 8px;text-align:left;box-sizing:border-box;overflow-y:auto}
+.ob-slide{width:25%;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:24px 32px;text-align:left;box-sizing:border-box;overflow-y:auto}
 /* イラストエリア */
-.ob-illust{width:160px;height:160px;border-radius:36px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;flex-shrink:0}
+.ob-illust{width:160px;height:160px;border-radius:36px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;flex-shrink:0}
 .ob-illust svg{filter:drop-shadow(0 4px 16px rgba(0,0,0,.15))}
 /* テキスト */
 .ob-badge{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:10px;text-align:left;width:100%}
@@ -580,8 +598,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   .ob-overlay{align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
   .ob-inner-wrap{width:480px;max-height:88vh;background:var(--p);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.3)}
   .ob-slides{border-radius:0}
-  .ob-slide{padding:32px 40px 12px}
-  .ob-illust{width:120px;height:120px;margin-bottom:16px}
+  .ob-slide{padding:32px 40px}
+  .ob-illust{width:120px;height:120px;margin-bottom:20px}
   .ob-footer{padding:12px 40px 24px;border-radius:0 0 24px 24px}
   .ob-dots{padding:20px 0 8px}
   .ob-home-hint{display:none}
@@ -729,7 +747,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></div>
       <div><div class="hd-lbl">機種変更ガイド</div><div class="hd-sub">引き継ぎ方法を確認</div></div>
     </button>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'onboarding'});setTimeout(showOnboarding,150)">
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'howto'});setTimeout(openHowto,150)">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
       <div><div class="hd-lbl">使い方を見る</div><div class="hd-sub">Sublyの基本的な使い方</div></div>
     </button>
@@ -872,9 +890,9 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <div class="s-body"><div class="s-title">機種変更ガイド</div><div class="s-sub">データの引き継ぎ方法を確認</div></div>
         <span class="s-arr">›</span>
       </div>
-      <div class="s-row" onclick="showOnboarding()">
+      <div class="s-row" onclick="openHowto()">
         <div class="s-ico" style="background:#F0FDF4"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
-        <div class="s-body"><div class="s-title">使い方を見る</div><div class="s-sub">Sublyの基本的な使い方</div></div>
+        <div class="s-body"><div class="s-title">使い方を見る</div><div class="s-sub">各画面の使い方を確認</div></div>
         <span class="s-arr">›</span>
       </div>
     </div>
@@ -964,68 +982,55 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </div>
 </div>
 
-<!-- プライバシーポリシーモーダル -->
-<div class="overlay hidden" id="privacy-ov" onclick="if(event.target===this)closePrivacy()">
-  <div class="sheet">
-    <div class="sheet-hdr">
-      <span class="sheet-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> プライバシーポリシー</span>
-      <button class="sheet-close" onclick="closePrivacy()">✕</button>
+<!-- 使い方ガイド -->
+<div class="howto-ov hidden" id="howto-ov" onclick="if(event.target===this)closeHowto()">
+  <div class="howto-modal">
+    <!-- ドット -->
+    <div class="howto-dots">
+      <div class="howto-dot on" id="hwdot-0"></div>
+      <div class="howto-dot" id="hwdot-1"></div>
+      <div class="howto-dot" id="hwdot-2"></div>
+      <div class="howto-dot" id="hwdot-3"></div>
     </div>
-    <div style="padding:18px;font-size:13px;color:var(--tx);line-height:1.8">
-      <p style="margin:0 0 4px;color:var(--ts);font-size:13px">制定日：2026年4月1日　最終更新日：2026年4月1日</p>
-      <p style="margin:0 0 18px;color:var(--ts);font-size:13px">本アプリケーション「Subly」における情報の取り扱いについて、Jone Lab（以下、「当方」といいます）は以下の通りプライバシーポリシーを定めます。</p>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">1. 取得する情報および利用目的</div>
-        <p style="margin:0;color:var(--ts)">本アプリは、ユーザーが入力したサブスクリプション情報（サービス名、金額、更新日、メモ、満足度）を取得します。これらはアプリ内での支出計算、カレンダー表示、およびデータ管理機能の提供のために利用されます。</p>
+    <!-- スライド -->
+    <div class="howto-slides" id="howto-slides">
+      <!-- STEP 1: ホーム -->
+      <div class="howto-slide">
+        <div class="howto-step-lbl">STEP 1 / 4</div>
+        <div class="howto-slide-icon">🏠</div>
+        <div class="howto-slide-ttl">ホーム画面の見方</div>
+        <div class="howto-slide-desc">月額・年間の支出合計と、カテゴリ別グラフが確認できます。グラフをタップすると詳細に絞り込めます。</div>
+        <div class="howto-slide-tip">💡 満足度★1〜3のサブスクは下部の「解約検討」リストに自動で表示されます。</div>
       </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">2. データの保存とセキュリティ（オフラインファースト）</div>
-        <p style="margin:0;color:var(--ts)">本アプリは「オフラインファースト」設計です。ユーザーが入力したデータはすべてユーザーの端末内（ローカルストレージ等）にのみ保存されます。当方を含む第三者が運営する外部サーバーへ、ユーザーのデータを送信・蓄積することはありません。</p>
+      <!-- STEP 2: 登録 -->
+      <div class="howto-slide">
+        <div class="howto-step-lbl">STEP 2 / 4</div>
+        <div class="howto-slide-icon">➕</div>
+        <div class="howto-slide-ttl">サブスクを登録する</div>
+        <div class="howto-slide-desc">Netflix・Spotifyなど人気サービスはカテゴリタブから選ぶだけ。リストにないものは「自分で入力」から追加できます。</div>
+        <div class="howto-slide-tip">💡 スマホ代・保険・ローンなど「固定費」も登録すると家計全体が見えてきます。</div>
       </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">3. アクセス解析ツールの利用（Google Analytics）</div>
-        <p style="margin:0;color:var(--ts)">本アプリでは、サービス改善を目的として、Google LLC が提供するアクセス解析ツール「Google Analytics 4」を利用しています。</p>
-        <br>
-        <p style="margin:0;color:var(--ts)">Google Analytics は、Cookie や端末識別情報等を用いて、以下のような利用状況データを収集・分析します。</p>
-        <ul style="margin:8px 0 0 16px;color:var(--ts);line-height:2">
-          <li>アプリの閲覧ページ・画面遷移</li>
-          <li>機能の利用状況（登録・削除・フィルター操作など）</li>
-          <li>利用デバイス・OS・ブラウザの種類</li>
-          <li>セッション数・滞在時間</li>
-        </ul>
-        <br>
-        <p style="margin:0;color:var(--ts)">収集されるデータには、氏名・住所・電話番号・メールアドレスなどの個人を特定できる情報は含まれません。また、ユーザーが入力したサブスクリプション内容（サービス名・金額等）は Google Analytics に送信されません。</p>
-        <br>
-        <p style="margin:0;color:var(--ts)">Google Analytics のデータ収集・処理の詳細については、Google のプライバシーポリシー（<a href="https://policies.google.com/privacy" style="color:var(--p)" target="_blank">https://policies.google.com/privacy</a>）をご確認ください。Google Analytics のオプトアウトを希望される場合は、<a href="https://tools.google.com/dlpage/gaoptout" style="color:var(--p)" target="_blank">Google Analytics オプトアウトアドオン</a>をご利用ください。</p>
+      <!-- STEP 3: カレンダー -->
+      <div class="howto-slide">
+        <div class="howto-step-lbl">STEP 3 / 4</div>
+        <div class="howto-slide-icon">📅</div>
+        <div class="howto-slide-ttl">カレンダーで支払日確認</div>
+        <div class="howto-slide-desc">各サブスクの次回支払日がカレンダーに表示されます。日付をタップするとその日の詳細が確認できます。</div>
+        <div class="howto-slide-tip">💡「要見直し」フィルターで満足度が低いサブスクだけ表示できます。</div>
       </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">4. 第三者提供について</div>
-        <p style="margin:0;color:var(--ts)">当方は、ユーザーの同意を得ることなく、個人情報を第三者に提供することはありません。また、ユーザーが入力したサブスクデータは端末内に留まるため、当方がその内容を閲覧・取得することもありません。なお、第3条に定めるアクセス解析データについては、Google LLC との間でデータ処理が行われます。</p>
+      <!-- STEP 4: 明細 -->
+      <div class="howto-slide">
+        <div class="howto-step-lbl">STEP 4 / 4</div>
+        <div class="howto-slide-icon">📋</div>
+        <div class="howto-slide-ttl">明細一覧で管理する</div>
+        <div class="howto-slide-desc">カテゴリ・金額順・満足度順で絞り込みができます。タップで編集・休止・削除、左スワイプでも操作できます。</div>
+        <div class="howto-slide-tip">💡 上部のサマリーを開くと「満足度を一括更新」がまとめてできます。</div>
       </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">5. バックアップ機能（CSV）について</div>
-        <p style="margin:0;color:var(--ts)">本アプリのCSVエクスポート・インポート機能は、ユーザーの明示的な操作があった場合にのみ、端末のストレージへアクセスします。</p>
-      </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">6. 免責事項</div>
-        <p style="margin:0;color:var(--ts)">本アプリは細心の注意を払って開発されていますが、ご利用の端末やOSのバージョン、画面設定（フォントサイズ等）によっては、画面表示（UI）が正しく表示されない場合があります。<br>本アプリの利用により生じた損害等について、開発者は一切の責任を負わないものとします。正確なデータ管理はユーザーご自身で行っていただくようお願いいたします。</p>
-      </div>
-
-      <div style="margin-bottom:18px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">7. お問い合わせ先</div>
-        <p style="margin:0;color:var(--ts)">開発者：Jone（Jone Lab）<br>〒150-0043 東京都渋谷区道玄坂1丁目10番8号<br>渋谷道玄坂東急ビル2F-C<br>Mail: jone.lab.app&#64;gmail.com</p>
-      </div>
-
-      <div style="margin-bottom:8px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--p)">8. プライバシーポリシーの変更</div>
-        <p style="margin:0;color:var(--ts)">当方は、法令の変更や本アプリの機能追加等に伴い、必要に応じて本プライバシーポリシーを変更することがあります。変更後のプライバシーポリシーは、本ページに掲示された時点から効力を生じるものとします。</p>
-      </div>
+    </div>
+    <!-- フッター -->
+    <div class="howto-footer">
+      <button class="howto-btn-next" id="howto-btn-next" onclick="howtoNext()">次へ</button>
+      <button class="howto-btn-skip" onclick="closeHowto()">スキップ</button>
     </div>
   </div>
 </div>
@@ -2583,10 +2588,40 @@ function closeSavingHints(){ document.getElementById('saving-hints-ov').classLis
 
 function openSettings(){document.getElementById('settings-ov').classList.remove('hidden')}
 function closeSettings(){document.getElementById('settings-ov').classList.add('hidden')}
+let _hwPage = 0;
+function openHowto(){
+  closeSettings();
+  setTimeout(()=>{
+    _hwPage = 0;
+    _hwRender();
+    document.getElementById('howto-ov').classList.remove('hidden');
+    gaEvent('howto_open',{});
+  },200);
+}
+function closeHowto(){ document.getElementById('howto-ov').classList.add('hidden'); }
+function howtoNext(){
+  if(_hwPage < 3){ _hwPage++; _hwRender(); }
+  else { closeHowto(); }
+}
+function _hwRender(){
+  const slides = document.getElementById('howto-slides');
+  if(slides) slides.style.transform = `translateX(${-_hwPage * 25}%)`;
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('hwdot-'+i);
+    if(d) d.classList.toggle('on', i===_hwPage);
+  }
+  const btn = document.getElementById('howto-btn-next');
+  if(btn) btn.textContent = _hwPage === 3 ? 'はじめる' : '次へ';
+  gaEvent('howto_step',{step:_hwPage+1});
+}
+function switchHowto(tab){ /* 旧タブ型の残骸、使用しない */ }
 function openGuide(){document.getElementById('guide-ov').classList.remove('hidden');gaEvent('guide_open',{})}
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
-function openPrivacy(){closeSettings();setTimeout(()=>{document.getElementById('privacy-ov').classList.remove('hidden');gaEvent('privacy_open',{});},200)}
-function closePrivacy(){document.getElementById('privacy-ov').classList.add('hidden')}
+function openPrivacy(){
+  gaEvent('privacy_open',{});
+  window.open('https://jonekun429.github.io/subly_lp/privacy.html','_blank','noopener');
+}
+function closePrivacy(){}
 
 // ── シェア機能 ──────────────────────────────────────────
 const SUBLY_SHARE_URL = 'https://jonekun429.github.io/subly_lp/';
