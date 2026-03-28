@@ -295,7 +295,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-wd:first-child{color:#FFB3B3}
 .cal-wd:last-child{color:#B8D4FF}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);min-height:clamp(52px,10vw,80px);padding:4px 3px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:stretch;gap:1px}
+.cal-day{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);height:clamp(62px,11vw,86px);padding:3px 2px;position:relative;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:stretch;gap:1px;overflow:hidden;box-sizing:border-box}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day.other .cal-dn{color:#C8D4D0}
 .cal-day.today{background:linear-gradient(135deg,#E8F5F2 0%,#D4EDE8 100%)}
@@ -763,11 +763,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 
     <!-- サポート -->
     <div class="hd-sec">サポート</div>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'feature_request'});window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'feature_request'});openExternalLink('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog')">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></div>
       <div><div class="hd-lbl">機能リクエスト</div><div class="hd-sub">ご要望をお聞かせください</div></div>
     </button>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'contact'});window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'contact'});openExternalLink('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor')">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
       <div><div class="hd-lbl">お問い合わせ</div><div class="hd-sub">不具合・ご意見はこちら</div></div>
     </button>
@@ -900,12 +900,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     </div>
     <div class="s-sec">サポート</div>
     <div class="s-grp">
-      <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog','_blank')">
+      <div class="s-row" onclick="openExternalLink('https://docs.google.com/forms/d/e/1FAIpQLSdP2gYFQDWnTMXbiLsXFV7i3y70phIT1Wu7HiIkt9Xjl8tZ4g/viewform?usp=dialog')">
         <div class="s-ico" style="background:#EEF6FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></div>
         <div class="s-body"><div class="s-title">機能リクエスト</div><div class="s-sub">ご要望をお聞かせください</div></div>
         <span class="s-arr">›</span>
       </div>
-      <div class="s-row" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor','_blank')">
+      <div class="s-row" onclick="openExternalLink('https://docs.google.com/forms/d/e/1FAIpQLSecie4ubn9sDlzdoQUWvzcEoK0O46dmQhghSr3VmLpsS-Coww/viewform?usp=publish-editor')">
         <div class="s-ico" style="background:#FFF8EE"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
         <div class="s-body"><div class="s-title">お問い合わせ</div><div class="s-sub">不具合・ご意見はこちら</div></div>
         <span class="s-arr">›</span>
@@ -1611,7 +1611,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <option value="ローン">ローン</option>
         <option value="その他">その他</option>
         <option value="休止中">休止中</option>
-        <option value="解約済">解約済</option>
+        <option value="解約済" style="display:none">解約済</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
@@ -2626,7 +2626,39 @@ function _hwRender(){
 }
 function openGuide(){document.getElementById('guide-ov').classList.remove('hidden');gaEvent('guide_open',{})}
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
-function openPrivacy(){
+/* ============================================================
+   外部リンクを開く（PWA/スタンドアロン対応）
+   iOSのスタンドアロンモードでは window.open が同ウィンドウに
+   遷移してしまうため、a要素経由で確実に別タブで開く
+============================================================ */
+function openExternalLink(url){
+  closeSettings();
+  closeHdrop();
+  gaEvent('external_link_open', { url });
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => document.body.removeChild(a), 100);
+}
+
+/* ============================================================
+   ページ可視性リカバリー
+   外部ページから戻ってきたとき、オーバーレイが残っていると
+   操作不能になるため、全モーダルを閉じてリセットする
+============================================================ */
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible'){
+    // 開いていないはずのモーダルをすべて閉じる
+    ['settings-ov','guide-ov','howto-ov','sat-popup-ov','nudge-ov'].forEach(id => {
+      document.getElementById(id)?.classList.add('hidden');
+    });
+    closeHdrop();
+  }
+});
   gaEvent('privacy_open',{});
   window.open('https://jonekun429.github.io/subly-Privacy-/','_blank','noopener');
 }
@@ -3226,31 +3258,42 @@ function renderCalendar(){
     cell.appendChild(dn);
 
     if(hasEv){
-      // TimeTree風：サービス名の短縮チップを最大2件表示 + 超過件数
-      evs.slice(0,2).forEach(sub=>{
+      // セルの利用可能高さから表示できるチップ数を動的計算
+      // cal-dn: 24px, chip: 約14px×gap1px, more: 12px, amt: 11px
+      const cellH = Math.max(62, Math.min(86, window.innerWidth * 0.11));
+      const dnH = 26; // cal-dn + margin
+      const chipH = 15; // chip高さ + gap
+      const footerH = 23; // more + amt
+      const availH = cellH - dnH - footerH;
+      const maxChips = Math.max(1, Math.floor(availH / chipH));
+
+      evs.slice(0, maxChips).forEach(sub=>{
         const color=(catMap[sub.cat]||catMap['その他']).color;
         const chip=document.createElement('div');
         chip.className='cal-chip';
         chip.style.background=color+'22';
         chip.style.borderLeft=`2px solid ${color}`;
         chip.style.color=color;
-        // 名前を短縮（6文字まで）
         const shortName=sub.name.length>6?sub.name.slice(0,5)+'…':sub.name;
         chip.textContent=shortName;
         cell.appendChild(chip);
       });
-      if(evs.length>2){
+      if(evs.length > maxChips){
         const more=document.createElement('div');
         more.className='cal-chip-more';
-        more.textContent=`+${evs.length-2}件`;
+        more.textContent=`+${evs.length - maxChips}件`;
         cell.appendChild(more);
       }
-      // 合計金額（小さく下部に）
-      const dayTotal=evs.reduce((a,s)=>a+moFromSub(s),0);
-      const amtEl=document.createElement('div');
-      amtEl.className='cal-day-amt';
-      amtEl.textContent='¥'+dayTotal.toLocaleString();
-      cell.appendChild(amtEl);
+      // 件数が多い場合は金額を非表示（スペースが足りない）
+      if(evs.length <= maxChips + 1){
+        const dayTotal=evs.reduce((a,s)=>a+moFromSub(s),0);
+        if(dayTotal > 0){
+          const amtEl=document.createElement('div');
+          amtEl.className='cal-day-amt';
+          amtEl.textContent='¥'+dayTotal.toLocaleString();
+          cell.appendChild(amtEl);
+        }
+      }
       cell.onclick=()=>showCalDetail(y,m,d,evs);
     }
     grid.appendChild(cell);
@@ -3264,7 +3307,6 @@ function renderCalendar(){
     grid.appendChild(cell);
   }
 
-  renderCalendar._target = target; // 後でmodalで参照用に保存
 }
 
 function showCalDetail(y,m,d,evs){
@@ -4338,6 +4380,16 @@ if(document.readyState==='loading'){
 } else {
   waitAndInit();
 }
+// ウィンドウリサイズ時にカレンダーを再描画（チップ数が動的に変わるため）
+let _calResizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(_calResizeTimer);
+  _calResizeTimer=setTimeout(()=>{
+    if(document.getElementById('pg-calendar')?.classList.contains('active')){
+      renderCalendar();
+    }
+  },200);
+});
 </script>
 </body>
 </html>
