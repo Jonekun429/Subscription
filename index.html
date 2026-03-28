@@ -1615,10 +1615,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
-        <option value="price-d">月額（高い順）</option>
-        <option value="price-a">月額（安い順）</option>
-        <option value="yr-d">年額（高い順）</option>
-        <option value="yr-a">年額（安い順）</option>
+        <option value="price-d">金額（高い順）</option>
+        <option value="price-a">金額（安い順）</option>
         <option value="sat">満足度順</option>
       </select>
     </div>
@@ -3338,9 +3336,6 @@ function updateFilterCounts(){
     } else if(n>0){
       opt.text=`${base}（${n}件）`;
       opt.style.display='';
-    } else if(opt.value==='解約済'){
-      opt.text=base; // 解約済は0件でも常に表示
-      opt.style.display='';
     } else {
       opt.text=base;
       opt.style.display='none';
@@ -3506,10 +3501,8 @@ function renderList(){
   }
   // 満足度フィルター（sat-bandタップ時）
   if(currentSatFilter!==null) list=list.filter(s=>s.sat===currentSatFilter);
-  if(sort==='price-d')list.sort((a,b)=>moFromSub(b)-moFromSub(a));
-  else if(sort==='price-a')list.sort((a,b)=>moFromSub(a)-moFromSub(b));
-  else if(sort==='yr-d')list.sort((a,b)=>yrFromSub(b)-yrFromSub(a));
-  else if(sort==='yr-a')list.sort((a,b)=>yrFromSub(a)-yrFromSub(b));
+  if(sort==='price-d')list.sort((a,b)=>b.price-a.price);
+  else if(sort==='price-a')list.sort((a,b)=>a.price-b.price);
   else if(sort==='sat')list.sort((a,b)=>(b.sat||0)-(a.sat||0));
   else list.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
   // 休止中は常に末尾（解約済・休止中フィルター時は除く）
@@ -4031,7 +4024,7 @@ async function exportCSV(){
   gaEvent('csv_export', { count: subs.length });
   if(!subs.length){ showAlert('','データがありません','登録されたサブスクがありません'); return; }
   const BOM='\uFEFF';
-  const header='ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度,休止,支払い方法,解約URL';
+  const header='ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度,休止,支払い方法,解約URL,解約済,解約日';
   const rows=subs.map(s=>[
     s.id,
     `"${(s.name||'').replace(/"/g,'""')}"`,
@@ -4043,7 +4036,9 @@ async function exportCSV(){
     s.sat||'',
     s.paused?1:0,
     `"${(s.payment||'').replace(/"/g,'""')}"`,
-    `"${(s.cancelUrl||'').replace(/"/g,'""')}"`
+    `"${(s.cancelUrl||'').replace(/"/g,'""')}"`,
+    s.canceled?1:0,
+    s.canceledDate||''
   ].join(','));
   const csvText = BOM+header+'\n'+rows.join('\n');
   const fileName = `subly_${new Date().toISOString().slice(0,10)}.csv`;
@@ -4126,33 +4121,54 @@ async function exportCSV(){
 async function importCSVPicker(){
   const input = document.createElement('input');
   input.type = 'file';
-  // Android対応: MIMEタイプを広めに指定（text/csvだけだと選択できない機種がある）
-  input.accept = '.csv,text/csv,text/plain,application/csv';
+  // iOS/Android対応: MIMEを広めに指定（application/octet-streamも許容）
+  input.accept = '.csv,.txt,text/csv,text/plain,application/csv,application/octet-stream,*/*';
   input.style.cssText = 'position:fixed;opacity:0;width:1px;height:1px;top:0;left:0';
   input.onchange = e => {
     const file = e.target.files[0];
     if(file) _processImportFile(file);
-    document.body.removeChild(input);
+    if(document.body.contains(input)) document.body.removeChild(input);
   };
   document.body.appendChild(input);
   input.click();
-  // fallbackタイムアウト（ファイル未選択でも5秒後に除去）
   setTimeout(()=>{ if(document.body.contains(input)) document.body.removeChild(input); }, 8000);
 }
 
 function _processImportFile(file){
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const text=ev.target.result.replace(/^\uFEFF/,'');
-    const lines=text.split(/\r?\n/).filter(l=>l.trim());
-    if(lines.length<2){ showAlert('','データがありません','有効なCSVデータが見つかりませんでした'); return}
-    const imported=[];
-    lines.slice(1).forEach(line=>{
-      const cols=parseCSVLine(line);
-      if(cols.length<6)return;
-      imported.push({id:parseInt(cols[0])||Date.now(),name:cols[1],cat:cols[2],price:parseInt(cols[3])||0,freq:cols[4]||'月額',date:cols[5],memo:cols[6]||'',sat:parseInt(cols[7])||0,paused:cols[8]==="1",payment:cols[9]||'',cancelUrl:cols[10]||''});
+  const reader = new FileReader();
+  reader.onload = ev => {
+    // BOM除去（UTF-8 / UTF-16）
+    let text = ev.target.result;
+    text = text.replace(/^[\uFEFF\uFFFE]/, '');
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if(lines.length < 2){
+      showDialog({icon:'⚠',title:'読み込みエラー',msg:'有効なCSVデータが見つかりませんでした。<br>SublyでエクスポートしたCSVファイルを選択してください。',buttons:[{label:'OK',cls:'ok'}]});
+      return;
+    }
+    const imported = [];
+    lines.slice(1).forEach(line => {
+      const cols = parseCSVLine(line);
+      if(cols.length < 6) return;
+      imported.push({
+        id:          parseInt(cols[0]) || Date.now(),
+        name:        cols[1] || '',
+        cat:         cols[2] || 'その他',
+        price:       parseInt(cols[3]) || 0,
+        freq:        cols[4] || '月額',
+        date:        cols[5] || '',
+        memo:        cols[6] || '',
+        sat:         parseInt(cols[7]) || 0,
+        paused:      cols[8] === '1',
+        payment:     cols[9] || '',
+        cancelUrl:   cols[10] || '',
+        canceled:    cols[11] === '1',
+        canceledDate:cols[12] || ''
+      });
     });
-    if(!imported.length){ showAlert('','データがありません','インポートできるデータが見つかりませんでした'); return}
+    if(!imported.length){
+      showDialog({icon:'⚠',title:'読み込みエラー',msg:'インポートできるデータが見つかりませんでした。',buttons:[{label:'OK',cls:'ok'}]});
+      return;
+    }
     showDialog({
       icon:'↓',
       title:`${imported.length}件をインポート`,
@@ -4160,14 +4176,17 @@ function _processImportFile(file){
       buttons:[
         {label:'キャンセル', cls:'cancel'},
         {label:'インポート', cls:'ok', onClick: async ()=>{
-          subs=imported; await save(); closeSettings(); goto('dashboard');
+          subs = imported; await save(); closeSettings(); goto('dashboard');
           gaEvent('csv_import', { count: imported.length });
           showToast(`${imported.length}件をインポートしました`);
         }}
       ]
     });
   };
-  reader.readAsText(file,'UTF-8');
+  reader.onerror = () => {
+    showDialog({icon:'⚠',title:'読み込みエラー',msg:'ファイルの読み込みに失敗しました。',buttons:[{label:'OK',cls:'ok'}]});
+  };
+  reader.readAsText(file, 'UTF-8');
 }
 
 function parseCSVLine(line){
