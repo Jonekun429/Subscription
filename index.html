@@ -1598,20 +1598,6 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="list-ctrl">
       <select id="fl-cat" onchange="renderList()">
         <option value="all">すべてのカテゴリ</option>
-        <option value="動画・配信">動画・配信</option>
-        <option value="音楽">音楽</option>
-        <option value="電子書籍・雑誌">電子書籍・雑誌</option>
-        <option value="仕事・ツール">仕事・ツール</option>
-        <option value="ゲーム">ゲーム</option>
-        <option value="健康・フィットネス">健康・フィットネス</option>
-        <option value="金融・年会費">金融・年会費</option>
-        <option value="習い事">習い事</option>
-        <option value="通信費">通信費</option>
-        <option value="保険">保険</option>
-        <option value="ローン">ローン</option>
-        <option value="その他">その他</option>
-        <option value="休止中">休止中</option>
-        <option value="解約済" style="display:none">解約済</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
@@ -3363,31 +3349,41 @@ function closeCalSheet(){
    明細
 ============================================================ */
 function updateFilterCounts(){
-  const sel=document.getElementById('fl-cat');
-  const counts={};
-  subs.filter(s=>!s.canceled).forEach(s=>{
-    const key=catMap[s.cat]?s.cat:'その他';
-    counts[key]=(counts[key]||0)+1;
+  const sel = document.getElementById('fl-cat');
+  const currentVal = sel.value; // 選択中の値を保持
+
+  // カテゴリ順（表示順固定）
+  const CAT_ORDER = [
+    '動画・配信','音楽','電子書籍・雑誌','仕事・ツール','ゲーム',
+    '健康・フィットネス','金融・年会費','習い事','通信費','保険','ローン','その他',
+    '休止中','解約済'
+  ];
+
+  // 件数集計
+  const counts = {};
+  subs.filter(s => !s.canceled).forEach(s => {
+    const key = catMap[s.cat] ? s.cat : 'その他';
+    counts[key] = (counts[key] || 0) + 1;
   });
-  counts['休止中']=subs.filter(s=>s.paused&&!s.canceled).length;
-  counts['解約済']=subs.filter(s=>s.canceled).length;
-  counts['all']=subs.filter(s=>!s.canceled).length;
-  Array.from(sel.options).forEach(opt=>{
-    // dataset.baseは「件数なし」のラベルをキャッシュ（初回のみ設定）
-    if(!opt.dataset.base) opt.dataset.base = opt.text.replace(/（\d+件）/,'').replace(/\s*style="[^"]*"/,'');
-    const base = opt.dataset.base;
-    const n = opt.value==='all' ? counts['all'] : (counts[opt.value]||0);
-    if(opt.value==='all'){
-      opt.text=`すべてのカテゴリ（${n}件）`;
-      opt.style.display='';
-    } else if(n>0){
-      opt.text=`${base}（${n}件）`;
-      opt.style.display='';
-    } else {
-      opt.text=base;
-      opt.style.display='none';
+  counts['休止中'] = subs.filter(s => s.paused && !s.canceled).length;
+  counts['解約済'] = subs.filter(s => s.canceled).length;
+  const allCount = subs.filter(s => !s.canceled).length;
+
+  // optionを完全再生成（iOSはdisplay:noneが効かないため削除で対応）
+  sel.innerHTML = `<option value="all">すべてのカテゴリ（${allCount}件）</option>`;
+  CAT_ORDER.forEach(cat => {
+    const n = counts[cat] || 0;
+    if(n > 0){
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.text = `${cat}（${n}件）`;
+      sel.appendChild(opt);
     }
   });
+
+  // 選択値を復元（なければallに戻す）
+  const exists = Array.from(sel.options).some(o => o.value === currentVal);
+  sel.value = exists ? currentVal : 'all';
 }
 
 /* ============================================================
@@ -4350,9 +4346,6 @@ async function init(){
 
   if(!onboarded) showOnboarding();
   goto('dashboard');
-  // 解約済optionを初期状態で非表示（updateFilterCountsで件数があれば表示される）
-  const canceledOpt = document.querySelector('#fl-cat option[value="解約済"]');
-  if(canceledOpt) canceledOpt.style.display = 'none';
   updateFilterCounts();
 
   // ── リピーター追跡：起動回数・登録件数をユーザープロパティにセット ──
