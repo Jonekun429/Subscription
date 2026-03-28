@@ -3737,8 +3737,8 @@ async function submitForm(){
       buttons:[
         {label:'続けて追加', cls:'ok', onClick:()=>{
           resetForm();
-          // STEP1に戻る（定番グリッドから次を選べる）
           backToStep1();
+          setTimeout(()=>checkNudge(), 400);
         }},
         {label:'ホームへ', cls:'cancel', onClick:()=>{
           resetForm();
