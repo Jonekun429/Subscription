@@ -409,6 +409,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* コンパクト1行カード */
 .sub-row{background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sh);display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow .12s;-webkit-tap-highlight-color:transparent}
 .sub-row:hover{box-shadow:var(--shl)}
+.sub-row.canceled{opacity:.5;background:var(--bg)}
+.sub-canceled-badge{font-size:10px;font-weight:700;color:#fff;background:#9CA3AF;border-radius:4px;padding:2px 6px;margin-left:4px;vertical-align:middle}
 .sub-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .sub-body{flex:1;min-width:0}
 .sub-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1045,7 +1047,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div class="guide-body">
       <div class="guide-note" style="margin-bottom:20px">
         <strong>Sublyのデータはお使いの端末に保存されています。</strong><br>
-        機種変更の前にCSVエクスポートでバックアップを取り、新しい端末でインポートしてください。
+        旧端末でエクスポート → ファイルを転送 → 新端末でインポート、の順に進めてください。
       </div>
       <p style="font-size:13px;font-weight:700;margin-bottom:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#5C8E84"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> 機種変更の手順</p>
       <div class="guide-step">
@@ -1070,8 +1072,15 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         Androidはメニューから「ホーム画面に追加」。
       </div>
     </div>
-    <div style="padding:0 16px 20px">
-      <button class="btn-submit" onclick="closeGuide();setTimeout(importCSVPicker,150)"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg> 今すぐインポート</button>
+    <div style="padding:0 16px 20px;display:flex;flex-direction:column;gap:10px">
+      <button class="btn-submit" onclick="closeGuide();setTimeout(exportCSV,150)" style="background:var(--p)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z"/></svg>
+        旧端末：今すぐエクスポート
+      </button>
+      <button class="btn-submit" onclick="closeGuide();setTimeout(importCSVPicker,150)" style="background:var(--ts)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+        新端末：今すぐインポート
+      </button>
     </div>
   </div>
 </div>
@@ -1602,11 +1611,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         <option value="ローン">ローン</option>
         <option value="その他">その他</option>
         <option value="休止中">休止中</option>
+        <option value="解約済">解約済</option>
       </select>
       <select id="fl-sort" onchange="renderList()">
         <option value="date">更新日順</option>
-        <option value="price-d">金額（高い順）</option>
-        <option value="price-a">金額（安い順）</option>
+        <option value="price-d">月額（高い順）</option>
+        <option value="price-a">月額（安い順）</option>
+        <option value="yr-d">年額（高い順）</option>
+        <option value="yr-a">年額（安い順）</option>
         <option value="sat">満足度順</option>
       </select>
     </div>
@@ -2283,7 +2295,7 @@ async function _scheduleUpdateNotifications(cfg){
       let idCounter = 2000;
       const today = new Date(); today.setHours(0,0,0,0);
 
-      subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused).forEach(s=>{
+      subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused&&!s.canceled).forEach(s=>{
         const np = nextPayDate(s);
         if(!np) return;
         cfg.timings.forEach(daysBefore=>{
@@ -2614,14 +2626,12 @@ function _hwRender(){
   if(btn) btn.textContent = _hwPage === 3 ? 'はじめる' : '次へ';
   gaEvent('howto_step',{step:_hwPage+1});
 }
-function switchHowto(tab){ /* 旧タブ型の残骸、使用しない */ }
 function openGuide(){document.getElementById('guide-ov').classList.remove('hidden');gaEvent('guide_open',{})}
 function closeGuide(){document.getElementById('guide-ov').classList.add('hidden')}
 function openPrivacy(){
   gaEvent('privacy_open',{});
-  window.open('https://jonekun429.github.io/subly_lp/privacy.html','_blank','noopener');
+  window.open('https://jonekun429.github.io/subly-Privacy-/','_blank','noopener');
 }
-function closePrivacy(){}
 
 // ── シェア機能 ──────────────────────────────────────────
 const SUBLY_SHARE_URL = 'https://jonekun429.github.io/subly_lp/';
@@ -2792,7 +2802,7 @@ function setChartMode(mode){
 function renderDashboard(){
   let monthly=0,yearly=0;
   const cmap={};
-  subs.filter(s=>!s.paused).forEach(s=>{
+  subs.filter(s=>!s.paused&&!s.canceled).forEach(s=>{
     if(s.freq==='単発（買い切り）'){
       if(!inclOt)return;
       yearly+=s.price;
@@ -2813,7 +2823,7 @@ function renderDashboard(){
   });
   document.getElementById('ttl-m').innerHTML=`<sup>¥</sup>${monthly.toLocaleString()}`;
   document.getElementById('ttl-y').innerHTML=`<sup>¥</sup>${yearly.toLocaleString()}`;
-  const activeCnt = subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused).length;
+  const activeCnt = subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused&&!s.canceled).length;
   document.getElementById('sub-total-count').textContent = activeCnt;
   const banner = document.getElementById('sub-count-banner');
   banner.style.background = activeCnt > 0 ? 'var(--p)' : 'var(--ts)';
@@ -2947,7 +2957,7 @@ function drawFallback(ctx,canvas,data,colors,labels,total){
 function renderSatChart(){
   const area=document.getElementById('sat-chart-area');
   const groups={};
-  subs.filter(s=>s.sat&&s.freq!=='単発（買い切り）').forEach(s=>{
+  subs.filter(s=>s.sat&&s.freq!=='単発（買い切り）'&&!s.canceled).forEach(s=>{
     const mo=moFromSub(s);
     groups[s.sat]=(groups[s.sat]||{total:0,cnt:0});
     groups[s.sat].total+=mo;
@@ -2972,7 +2982,7 @@ function renderSatChart(){
     </div>`;
   });
   html+='</div>';
-  const lowSat=subs.filter(s=>!s.paused&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）');
+  const lowSat=subs.filter(s=>!s.paused&&!s.canceled&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）');
   if(lowSat.length){
     const low=lowSat.reduce((s,x)=>s+(x.freq==='月額'?x.price:Math.round(x.price/12)),0);
     html+=`<div class="sat-insight">満足度が低いサブスクに <b>¥${low.toLocaleString()}/月</b>。解約すると年間 <b>¥${(low*12).toLocaleString()}</b> 節約できます。</div>`;
@@ -2987,6 +2997,7 @@ function filterBySat(star){
   if(bar){ bar.style.display='flex'; document.getElementById('sat-filter-label').textContent=`${'★'.repeat(star)} のサブスクを表示中`; }
   renderList();
   showToast(`★${star} のサブスクを表示中`);
+  gaEvent('sat_filter_apply', { star });
 }
 
 let currentSatFilter = null;
@@ -2996,9 +3007,41 @@ function clearSatFilter(){
   const bar=document.getElementById('sat-filter-bar');
   if(bar) bar.style.display='none';
   renderList();
+  gaEvent('sat_filter_clear', {});
 }
 
-const _dismissedAlertCats = new Set();
+const _dismissedAlertCats = new Set(); // 当セッション中のメモリキャッシュ
+
+// アラートを消した日付を保存するキー
+function _alertStoreKey(cat){ return 'alertDismissed_' + cat.replace(/[^\w]/g,'_'); }
+
+// 今日が「再表示日」かどうか（毎月10・20・30日）
+function _isAlertResetDay(){
+  const d = new Date().getDate();
+  return d === 10 || d === 20 || d === 30;
+}
+
+async function _shouldShowAlert(cat){
+  if(_dismissedAlertCats.has(cat)) return false; // このセッションで既に消した
+  const key = _alertStoreKey(cat);
+  const stored = await Store.get(key); // 例: "2026-03"（年月）
+  if(!stored) return true; // 一度も消したことがない
+  const today = new Date();
+  const todayYM = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  // 同じ年月に消したならその月はもう表示しない
+  // ただし今日が10/20/30日かつ前回の保存が今月以前なら再表示
+  if(stored === todayYM && !_isAlertResetDay()) return false;
+  return true;
+}
+
+async function _dismissAlert(cat, el){
+  _dismissedAlertCats.add(cat);
+  const today = new Date();
+  const todayYM = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  await Store.set(_alertStoreKey(cat), todayYM);
+  if(el) el.remove();
+  gaEvent('alert_dismissed', { category: cat });
+}
 
 
 function checkAlerts(){
@@ -3006,7 +3049,7 @@ function checkAlerts(){
   box.innerHTML='';
 
   // ① 節約キャンペーン対象サービスバナー（一度閉じたら再表示しない）
-  const savingSubs = subs.filter(s => s.freq !== '単発（買い切り）' && findCampaign(s.name));
+  const savingSubs = subs.filter(s => s.freq !== '単発（買い切り）' && !s.canceled && findCampaign(s.name));
   if (savingSubs.length > 0) {
     Store.get('savingBannerDismissed').then(dismissed => {
       if (dismissed) return;
@@ -3024,25 +3067,30 @@ function checkAlerts(){
     });
   }
 
-  // ② 同カテゴリ複数アラート → warn-section の上に表示
+  // ② 同カテゴリ複数アラート（Store永続化＋10/20/30日再表示）
   const catGroups={};
-  subs.filter(s=>s.freq!=='単発（買い切り）').forEach(s=>{
+  subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.paused&&!s.canceled).forEach(s=>{
     catGroups[s.cat]=(catGroups[s.cat]||0)+1;
   });
   const catAlertBox = document.getElementById('cat-alert-box');
   if(catAlertBox) {
     catAlertBox.innerHTML='';
-    Object.entries(catGroups).filter(([,v])=>v>=2).filter(([cat])=>!_dismissedAlertCats.has(cat)).forEach(([cat])=>{
-      const ci=catMap[cat]||catMap['その他'];
-      const el=document.createElement('div');
-      el.className='alert-box';
-      el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="_dismissedAlertCats.add('${cat}');this.parentNode.remove()">✕</button>`;
-      catAlertBox.appendChild(el);
-    });
+    const targets = Object.entries(catGroups).filter(([,v])=>v>=2);
+    (async()=>{
+      for(const [cat] of targets){
+        if(await _shouldShowAlert(cat)){
+          const ci=catMap[cat]||catMap['その他'];
+          const el=document.createElement('div');
+          el.className='alert-box';
+          el.innerHTML=`${ci.icon(ci.color,16)} <b>${cat}</b>のサブスクが複数あります。見直しのチャンスかも。<button class="alert-x" onclick="_dismissAlert('${cat}',this.parentNode)">✕</button>`;
+          catAlertBox.appendChild(el);
+        }
+      }
+    })();
   }
 
   // ② 解約検討（満足度★1〜3）
-  const warns=subs.filter(s=>!s.paused&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）').sort((a,b)=>b.price-a.price);
+  const warns=subs.filter(s=>!s.paused&&!s.canceled&&s.sat>=1&&s.sat<=3&&s.freq!=='単発（買い切り）').sort((a,b)=>b.price-a.price);
   if(!warns.length) return;
 
   const section=document.createElement('div');
@@ -3099,7 +3147,7 @@ function renderCalendar(){
   const y=calYear, m=calMonth;
   document.getElementById('cal-label').textContent=`${y}年${m+1}月`;
 
-  let target=subs.filter(s=>s.freq!=='単発（買い切り）');
+  let target=subs.filter(s=>s.freq!=='単発（買い切り）'&&!s.canceled);
   if(calFilter==='warn') target=target.filter(s=>s.sat>=1&&s.sat<=3);
 
   // 休止中は「今月以降」非表示（今月中に休止した場合も含め翌月から除外）
@@ -3275,12 +3323,13 @@ function closeCalSheet(){
 function updateFilterCounts(){
   const sel=document.getElementById('fl-cat');
   const counts={};
-  subs.forEach(s=>{
+  subs.filter(s=>!s.canceled).forEach(s=>{
     const key=catMap[s.cat]?s.cat:'その他';
     counts[key]=(counts[key]||0)+1;
   });
-  counts['休止中']=subs.filter(s=>s.paused).length;
-  counts['all']=subs.length;
+  counts['休止中']=subs.filter(s=>s.paused&&!s.canceled).length;
+  counts['解約済']=subs.filter(s=>s.canceled).length;
+  counts['all']=subs.filter(s=>!s.canceled).length;
   Array.from(sel.options).forEach(opt=>{
     const base=opt.dataset.base||(opt.dataset.base=opt.text.replace(/（\d+件）/,''));
     const n=opt.value==='all'?counts['all']:(counts[opt.value]||0);
@@ -3289,9 +3338,12 @@ function updateFilterCounts(){
     } else if(n>0){
       opt.text=`${base}（${n}件）`;
       opt.style.display='';
+    } else if(opt.value==='解約済'){
+      opt.text=base; // 解約済は0件でも常に表示
+      opt.style.display='';
     } else {
       opt.text=base;
-      opt.style.display='none'; // 0件は非表示
+      opt.style.display='none';
     }
   });
 }
@@ -3441,23 +3493,27 @@ function renderList(){
   const sort=document.getElementById('fl-sort').value;
   if(cat !== 'all') gaEvent('filter_used', { category: cat, sort: sort });
   let list;
-  if(cat==='休止中'){
-    list=subs.filter(s=>s.paused);
+  if(cat==='解約済'){
+    list=subs.filter(s=>s.canceled);
+  } else if(cat==='休止中'){
+    list=subs.filter(s=>s.paused&&!s.canceled);
   } else if(cat==='all'){
-    list=[...subs];
+    list=subs.filter(s=>!s.canceled);
   } else if(cat==='その他'){
-    list=subs.filter(s=>!catMap[s.cat]);
+    list=subs.filter(s=>!catMap[s.cat]&&!s.canceled);
   } else {
-    list=subs.filter(s=>s.cat===cat);
+    list=subs.filter(s=>s.cat===cat&&!s.canceled);
   }
   // 満足度フィルター（sat-bandタップ時）
   if(currentSatFilter!==null) list=list.filter(s=>s.sat===currentSatFilter);
-  if(sort==='price-d')list.sort((a,b)=>b.price-a.price);
-  else if(sort==='price-a')list.sort((a,b)=>a.price-b.price);
+  if(sort==='price-d')list.sort((a,b)=>moFromSub(b)-moFromSub(a));
+  else if(sort==='price-a')list.sort((a,b)=>moFromSub(a)-moFromSub(b));
+  else if(sort==='yr-d')list.sort((a,b)=>yrFromSub(b)-yrFromSub(a));
+  else if(sort==='yr-a')list.sort((a,b)=>yrFromSub(a)-yrFromSub(b));
   else if(sort==='sat')list.sort((a,b)=>(b.sat||0)-(a.sat||0));
-  else list.sort((a,b)=>a.date.localeCompare(b.date));
-  // 休止中は常に末尾（カテゴリが「休止中」フィルターの場合は除く）
-  if(cat !== '休止中'){
+  else list.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  // 休止中は常に末尾（解約済・休止中フィルター時は除く）
+  if(cat !== '休止中' && cat !== '解約済'){
     list.sort((a,b)=>{
       if(a.paused && !b.paused) return 1;
       if(!a.paused && b.paused) return -1;
@@ -3468,7 +3524,7 @@ function renderList(){
   const box=document.getElementById('list-items');
   box.innerHTML='';
   if(!list.length){
-    box.innerHTML='<div class="empty">登録されているサブスクがありません<br>「追加」タブから登録してみましょう</div>';
+    box.innerHTML=`<div class="empty">${cat==='解約済'?'解約済のサブスクはありません':'登録されているサブスクがありません<br>「追加」タブから登録してみましょう'}</div>`;
     return;
   }
   list.forEach(s=>{
@@ -3476,16 +3532,17 @@ function renderList(){
     const freqLbl=freqLabel(s.freq);
     const campaign=findCampaign(s.name);
     const row=document.createElement('div');
-    row.className='sub-row';
+    row.className='sub-row'+(s.canceled?' canceled':'');
     row.innerHTML=`
       <div class="sub-icon" style="background:${ci.color}20">${ci.icon(ci.color,20)}</div>
       <div class="sub-body">
-        <div class="sub-name">${s.name}${s.paused?' <span style="font-size:11px;font-weight:500;color:var(--ts);letter-spacing:.3px">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()">💰</span>`:''}
+        <div class="sub-name">${s.name}${s.canceled?'<span class="sub-canceled-badge">解約済</span>':s.paused?' <span style="font-size:11px;font-weight:500;color:var(--ts);letter-spacing:.3px">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()">💰</span>`:''}
         </div>
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
           ${s.payment?`<span style="font-size:11px;font-weight:600;color:var(--ts);background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:2px 6px">${s.payment}</span>`:''}
           <span>${(()=>{
+            if(s.canceled) return `解約日: ${s.canceledDate||'不明'}`;
             if(s.freq==='単発（買い切り）') return '買い切り';
             const np=nextPayDate(s);
             if(!np) return '更新: '+s.date;
@@ -3521,17 +3578,24 @@ function renderList(){
     // タップで編集/削除/休止ボタン展開 + 左スワイプでも開く
     const actions=document.createElement('div');
     actions.className='sub-actions';
-    const pauseLabel=s.paused?'再開':'休止';
-    const pauseCls=s.paused?'btn-pause active':'btn-pause';
-    // 解約URLがあれば「解約ページを開く」、なければ「解約方法を検索」
-    const cancelBtnHtml = s.cancelUrl
-      ? `<button class="btn-e" onclick="window.open('${s.cancelUrl}','_blank');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔗 解約ページ</button>`
-      : `<button class="btn-e" onclick="searchCancelUrl('${s.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${(s.cat||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔍 解約方法を検索</button>`;
-    actions.innerHTML=`
-      <button class="btn-e" onclick="editSub(${s.id});event.stopPropagation()">編集</button>
-      <button class="${pauseCls}" onclick="togglePause(${s.id});event.stopPropagation()">${pauseLabel}</button>
-      ${cancelBtnHtml}
-      <button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">削除</button>`;
+    if(s.canceled){
+      // 解約済：復元・完全削除のみ
+      actions.innerHTML=`
+        <button class="btn-e" onclick="restoreSub(${s.id});event.stopPropagation()" style="border-color:var(--p);color:var(--p)">▶ 復元</button>
+        <button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">完全削除</button>`;
+    } else {
+      const pauseLabel=s.paused?'再開':'休止';
+      const pauseCls=s.paused?'btn-pause active':'btn-pause';
+      const cancelBtnHtml = s.cancelUrl
+        ? `<button class="btn-e" onclick="window.open('${s.cancelUrl}','_blank');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔗 解約ページ</button>`
+        : `<button class="btn-e" onclick="searchCancelUrl('${s.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${(s.cat||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}');event.stopPropagation()" style="border-color:var(--ts);color:var(--ts)">🔍 解約方法を検索</button>`;
+      actions.innerHTML=`
+        <button class="btn-e" onclick="editSub(${s.id});event.stopPropagation()">編集</button>
+        <button class="${pauseCls}" onclick="togglePause(${s.id});event.stopPropagation()">${pauseLabel}</button>
+        ${cancelBtnHtml}
+        <button class="btn-e" onclick="cancelSub(${s.id});event.stopPropagation()" style="border-color:#E67E22;color:#E67E22">解約</button>
+        <button class="btn-d" onclick="delSub(${s.id});event.stopPropagation()">削除</button>`;
+    }
     const wrapper=document.createElement('div');
     wrapper.style.cssText='background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sh);transition:box-shadow .12s;overflow:hidden;position:relative';
     wrapper.appendChild(row);
@@ -3904,6 +3968,41 @@ async function togglePause(id){
   showToast(s.paused?`${s.name} を休止しました`:`${s.name} を再開しました`);
 }
 
+async function cancelSub(id){
+  const s = subs.find(x=>x.id===id);
+  if(!s) return;
+  showDialog({
+    icon:'',
+    title:`「${s.name}」を解約済にする`,
+    msg:'解約済にするとアーカイブされます。明細一覧の「解約済」フィルターから確認できます。',
+    buttons:[
+      {label:'キャンセル', cls:'cancel'},
+      {label:'解約済にする', cls:'danger', onClick: async ()=>{
+        s.canceled = true;
+        s.canceledDate = new Date().toISOString().slice(0,10);
+        s.paused = false;
+        await save();
+        renderDashboard();
+        renderList();
+        gaEvent('subscription_canceled', { service_name: s.name, category: s.cat });
+        showToast(`${s.name} を解約済にしました`);
+      }}
+    ]
+  });
+}
+
+async function restoreSub(id){
+  const s = subs.find(x=>x.id===id);
+  if(!s) return;
+  s.canceled = false;
+  delete s.canceledDate;
+  await save();
+  renderDashboard();
+  renderList();
+  gaEvent('subscription_restored', { service_name: s.name, category: s.cat });
+  showToast(`${s.name} を復元しました`);
+}
+
 async function delSub(id){
   const s = subs.find(x=>x.id===id);
   const name = s ? s.name : 'このサブスク';
@@ -3926,6 +4025,8 @@ async function delSub(id){
 /* ============================================================
    CSV
 ============================================================ */
+let _csvFileHandle = null; // ファイルハンドルを保持（上書き用）
+
 async function exportCSV(){
   gaEvent('csv_export', { count: subs.length });
   if(!subs.length){ showAlert('','データがありません','登録されたサブスクがありません'); return; }
@@ -3948,21 +4049,33 @@ async function exportCSV(){
   const fileName = `subly_${new Date().toISOString().slice(0,10)}.csv`;
   const blob = new Blob([csvText], {type:'text/csv;charset=utf-8'});
 
-  // ① File System Access API（Android Chrome / PC Chrome → 保存先を指定できる）
+  // ① File System Access API — 同じファイルハンドルがあれば上書き、なければ保存先を選択
   if(window.showSaveFilePicker){
     try{
+      // 既存ハンドルがあれば上書き保存（ダイアログなし）
+      if(_csvFileHandle){
+        try{
+          const writable = await _csvFileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          showToast('CSVを上書き保存しました');
+          gaEvent('csv_export_overwrite', {});
+          return;
+        }catch(e){ _csvFileHandle = null; /* ハンドルが無効なら再選択 */ }
+      }
+      // 新規保存先を選択
       const fh = await window.showSaveFilePicker({
         suggestedName: fileName,
         types:[{ description:'CSVファイル', accept:{'text/csv':['.csv']} }]
       });
+      _csvFileHandle = fh;
       const writable = await fh.createWritable();
       await writable.write(blob);
       await writable.close();
-      showToast('CSVを保存しました');
+      showToast('CSVを保存しました（次回から上書き）');
       return;
     }catch(err){
       if(err.name==='AbortError') return;
-      // 失敗 → ②へ
     }
   }
 
