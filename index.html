@@ -2650,15 +2650,17 @@ function openExternalLink(url){
    外部ページから戻ってきたとき、オーバーレイが残っていると
    操作不能になるため、全モーダルを閉じてリセットする
 ============================================================ */
+// visibilitychange: 外部ページから戻ったときオーバーレイをリセット
 document.addEventListener('visibilitychange', () => {
   if(document.visibilityState === 'visible'){
-    // 開いていないはずのモーダルをすべて閉じる
     ['settings-ov','guide-ov','howto-ov','sat-popup-ov','nudge-ov'].forEach(id => {
       document.getElementById(id)?.classList.add('hidden');
     });
     closeHdrop();
   }
 });
+
+function openPrivacy(){
   gaEvent('privacy_open',{});
   window.open('https://jonekun429.github.io/subly-Privacy-/','_blank','noopener');
 }
