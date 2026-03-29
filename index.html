@@ -171,9 +171,6 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .hd-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:1px}
 .hd-div{border:none;border-top:1px solid rgba(255,255,255,.12);margin:6px 20px}
 /* プライバシーバッジ（下部） */
-.hdrop-privacy-badge{margin:auto 16px 12px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 14px}
-.hdrop-privacy-badge-ttl{font-size:13px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:4px}
-.hdrop-privacy-badge-txt{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
 
 /* ── ボトムナビ ── */
 .bnav{
@@ -689,24 +686,6 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
     </div>
 
-    <!-- データ管理 -->
-    <div class="hd-sec">データ管理</div>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'csv_export'});setTimeout(exportCSV,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
-      <div><div class="hd-lbl">CSVエクスポート</div><div class="hd-sub">データをCSVとして保存</div></div>
-    </button>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'csv_import'});setTimeout(importCSVPicker,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg></div>
-      <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
-    </button>
-
-    <!-- 節約のヒント -->
-    <div class="hd-sec">節約のヒント</div>
-    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'saving_hints'});setTimeout(openSavingHints,150)">
-      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
-      <div><div class="hd-lbl">節約のヒント一覧</div><div class="hd-sub">解約引き留めキャンペーン情報</div></div>
-    </button>
-
     <!-- 設定 -->
     <div class="hd-sec">設定</div>
     <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'notify_settings'});setTimeout(openNotifySettings,150)">
@@ -743,6 +722,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
     </div>
 
+    <!-- データ管理 -->
+    <div class="hd-sec">データ管理</div>
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'csv_export'});setTimeout(exportCSV,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
+      <div><div class="hd-lbl">CSVエクスポート</div><div class="hd-sub">データをCSVとして保存</div></div>
+    </button>
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'csv_import'});setTimeout(importCSVPicker,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg></div>
+      <div><div class="hd-lbl">CSVインポート</div><div class="hd-sub">機種変更後のデータ引き継ぎ</div></div>
+    </button>
+
     <!-- ヘルプ -->
     <div class="hd-sec">ヘルプ</div>
     <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'guide'});setTimeout(openGuide,150)">
@@ -752,6 +742,13 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'howto'});setTimeout(openHowto,150)">
       <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
       <div><div class="hd-lbl">使い方を見る</div><div class="hd-sub">Sublyの基本的な使い方</div></div>
+    </button>
+
+    <!-- 節約のヒント -->
+    <div class="hd-sec">節約のヒント</div>
+    <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'saving_hints'});setTimeout(openSavingHints,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      <div><div class="hd-lbl">節約のヒント一覧</div><div class="hd-sub">解約引き留めキャンペーン情報</div></div>
     </button>
 
     <!-- 友達に紹介 -->
@@ -781,12 +778,6 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="hd-ico" style="background:rgba(255,100,100,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
       <div><div class="hd-lbl" style="color:#ffaaaa">全データを削除</div><div class="hd-sub">この操作は元に戻せません</div></div>
     </button>
-
-    <!-- プライバシーバッジ -->
-    <div class="hdrop-privacy-badge">
-      <div class="hdrop-privacy-badge-ttl"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> プライバシー保護</div>
-      <div class="hdrop-privacy-badge-txt">全データは端末内にのみ保存。外部送信なし。</div>
-    </div>
 
   </div>
 </div>
@@ -872,6 +863,14 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
         </div>
       </div>
     </div>
+    <div class="s-sec">設定</div>
+    <div class="s-grp">
+      <div class="s-row" onclick="openNotifySettings()">
+        <div class="s-ico" style="background:#EDF4F2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+        <div class="s-body"><div class="s-title">更新日通知</div><div class="s-sub" id="settings-notify-sub">タップして設定</div></div>
+        <span class="s-arr">›</span>
+      </div>
+    </div>
     <div class="s-sec">データ管理</div>
     <div class="s-grp">
       <div class="s-row" onclick="exportCSV()">
@@ -895,6 +894,22 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="s-row" onclick="openHowto()">
         <div class="s-ico" style="background:#F0FDF4"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></div>
         <div class="s-body"><div class="s-title">使い方を見る</div><div class="s-sub">各画面の使い方を確認</div></div>
+        <span class="s-arr">›</span>
+      </div>
+    </div>
+    <div class="s-sec">節約のヒント</div>
+    <div class="s-grp">
+      <div class="s-row" onclick="closeSettings();setTimeout(openSavingHints,150)">
+        <div class="s-ico" style="background:#FFF8EE"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <div class="s-body"><div class="s-title">節約のヒント一覧</div><div class="s-sub">解約引き留めキャンペーン情報</div></div>
+        <span class="s-arr">›</span>
+      </div>
+    </div>
+    <div class="s-sec">友達に紹介する</div>
+    <div class="s-grp">
+      <div class="s-row" onclick="closeSettings();setTimeout(openShare,150)">
+        <div class="s-ico" style="background:#EEF6FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></div>
+        <div class="s-body"><div class="s-title">友達に紹介する</div><div class="s-sub">QRコード・LINE・URLコピー</div></div>
         <span class="s-arr">›</span>
       </div>
     </div>
