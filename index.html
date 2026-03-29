@@ -343,7 +343,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-detail-row:last-child{border-bottom:none}
 .cal-detail-row:active{background:var(--pl)}
 .cal-detail-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0}
-.cal-detail-icon{font-size:18px;flex-shrink:0}
+.cal-detail-icon{flex-shrink:0}
 .cal-detail-body{flex:1;min-width:0}
 .cal-detail-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-detail-meta{font-size:13px;color:var(--ts);margin-top:1px}
@@ -828,6 +828,19 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <span class="sheet-ttl" id="settings-ttl"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> 設定</span>
       <button class="sheet-close" onclick="closeSettings()">✕</button>
     </div>
+    <div class="s-sec">プロフィール</div>
+    <div class="s-grp">
+      <div class="s-row" onclick="openNicknameModal()" style="align-items:center">
+        <div class="s-ico" style="background:#EDF4F2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+        <div class="s-body">
+          <div class="s-title" id="s-nickname-display" style="color:var(--tx)">名前を設定</div>
+          <div class="s-sub">Subly Free</div>
+        </div>
+        <span class="s-arr">›</span>
+      </div>
+    </div>
     <div class="s-sec">外観</div>
     <div class="s-grp">
       <div style="padding:14px 16px">
@@ -1233,6 +1246,22 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </div><!-- /ob-inner-wrap -->
 </div>
 
+<!-- ニックネーム編集モーダル -->
+<div class="dlg-ov hidden" id="nickname-ov" onclick="if(event.target===this)closeNicknameModal()">
+  <div class="dlg" style="max-width:320px;width:90%">
+    <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px">ニックネームを設定</div>
+    <div style="font-size:13px;color:var(--ts);margin-bottom:16px;line-height:1.5">端末内にのみ保存されます。</div>
+    <input id="nickname-input" type="text" maxlength="20" placeholder="例：田中 太郎"
+      style="width:100%;padding:12px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:15px;font-family:inherit;color:var(--tx);background:var(--bg);box-sizing:border-box;outline:none"
+      oninput="this.style.borderColor=this.value?'var(--p)':'var(--bd)'">
+    <div style="font-size:11px;color:var(--ts);margin-top:6px;text-align:right" id="nickname-count">0 / 20</div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="closeNicknameModal()" style="flex:1;padding:12px;background:var(--bg);color:var(--ts);border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer">キャンセル</button>
+      <button onclick="saveNickname()" style="flex:1;padding:12px;background:var(--p);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer">保存</button>
+    </div>
+  </div>
+</div>
+
 <!-- 満足度一括更新ポップアップ -->
 <div class="sat-popup-ov hidden" id="sat-popup-ov" onclick="if(event.target===this)closeSatPopup()">
   <div class="sat-popup">
@@ -1474,6 +1503,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div class="f-row">
         <label>メモ（任意）</label>
         <input type="text" id="f-memo" placeholder="例：家族共有" maxlength="60">
+      </div>
+      <div class="f-row" id="f-payer-row" style="display:none">
+        <label>支払い者 <span style="font-weight:400;font-size:11px;color:var(--ts)">任意</span></label>
+        <select id="f-payer">
+          <option value="">指定しない</option>
+        </select>
       </div>
       <div class="f-row">
         <label>支払い方法 <span style="font-weight:400;font-size:11px;color:var(--ts)">任意</span></label>
@@ -1759,13 +1794,6 @@ function freqLabel(freq){
 }
 
 // カテゴリ別SVGアイコン（ソリッド）
-function _catEmoji(cat){
-  const m={'動画・配信':'▶','音楽':'♪','電子書籍・雑誌':'≡','仕事・ツール':'⚙','ゲーム':'▷',
-    '健康・フィットネス':'♥','金融・年会費':'¥','習い事':'▣','通信費':'▦','保険':'◈',
-    'ローン':'¥','その他':'◉'};
-  return m[cat]||'◆';
-}
-
 function _catSvg(path, color, size){
   size=size||18;
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}">${path}</svg>`;
@@ -2661,6 +2689,105 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+/* ============================================================
+   ニックネーム
+============================================================ */
+let _nickname = '';
+
+async function loadNickname(){
+  const saved = await Store.get('nickname');
+  if(saved) _nickname = saved;
+  _updateNicknameDisplay();
+  _updatePayerField();
+}
+
+function _updatePayerField(){
+  const row = document.getElementById('f-payer-row');
+  const sel = document.getElementById('f-payer');
+  if(!row || !sel) return;
+  if(_nickname){
+    // ニックネーム設定済 → フィールドを表示＋選択肢を更新
+    row.style.display = '';
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">指定しない</option>';
+    const opt = document.createElement('option');
+    opt.value = _nickname;
+    opt.text = _nickname;
+    sel.appendChild(opt);
+    // 既存選択を復元
+    if(cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+  } else {
+    row.style.display = 'none';
+    sel.value = '';
+  }
+}
+
+function _updateNicknameDisplay(){
+  const el = document.getElementById('s-nickname-display');
+  if(!el) return;
+  if(_nickname){
+    el.textContent = _nickname;
+    el.style.color = 'var(--tx)';
+  } else {
+    el.textContent = '名前を設定';
+    el.style.color = 'var(--ts)';
+  }
+}
+
+function openNicknameModal(){
+  const input = document.getElementById('nickname-input');
+  const count = document.getElementById('nickname-count');
+  input.value = _nickname;
+  count.textContent = `${_nickname.length} / 20`;
+  input.style.borderColor = _nickname ? 'var(--p)' : 'var(--bd)';
+  input.oninput = () => { count.textContent = `${input.value.length} / 20`; input.style.borderColor = input.value ? 'var(--p)' : 'var(--bd)'; };
+  document.getElementById('nickname-ov').classList.remove('hidden');
+  setTimeout(() => input.focus(), 100);
+}
+
+function closeNicknameModal(){
+  document.getElementById('nickname-ov').classList.add('hidden');
+}
+
+async function saveNickname(){
+  const val = document.getElementById('nickname-input').value.trim();
+  const isFirstTime = !_nickname && !!val; // 未設定→設定：初回
+  _nickname = val;
+  if(val){
+    await Store.set('nickname', val);
+  } else {
+    await Store.set('nickname', '');
+  }
+  _updateNicknameDisplay();
+  _updatePayerField();
+  closeNicknameModal();
+  gaEvent('nickname_set', { has_name: !!val, is_first: isFirstTime });
+
+  if(isFirstTime){
+    // 初回登録時のみ機能説明ポップアップを表示
+    setTimeout(()=>{
+      showDialog({
+        icon:'',
+        title:'誰の支払いか管理できるようになりました！',
+        msg:`<div style="text-align:left;font-size:13px;color:var(--ts);line-height:1.75">
+          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--p)" style="flex-shrink:0;margin-top:2px"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg>
+            <span>登録フォームに「支払い者」欄が追加されました！</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--p)" style="flex-shrink:0;margin-top:2px"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            <span>明細一覧に「支払い者」欄が追加されました！</span>
+          </div>
+        </div>`,
+        closable: true,
+        buttons:[{label:'OK', cls:'ok'}]
+      });
+    }, 400);
+  } else {
+    showToast(val ? `「${val}」で設定しました` : '名前を削除しました');
+  }
+}
+
 function openPrivacy(){
   gaEvent('privacy_open',{});
   window.open('https://jonekun429.github.io/subly-Privacy-/','_blank','noopener');
@@ -3339,7 +3466,7 @@ function showCalDetail(y,m,d,evs){
     row.className='cal-detail-row';
     row.innerHTML=`
       <div class="cal-detail-bar" style="background:${ci.color};min-height:36px"></div>
-      <div class="cal-detail-icon" style="font-size:18px;width:24px;text-align:center">${_catEmoji(s.cat)}</div>
+      <div class="cal-detail-icon" style="width:24px;display:flex;align-items:center;justify-content:center">${ci.icon(ci.color,16)}</div>
       <div class="cal-detail-body">
         <div class="cal-detail-name">${isWarn?`<svg width="13" height="13" viewBox="0 0 24 24" fill="var(--dn)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> `:''}${s.name}</div>
         <div class="cal-detail-meta">${s.cat}${s.sat?' · <span style="color:var(--p)">'+'★'.repeat(s.sat)+'</span><span style="color:var(--bd)">'+'☆'.repeat(5-s.sat)+'</span>':''}</div>
@@ -3592,6 +3719,7 @@ function renderList(){
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
           ${s.payment?`<span style="font-size:11px;font-weight:600;color:var(--ts);background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:2px 6px">${s.payment}</span>`:''}
+          ${s.payer?`<span style="font-size:11px;font-weight:600;color:var(--p);background:var(--pl);border-radius:5px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>${s.payer}</span>`:''}
           <span>${(()=>{
             if(s.canceled) return `解約日: ${s.canceledDate||'不明'}`;
             if(s.freq==='単発（買い切り）') return '買い切り';
@@ -3851,6 +3979,7 @@ async function submitForm(){
   const date=document.getElementById('f-date').value;
   const memo=document.getElementById('f-memo').value.trim();
   const payment=document.getElementById('f-payment').value;
+  const payer=document.getElementById('f-payer').value;
   const cancelUrl=document.getElementById('f-url').value.trim();
   const satEl=document.querySelectorAll('.star-btn.on');
   const sat=satEl.length;
@@ -3861,7 +3990,7 @@ async function submitForm(){
   const isEdit=!!editId;
   if(isEdit){
     const idx=subs.findIndex(s=>s.id===editId);
-    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,payment,sat,cancelUrl};
+    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl};
     editId=null;
     document.getElementById('btn-submit').textContent='登録する';
     document.getElementById('btn-cancel').style.display='none';
@@ -3870,13 +3999,13 @@ async function submitForm(){
     backToStep1();
     goto('dashboard');
 
-    gaEvent('subscription_updated', { category: cat, price: price, freq: freq });
+    gaEvent('subscription_updated', { category: cat, price: price, freq: freq, has_payer: !!payer });
     showToast('更新しました');
   } else {
-    subs.push({id:Date.now(),name,cat,price,freq,date,memo,payment,sat,cancelUrl,paused:false});
+    subs.push({id:Date.now(),name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl,paused:false});
     await save();
 
-    gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length });
+    gaEvent('subscription_added', { category: cat, price: price, freq: freq, total_count: subs.length, has_payer: !!payer });
     // 初回登録後は手順バナーを非表示
     document.getElementById('how-to-box').style.display='none';
     // 登録完了 → 続けて追加 or ホームへ のダイアログ
@@ -3912,6 +4041,8 @@ function resetForm(){
   document.getElementById('f-cat').value='動画・配信';
   document.getElementById('custom-cat-wrap').classList.add('hidden');
   document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('f-payer').value='';
+  document.getElementById('f-payment').value='';
 }
 
 function editSub(id){
@@ -3934,6 +4065,9 @@ function editSub(id){
     document.getElementById('f-date').value=s.date;
     document.getElementById('f-memo').value=s.memo||'';
     document.getElementById('f-payment').value=s.payment||'';
+    // 支払い者フィールドを更新してから値を復元
+    _updatePayerField();
+    document.getElementById('f-payer').value=s.payer||'';
     document.getElementById('f-url').value=s.cancelUrl||'';
     toggleUrlBtn();
     if(s.sat){
@@ -4342,6 +4476,7 @@ function nudgeTap(name, cat){
 ============================================================ */
 async function init(){
   await loadTheme();
+  await loadNickname();
   // ストレージからデータをロード
   const subsRaw  = await Store.get('subsData');
   const otRaw    = await Store.get('inclOt');
