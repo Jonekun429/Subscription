@@ -686,6 +686,13 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
     </div>
 
+    <!-- プロフィール -->
+    <div class="hd-sec">プロフィール</div>
+    <button class="hd-row" onclick="closeHdrop();setTimeout(openNicknameModal,150)">
+      <div class="hd-ico" style="background:rgba(255,255,255,.15)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      <div><div class="hd-lbl" id="hd-nickname-display">名前を設定</div><div class="hd-sub">Subly Free</div></div>
+    </button>
+
     <!-- 設定 -->
     <div class="hd-sec">設定</div>
     <button class="hd-row" onclick="closeHdrop();gaEvent('menu_tap',{item:'notify_settings'});setTimeout(openNotifySettings,150)">
@@ -2724,14 +2731,11 @@ function _updatePayerField(){
 
 function _updateNicknameDisplay(){
   const el = document.getElementById('s-nickname-display');
-  if(!el) return;
-  if(_nickname){
-    el.textContent = _nickname;
-    el.style.color = 'var(--tx)';
-  } else {
-    el.textContent = '名前を設定';
-    el.style.color = 'var(--ts)';
-  }
+  const hdEl = document.getElementById('hd-nickname-display');
+  const text = _nickname || '名前を設定';
+  const color = _nickname ? 'var(--tx)' : 'var(--ts)';
+  if(el){ el.textContent = text; el.style.color = color; }
+  if(hdEl){ hdEl.textContent = text; hdEl.style.color = _nickname ? '#fff' : 'rgba(255,255,255,.6)'; }
 }
 
 function openNicknameModal(){
