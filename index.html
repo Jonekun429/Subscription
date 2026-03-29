@@ -1649,6 +1649,10 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
             満足度を一括更新
           </button>
+          <button id="ls-payer-bulk-btn" class="ls-sat-btn" onclick="openPayerBulkPopup()" style="display:none;margin-top:8px;border-color:var(--p);color:var(--p)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            支払い者を一括更新
+          </button>
         </div>
       </div>
     </div>
@@ -2711,22 +2715,24 @@ async function loadNickname(){
 function _updatePayerField(){
   const row = document.getElementById('f-payer-row');
   const sel = document.getElementById('f-payer');
-  if(!row || !sel) return;
-  if(_nickname){
-    // ニックネーム設定済 → フィールドを表示＋選択肢を更新
-    row.style.display = '';
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">指定しない</option>';
-    const opt = document.createElement('option');
-    opt.value = _nickname;
-    opt.text = _nickname;
-    sel.appendChild(opt);
-    // 既存選択を復元
-    if(cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
-  } else {
-    row.style.display = 'none';
-    sel.value = '';
+  const bulkBtn = document.getElementById('ls-payer-bulk-btn');
+  if(row && sel){
+    if(_nickname){
+      row.style.display = '';
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">指定しない</option>';
+      const opt = document.createElement('option');
+      opt.value = _nickname;
+      opt.text = _nickname;
+      sel.appendChild(opt);
+      if(cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+    } else {
+      row.style.display = 'none';
+      sel.value = '';
+    }
   }
+  // 一括更新ボタンの表示制御
+  if(bulkBtn) bulkBtn.style.display = _nickname ? '' : 'none';
 }
 
 function _updateNicknameDisplay(){
@@ -2755,20 +2761,48 @@ function closeNicknameModal(){
 
 async function saveNickname(){
   const val = document.getElementById('nickname-input').value.trim();
-  const isFirstTime = !_nickname && !!val; // 未設定→設定：初回
+  const isFirstTime = !_nickname && !!val && !(await Store.get('lastNickname')); // 本当の初回のみ
+  const oldNickname = _nickname;           // 変更前の名前を保持
+
   _nickname = val;
   if(val){
     await Store.set('nickname', val);
   } else {
+    // 削除時：削除前の名前をlastNicknameとして保存しておく
+    if(oldNickname) await Store.set('lastNickname', oldNickname);
     await Store.set('nickname', '');
   }
+
+  // ① ニックネーム変更時（A→B）：全サブスクのpayerを新名前に追従
+  if(val && oldNickname && val !== oldNickname){
+    let updated = 0;
+    subs.forEach(s => {
+      if(s.payer === oldNickname){ s.payer = val; updated++; }
+    });
+    if(updated > 0){ await save(); renderList(); renderDashboard(); }
+  }
+
+  // ② 再登録時（削除→新規）：lastNicknameのpayerを新名前に追従
+  if(val && !oldNickname){
+    const last = await Store.get('lastNickname');
+    if(last && last !== val){
+      let updated = 0;
+      subs.forEach(s => {
+        if(s.payer === last){ s.payer = val; updated++; }
+      });
+      if(updated > 0){ await save(); renderList(); renderDashboard(); }
+    }
+    if(last) await Store.set('lastNickname', ''); // リセット
+  }
+
+  // ニックネーム削除時：payerデータはそのまま保持（削除しない）
+
   _updateNicknameDisplay();
   _updatePayerField();
   closeNicknameModal();
   gaEvent('nickname_set', { has_name: !!val, is_first: isFirstTime });
 
   if(isFirstTime){
-    // 初回登録時のみ機能説明ポップアップを表示
     setTimeout(()=>{
       showDialog({
         icon:'',
@@ -2787,6 +2821,8 @@ async function saveNickname(){
         buttons:[{label:'OK', cls:'ok'}]
       });
     }, 400);
+  } else if(val && oldNickname && val !== oldNickname){
+    showToast(`名前を「${val}」に変更しました`);
   } else {
     showToast(val ? `「${val}」で設定しました` : '名前を削除しました');
   }
@@ -3672,6 +3708,62 @@ function closeSatPopup(){
   document.getElementById('sat-popup-ov').classList.add('hidden');
 }
 
+/* ============================================================
+   支払い者一括更新ポップアップ
+============================================================ */
+function openPayerBulkPopup(){
+  const body = document.getElementById('sat-popup-body');
+  const targets = subs.filter(s => !s.paused && !s.canceled && s.freq !== '単発（買い切り）');
+
+  if(!targets.length){
+    showToast('対象のサブスクがありません');
+    return;
+  }
+
+  // 一時データ
+  const tmpPayer = {};
+  targets.forEach(s => { tmpPayer[s.id] = s.payer || ''; });
+
+  body.innerHTML = '';
+  targets.forEach(s => {
+    const ci = catMap[s.cat] || catMap['その他'];
+    const row = document.createElement('div');
+    row.className = 'sat-popup-row';
+    row.innerHTML = `
+      <div class="sat-popup-icon" style="background:${ci.color}22">${ci.icon(ci.color, 18)}</div>
+      <div class="sat-popup-name">${s.name}</div>
+      <select style="flex-shrink:0;padding:5px 8px;border:1.5px solid var(--bd);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--tx)" id="pb-${s.id}">
+        <option value="">指定しない</option>
+        <option value="${_nickname}" ${tmpPayer[s.id]===_nickname?'selected':''}>${_nickname}</option>
+      </select>`;
+    body.appendChild(row);
+  });
+
+  // 保存ボタン
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sat-popup-save';
+  saveBtn.textContent = '保存する';
+  saveBtn.onclick = async () => {
+    targets.forEach(s => {
+      const sel = document.getElementById('pb-' + s.id);
+      if(sel) s.payer = sel.value;
+    });
+    await save();
+    closeSatPopup();
+    renderList();
+    gaEvent('payer_bulk_update', { count: targets.length });
+    showToast('支払い者を更新しました');
+  };
+  body.appendChild(saveBtn);
+
+  // ヘッダーのタイトルを切り替え
+  const ttl = document.querySelector('.sat-popup-ttl');
+  if(ttl) ttl.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg> 支払い者を一括更新`;
+
+  document.getElementById('sat-popup-ov').classList.remove('hidden');
+  gaEvent('payer_bulk_popup_open', {});
+}
+
 function renderList(){
   const cat=document.getElementById('fl-cat').value;
   const sort=document.getElementById('fl-sort').value;
@@ -3723,7 +3815,7 @@ function renderList(){
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
           ${s.payment?`<span style="font-size:11px;font-weight:600;color:var(--ts);background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:2px 6px">${s.payment}</span>`:''}
-          ${s.payer?`<span style="font-size:11px;font-weight:600;color:var(--p);background:var(--pl);border-radius:5px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>${s.payer}</span>`:''}
+          ${(s.payer && _nickname)?`<span style="font-size:11px;font-weight:600;color:var(--p);background:var(--pl);border-radius:5px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>${s.payer}</span>`:''}
           <span>${(()=>{
             if(s.canceled) return `解約日: ${s.canceledDate||'不明'}`;
             if(s.freq==='単発（買い切り）') return '買い切り';
