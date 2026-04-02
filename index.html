@@ -3179,7 +3179,7 @@ document.addEventListener('visibilitychange', () => {
 let _nickname = '';
 
 async function loadNickname(){
-  const saved = await Store.get('nickname');
+  const saved = localStorage.getItem('nickname');
   if(saved) _nickname = saved;
   _updateNicknameDisplay();
   _updatePayerField();
@@ -4058,7 +4058,7 @@ async function _loadFromFirestore(uid){
 }
 
 async function save(){
-  await Store.set('subsData', JSON.stringify(subs));
+  localStorage.setItem('subsData', JSON.stringify(subs));
   updateFilterCounts();
   // ログイン中はFirestoreにも保存
   const user = window._fbUser;
@@ -6634,7 +6634,7 @@ function setTheme(mode, track=true){
 }
 
 async function loadTheme(){
-  const saved = (await Store.get('subly_theme')) || 'light';
+  const saved = localStorage.getItem('subly_theme') || 'light';
   setTheme(THEME_KEYS.includes(saved) ? saved : 'light', false);
 }
 
@@ -6704,10 +6704,10 @@ function nudgeTap(name, cat){
 async function init(){
   await loadTheme();
   await loadNickname();
-  // ストレージからデータをロード
-  const subsRaw  = await Store.get('subsData');
-  const otRaw    = await Store.get('inclOt');
-  const onboarded = await Store.get('onboarded');
+  // ストレージからデータをロード（localStorage直接読み取り）
+  const subsRaw  = localStorage.getItem('subsData');
+  const otRaw    = localStorage.getItem('inclOt');
+  const onboarded = localStorage.getItem('onboarded');
 
   subs = JSON.parse(subsRaw) || [];
   subs.forEach(s=>{ if(s.freq==='単発') s.freq='単発（買い切り）'; });
