@@ -6724,49 +6724,7 @@ async function init(){
     setTimeout(()=> _showInviteConfirm(inviteCode), 800);
   }
 
-  // 旧サイトからのデータ引き継ぎ（?migrate=BASE64）
-  const migrateParam = urlParams.get('migrate');
-  if(migrateParam){
-    try{
-      const json = decodeURIComponent(atob(migrateParam));
-      const transferData = JSON.parse(json);
-      // すでにデータがある場合は上書き確認
-      const existingSubs = JSON.parse(await Store.get('subsData') || '[]');
-      const importSubs = JSON.parse(transferData.subsData || '[]');
-      const doImport = async () => {
-        if(transferData.subsData)    await Store.set('subsData',    transferData.subsData);
-        if(transferData.inclOt)      await Store.set('inclOt',      transferData.inclOt);
-        if(transferData.nickname)    await Store.set('nickname',    transferData.nickname);
-        if(transferData.subly_theme) await Store.set('subly_theme', transferData.subly_theme);
-        subs = importSubs;
-        subs.forEach(s=>{ if(s.freq==='単発') s.freq='単発（買い切り）'; });
-        inclOt = JSON.parse(transferData.inclOt || 'false');
-        if(transferData.subly_theme) await loadTheme();
-        await loadNickname();
-        gaEvent('migration_data_received', { subs_count: importSubs.length });
-        window.history.replaceState({}, document.title, window.location.pathname);
-        showToast(`${importSubs.length}件のデータを引き継ぎました！`);
-      };
-      if(existingSubs.length > 0 && importSubs.length > 0){
-        setTimeout(()=>{
-          showDialog({
-            icon:'',
-            title:'データを引き継ぎますか？',
-            msg:`旧サイトのデータ（${importSubs.length}件）を読み込みます。<br>現在のデータ（${existingSubs.length}件）は上書きされます。`,
-            buttons:[
-              {label:'キャンセル', cls:'cancel', onClick:()=>{ window.history.replaceState({}, document.title, window.location.pathname); }},
-              {label:'引き継ぐ', cls:'ok', onClick: doImport}
-            ]
-          });
-        }, 600);
-      } else {
-        await doImport();
-      }
-    }catch(e){
-      window.history.replaceState({}, document.title, window.location.pathname);
-      console.error('migration parse error:', e);
-    }
-  }
+  // 旧サイトからのデータ引き継ぎ（LocalStorage共有方式 - 同ドメインのため自動反映）
 
   // データがすでにある場合は手順バナー不要
   if(subs.length > 0){
@@ -6821,28 +6779,29 @@ function closeMigrationPopup(){
 async function goToNewSiteWithData(){
   gaEvent('migration_cta_tap', { subs_count: subs.length });
 
-  // 引き継ぎデータを構築
-  const transferData = {
-    subsData:  await Store.get('subsData')  || '[]',
-    inclOt:    await Store.get('inclOt')    || 'false',
-    nickname:  await Store.get('nickname')  || '',
-    subly_theme: await Store.get('subly_theme') || 'light',
-  };
-
-  // Base64エンコードしてURLパラメータに付与
-  let transferParam = '';
+  // 同じドメインなのでLocalStorageに直接書き込んで遷移
   try{
-    const json = JSON.stringify(transferData);
-    transferParam = btoa(encodeURIComponent(json));
-  }catch(e){}
+    const transferData = {
+      subsData:    await Store.get('subsData')    || '[]',
+      inclOt:      await Store.get('inclOt')      || 'false',
+      nickname:    await Store.get('nickname')    || '',
+      subly_theme: await Store.get('subly_theme') || 'light',
+    };
+    // 新サイト用のキーで保存（同じLocalStorageを共有）
+    localStorage.setItem('subsData',    transferData.subsData);
+    localStorage.setItem('inclOt',      transferData.inclOt);
+    localStorage.setItem('nickname',    transferData.nickname);
+    localStorage.setItem('subly_theme', transferData.subly_theme);
+    localStorage.setItem('onboarded',   '1');
+    gaEvent('migration_data_written', { subs_count: subs.length });
+  }catch(e){
+    console.error('migration write error:', e);
+  }
 
-  const url = transferParam
-    ? `${MIGRATION_NEW_URL}?migrate=${transferParam}`
-    : MIGRATION_NEW_URL;
-
-  // 別タブで開く
+  // 別タブで新サイトを開く
   const a = document.createElement('a');
-  a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+  a.href = MIGRATION_NEW_URL;
+  a.target = '_blank'; a.rel = 'noopener noreferrer';
   a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
