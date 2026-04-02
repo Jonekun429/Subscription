@@ -6796,6 +6796,8 @@ async function goToNewSiteWithData(){
     localStorage.setItem('nickname',    nicknameVal);
     localStorage.setItem('subly_theme', themeVal);
     localStorage.setItem('onboarded',   '1');
+    // 移行フラグ：新サイト側でトースト表示用
+    localStorage.setItem('migrated_from_free', String(subs.length));
 
     // 書き込み確認
     const verify = localStorage.getItem('subsData');
@@ -6805,11 +6807,14 @@ async function goToNewSiteWithData(){
 
     gaEvent('migration_data_written', { subs_count: subs.length });
 
-    // 同じタブで遷移（_blankだとiOSでLocalStorageが反映されないため）
-    window.location.href = MIGRATION_NEW_URL;
+    // 画面をフェードアウトしてから遷移（旧画面が残って見えるのを防ぐ）
+    document.body.style.transition = 'opacity .3s';
+    document.body.style.opacity = '0';
+    setTimeout(()=>{ window.location.href = MIGRATION_NEW_URL; }, 300);
 
   }catch(e){
     console.error('migration error:', e);
+    document.body.style.opacity = '1';
     if(btn){ btn.textContent = '新しいSublyを使ってみる →'; btn.disabled = false; }
     showToast('エラーが発生しました。もう一度お試しください。');
   }
