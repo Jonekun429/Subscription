@@ -6779,35 +6779,40 @@ function closeMigrationPopup(){
 async function goToNewSiteWithData(){
   gaEvent('migration_cta_tap', { subs_count: subs.length });
 
-  // 同じドメインなのでLocalStorageに直接書き込んで遷移
+  // ボタンをローディング状態に
+  const btn = document.querySelector('#migration-ov button[onclick="goToNewSiteWithData()"]');
+  if(btn){ btn.textContent = 'データを引き継ぎ中...'; btn.disabled = true; }
+
   try{
-    const transferData = {
-      subsData:    await Store.get('subsData')    || '[]',
-      inclOt:      await Store.get('inclOt')      || 'false',
-      nickname:    await Store.get('nickname')    || '',
-      subly_theme: await Store.get('subly_theme') || 'light',
-    };
-    // 新サイト用のキーで保存（同じLocalStorageを共有）
-    localStorage.setItem('subsData',    transferData.subsData);
-    localStorage.setItem('inclOt',      transferData.inclOt);
-    localStorage.setItem('nickname',    transferData.nickname);
-    localStorage.setItem('subly_theme', transferData.subly_theme);
+    // subsDataを直接subs変数から取得（Store経由より確実）
+    const subsJson   = JSON.stringify(subs);
+    const inclOtVal  = JSON.stringify(inclOt);
+    const nicknameVal = _nickname || '';
+    const themeVal   = (await Store.get('subly_theme')) || 'light';
+
+    // LocalStorageに書き込み（同ドメインなので新サイトと共有）
+    localStorage.setItem('subsData',    subsJson);
+    localStorage.setItem('inclOt',      inclOtVal);
+    localStorage.setItem('nickname',    nicknameVal);
+    localStorage.setItem('subly_theme', themeVal);
     localStorage.setItem('onboarded',   '1');
+
+    // 書き込み確認
+    const verify = localStorage.getItem('subsData');
+    if(!verify || verify !== subsJson){
+      throw new Error('書き込み確認失敗');
+    }
+
     gaEvent('migration_data_written', { subs_count: subs.length });
+
+    // 同じタブで遷移（_blankだとiOSでLocalStorageが反映されないため）
+    window.location.href = MIGRATION_NEW_URL;
+
   }catch(e){
-    console.error('migration write error:', e);
+    console.error('migration error:', e);
+    if(btn){ btn.textContent = '新しいSublyを使ってみる →'; btn.disabled = false; }
+    showToast('エラーが発生しました。もう一度お試しください。');
   }
-
-  // 別タブで新サイトを開く
-  const a = document.createElement('a');
-  a.href = MIGRATION_NEW_URL;
-  a.target = '_blank'; a.rel = 'noopener noreferrer';
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(()=> document.body.removeChild(a), 100);
-
-  closeMigrationPopup();
 }
 
 /* ============================================================
