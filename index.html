@@ -1114,35 +1114,35 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
         <div style="display:flex;align-items:flex-start;gap:10px">
           <div style="width:28px;height:28px;border-radius:8px;background:#E8F0ED;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
           </div>
           <div>
-            <div style="font-size:13px;font-weight:700;color:var(--tx)">クラウド同期</div>
-            <div style="font-size:12px;color:var(--ts);margin-top:1px">複数端末でデータを共有</div>
+            <div style="font-size:13px;font-weight:700;color:var(--tx)">① データをエクスポート</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:1px">CSVファイルを保存します</div>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px">
           <div style="width:28px;height:28px;border-radius:8px;background:#E8F0ED;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
           </div>
           <div>
-            <div style="font-size:13px;font-weight:700;color:var(--tx)">グループ共有</div>
-            <div style="font-size:12px;color:var(--ts);margin-top:1px">家族・カップルでまとめて管理</div>
+            <div style="font-size:13px;font-weight:700;color:var(--tx)">② 新サイトへ移動</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:1px">自動的に新バージョンへ遷移</div>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px">
           <div style="width:28px;height:28px;border-radius:8px;background:#E8F0ED;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#5C8E84"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
           </div>
           <div>
-            <div style="font-size:13px;font-weight:700;color:var(--tx)">登録データをそのまま引き継ぎ</div>
-            <div style="font-size:12px;color:var(--ts);margin-top:1px">今のデータを新サイトに自動コピー</div>
+            <div style="font-size:13px;font-weight:700;color:var(--tx)">③ CSVをインポート</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:1px">設定からインポートして完了</div>
           </div>
         </div>
       </div>
       <!-- CTAボタン -->
       <button onclick="goToNewSiteWithData()" style="width:100%;padding:14px;background:linear-gradient(135deg,#5C8E84,#3A6B60);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent">
-        新しいSublyを使ってみる →
+        新しいSublyへ移行する（データを引き継ぐ）
       </button>
       <button onclick="closeMigrationPopup()" style="width:100%;padding:10px;background:none;border:none;color:var(--ts);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:6px">
         あとで
@@ -6779,45 +6779,58 @@ function closeMigrationPopup(){
 async function goToNewSiteWithData(){
   gaEvent('migration_cta_tap', { subs_count: subs.length });
 
-  // ボタンをローディング状態に
-  const btn = document.querySelector('#migration-ov button[onclick="goToNewSiteWithData()"]');
-  if(btn){ btn.textContent = 'データを引き継ぎ中...'; btn.disabled = true; }
+  // ① CSVエクスポート
+  if(subs.length > 0){
+    const BOM = '\uFEFF';
+    const header = 'ID,サービス名,カテゴリ,料金,頻度,更新日,メモ,満足度,休止,支払い方法,解約URL,解約済,解約日';
+    const rows = subs.map(s=>[
+      s.id,
+      `"${(s.name||'').replace(/"/g,'""')}"`,
+      `"${(s.cat||'').replace(/"/g,'""')}"`,
+      s.price,
+      `"${s.freq||''}"`,
+      s.date||'',
+      `"${(s.memo||'').replace(/"/g,'""')}"`,
+      s.sat||'',
+      s.paused?1:0,
+      `"${(s.payment||'').replace(/"/g,'""')}"`,
+      `"${(s.cancelUrl||'').replace(/"/g,'""')}"`,
+      s.canceled?1:0,
+      s.canceledDate||''
+    ].join(','));
+    const csvText = BOM + header + '\n' + rows.join('\n');
+    const fileName = `subly_${new Date().toISOString().slice(0,10)}.csv`;
+    const blob = new Blob([csvText], {type:'text/csv;charset=utf-8'});
 
-  try{
-    // subsDataを直接subs変数から取得（Store経由より確実）
-    const subsJson   = JSON.stringify(subs);
-    const inclOtVal  = JSON.stringify(inclOt);
-    const nicknameVal = _nickname || '';
-    const themeVal   = (await Store.get('subly_theme')) || 'light';
-
-    // LocalStorageに書き込み（同ドメインなので新サイトと共有）
-    localStorage.setItem('subsData',    subsJson);
-    localStorage.setItem('inclOt',      inclOtVal);
-    localStorage.setItem('nickname',    nicknameVal);
-    localStorage.setItem('subly_theme', themeVal);
-    localStorage.setItem('onboarded',   '1');
-    // 移行フラグ：新サイト側でトースト表示用
-    localStorage.setItem('migrated_from_free', String(subs.length));
-
-    // 書き込み確認
-    const verify = localStorage.getItem('subsData');
-    if(!verify || verify !== subsJson){
-      throw new Error('書き込み確認失敗');
+    // Web Share API（iOS推奨）
+    if(navigator.share){
+      try{
+        const file = new File([csvText], fileName, {type:'text/csv;charset=utf-8'});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          await navigator.share({files:[file], title:'Sublyデータ引き継ぎ用CSV'});
+        }
+      }catch(err){
+        if(err.name === 'AbortError'){
+          // キャンセルしたら遷移しない
+          return;
+        }
+      }
+    } else {
+      // PC: 通常ダウンロード
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fileName; a.style.display='none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
     }
-
-    gaEvent('migration_data_written', { subs_count: subs.length });
-
-    // 画面をフェードアウトしてから遷移（旧画面が残って見えるのを防ぐ）
-    document.body.style.transition = 'opacity .3s';
-    document.body.style.opacity = '0';
-    setTimeout(()=>{ window.location.href = MIGRATION_NEW_URL; }, 300);
-
-  }catch(e){
-    console.error('migration error:', e);
-    document.body.style.opacity = '1';
-    if(btn){ btn.textContent = '新しいSublyを使ってみる →'; btn.disabled = false; }
-    showToast('エラーが発生しました。もう一度お試しください。');
   }
+
+  // ② 新サイトへ遷移（少し待ってから）
+  gaEvent('migration_data_exported', { subs_count: subs.length });
+  setTimeout(()=>{
+    window.location.href = MIGRATION_NEW_URL;
+  }, subs.length > 0 ? 1200 : 0);
 }
 
 /* ============================================================
