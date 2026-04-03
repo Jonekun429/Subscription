@@ -461,7 +461,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 /* カテゴリタブ */
 .cat-tabs-wrap{margin-bottom:12px}
 .cat-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.cat-tab{padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid transparent;background:var(--tab-color,var(--p));color:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;opacity:0.55}
+.cat-tab{padding:15px 4px;border-radius:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid transparent;background:var(--tab-color,var(--p));color:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;opacity:0.55}
 .cat-tab.on{opacity:1;border-color:#fff;transform:scale(1.03);box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .q-note{display:none;font-size:15px;color:var(--pd);background:var(--pl);border-radius:7px;padding:7px 10px;margin-bottom:8px;line-height:1.6}
 /* q-grid: flex+wrap でプランパネルが展開しても隣に影響しない */
@@ -1865,12 +1865,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <input type="text" id="ss-nickname" placeholder="例：サブリー" maxlength="20" style="width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-family:inherit;color:var(--tx);background:var(--card)">
     </div>
     <!-- メアド -->
-    <div style="text-align:left;margin-bottom:12px">
+    <div id="ss-email-row" style="text-align:left;margin-bottom:12px">
       <label style="font-size:12px;font-weight:600;color:var(--ts);display:block;margin-bottom:4px">メールアドレス</label>
       <input type="email" id="ss-email" placeholder="example@mail.com" style="width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-family:inherit;color:var(--tx);background:var(--card)">
     </div>
     <!-- パスワード -->
-    <div style="text-align:left;margin-bottom:16px">
+    <div id="ss-password-row" style="text-align:left;margin-bottom:16px">
       <label style="font-size:12px;font-weight:600;color:var(--ts);display:block;margin-bottom:4px">パスワード（8文字以上）</label>
       <input type="password" id="ss-password" placeholder="英数字・大文字を含む8文字以上" style="width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-family:inherit;color:var(--tx);background:var(--card)">
     </div>
@@ -4573,7 +4573,24 @@ async function save(){
 function openAuthModal(tab){
   const user = window._fbUser;
   if(user && !tab){
-    logoutFirebase();
+    // ログイン済み → 無料会員なら応援誘導つきメニュー
+    if(!_isSupporterMember){
+      closeHdrop();
+      showDialog({
+        icon:'',
+        title: _nickname || 'アカウント',
+        msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
+          現在<strong style="color:var(--tx)">無料会員</strong>です
+        </div>`,
+        buttons:[
+          {label:'応援会員にアップグレード', cls:'ok', onClick:()=>{ setTimeout(_showPlanModal, 200); }},
+          {label:'ログアウト', cls:'cancel', onClick:()=>{ logoutFirebase(); }},
+        ],
+        btnColumn: true
+      });
+    } else {
+      logoutFirebase();
+    }
   } else if(tab){
     // 直接タブ指定（login/signup）→ 従来通り認証画面を表示
     _dismissNewBadge();
@@ -7250,6 +7267,17 @@ function _proceedPlan(){
     document.getElementById('supporter-signup-ov').classList.remove('hidden');
     document.getElementById('ss-plan-name').textContent = _selectedPlan.name + '会員';
     document.getElementById('ss-plan-price').textContent = '¥' + _selectedPlan.price.toLocaleString() + '/月';
+    const existingUser = window._fbUser;
+    // ログイン済みならメアド+パスワード非表示、ニックネームを自動入力
+    document.getElementById('ss-email-row').style.display = existingUser ? 'none' : '';
+    document.getElementById('ss-password-row').style.display = existingUser ? 'none' : '';
+    if(existingUser){
+      document.getElementById('ss-nickname').value = _nickname || '';
+    } else {
+      document.getElementById('ss-nickname').value = '';
+      document.getElementById('ss-email').value = '';
+      document.getElementById('ss-password').value = '';
+    }
   }, 200);
   gaEvent('plan_selected', { plan: _selectedPlan.name, price: _selectedPlan.price });
 }
@@ -7260,34 +7288,48 @@ async function _completeSupporterSignup(){
   const nickname = document.getElementById('ss-nickname').value.trim();
   const password = document.getElementById('ss-password').value;
   const email = document.getElementById('ss-email').value.trim();
+  const existingUser = window._fbUser;
+
   if(!nickname){ showToast('ニックネームを入力してください'); return; }
-  if(!email){ showToast('メールアドレスを入力してください'); return; }
-  if(!password || password.length < 8){ showToast('パスワードは8文字以上で入力してください'); return; }
-  if(!/[A-Z]/.test(password)){ showToast('パスワードに大文字（A〜Z）を1文字以上含めてください'); return; }
+  if(!existingUser){
+    // 未ログイン → メアド+パスワード必須
+    if(!email){ showToast('メールアドレスを入力してください'); return; }
+    if(!password || password.length < 8){ showToast('パスワードは8文字以上で入力してください'); return; }
+    if(!/[A-Z]/.test(password)){ showToast('パスワードに大文字（A〜Z）を1文字以上含めてください'); return; }
+  }
 
   try{
     if(!window._fbAuth || !window._fbFns){
       showToast('認証機能の読み込み中です。少し待ってから再度お試しください');
       return;
     }
-    // STEP1: Firebaseアカウントを作成
-    const result = await window._fbFns.createUserWithEmailAndPassword(window._fbAuth, email, password);
-    _nickname = nickname;
+    let user;
+    if(existingUser){
+      // 既にログイン済み（無料会員→応援会員へのアップグレード）
+      user = existingUser;
+      if(nickname) _nickname = nickname;
+    } else {
+      // 未ログイン → 新規アカウント作成
+      const result = await window._fbFns.createUserWithEmailAndPassword(window._fbAuth, email, password);
+      user = result.user;
+      if(nickname) _nickname = nickname;
+      await _ensureUserDoc(user);
+    }
+    // 応援会員フラグ+Firestore更新
     _isSupporterMember = true;
     _supporterPlanName = _selectedPlan.name;
     _supporterPlanPrice = _selectedPlan.price;
-    await _ensureUserDoc(result.user);
-    // FirestoreにsupporterPlanを更新
     const { doc, setDoc } = window._fbFns;
-    await setDoc(doc(window._fbDb, 'users', result.user.uid), {
+    await setDoc(doc(window._fbDb, 'users', user.uid), {
       supporterPlan: _selectedPlan.name,
-      supporterPrice: _selectedPlan.price
+      supporterPrice: _selectedPlan.price,
+      nickname: _nickname
     }, { merge: true });
     _updateNicknameDisplay();
     _updatePayerField();
-    _updateAuthUI(result.user);
+    _updateAuthUI(user);
     _closeSupporterSignup();
-    gaEvent('supporter_account_created', { plan: _selectedPlan.name, price: _selectedPlan.price });
+    gaEvent('supporter_account_created', { plan: _selectedPlan.name, price: _selectedPlan.price, was_free: !!existingUser });
 
     // STEP2: 決済画面（将来Stripe Checkout）
     setTimeout(()=>{
@@ -7629,14 +7671,19 @@ function _processImportFile(file){
     // 無料会員の件数制限チェック（インポート前にブロック）
     if(!_isSupporterMember && imported.length > FREE_LIMIT){
       showDialog({
-        icon:'📋',
+        icon:'',
         title:'インポートできません',
-        msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.8;margin-bottom:14px">
-          インポートデータは<strong style="color:var(--tx)">${imported.length}件</strong>ですが、<br>
-          無料会員は<strong style="color:var(--tx)">${FREE_LIMIT}件まで</strong>の登録となります。
-        </div>
-        <div style="background:var(--pl);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
-          <strong>応援会員</strong>になると登録数が無制限になり、<br>すべてのデータをインポートできます。
+        msg:`<div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:#FFF0F0;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#C06060"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          </div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.8;margin-bottom:14px">
+            インポートデータは<strong style="color:var(--tx)">${imported.length}件</strong>ですが、<br>
+            無料会員は<strong style="color:var(--tx)">${FREE_LIMIT}件まで</strong>の登録となります。
+          </div>
+          <div style="background:var(--pl);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
+            <strong>応援会員</strong>になると登録数が無制限になり、<br>すべてのデータをインポートできます。
+          </div>
         </div>`,
         buttons:[
           {label:'応援会員になる', cls:'ok', onClick:()=>{ setTimeout(_showPlanModal, 200); }},
