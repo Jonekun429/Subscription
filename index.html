@@ -1804,7 +1804,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:700;color:var(--pd)">応援会員ではじめる</div>
-        <div style="font-size:11px;color:var(--pd);line-height:1.5;margin-top:2px">登録無制限・グループ機能・¥200〜/月</div>
+        <div style="font-size:11px;color:var(--pd);line-height:1.5;margin-top:2px">登録無制限・グループ機能・¥300〜/月</div>
       </div>
       <span style="color:var(--pd);font-size:16px">›</span>
     </div>
@@ -1901,12 +1901,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <!-- プラン選択 -->
       <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:10px">応援の気持ちでプランを選べます</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-        <div class="ps-card" onclick="_selectPlan(this,'どんぐり',200)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
+        <div class="ps-card" onclick="_selectPlan(this,'どんぐり',300)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
           <div class="ps-radio" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);position:absolute;top:10px;left:10px"></div>
           <div style="width:44px;height:44px;border-radius:50%;background:#F5ECD7;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px">🌰</div>
           <div style="font-size:14px;font-weight:700">どんぐり会員</div>
           <div style="font-size:10px;color:var(--ts);margin-bottom:6px">ちょこっと応援</div>
-          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥200<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
+          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥300<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
         </div>
         <div class="ps-card" onclick="_selectPlan(this,'くるみ',500)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
           <div style="position:absolute;top:-8px;right:12px;background:var(--p);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px">人気</div>
@@ -2550,7 +2550,10 @@ const catMap={
 };
 const qData={
   "動画・配信":[
-    {name:"Amazon Prime",       price:600,  freq:"月額"},
+    {name:"Amazon Prime", plans:[
+      {label:"月額",   price:600},
+      {label:"年額",   price:5900}
+    ], freq:"月額"},
     {name:"Netflix", plans:[
       {label:"広告あり",         price:890},
       {label:"スタンダード",     price:1590},
@@ -2646,8 +2649,7 @@ const qData={
     {name:"アメックス ゴールド",         price:31900, freq:"年額"},
     {name:"ANAカード（一般）",           price:2200,  freq:"年額"},
     {name:"JALカード（一般）",           price:2200,  freq:"年額"},
-    {name:"dカード GOLD",               price:11000, freq:"年額"},
-    {name:"Amazon Prime（年額）",       price:6000,  freq:"年額"}
+    {name:"dカード GOLD",               price:11000, freq:"年額"}
   ],
   "習い事":[
     {name:"英会話（オンライン）",        price:5000,  freq:"月額"},
@@ -6518,9 +6520,9 @@ function buildQuickAdd(){
       t.classList.add('on');
       buildQItems(cat);
       const note=document.getElementById('q-note');
-      if(cat==='金融・年会費'){note.style.display='block';note.textContent='クレカ年会費は固定費として管理できます。更新日管理に便利です。Amazon Prime年額版もこちらにあります。'}
+      if(cat==='金融・年会費'){note.style.display='block';note.textContent='クレカ年会費は固定費として管理できます。更新日管理に便利です。'}
       else if(cat==='保険'){note.style.display='block';note.textContent='保険は固定費として管理できます。見直しのきっかけに。'}
-      else if(cat==='動画・配信'){note.style.display='block';note.textContent='Amazon Primeの年額版は「金融・年会費」カテゴリにあります。'}
+      else if(cat==='動画・配信'){note.style.display='block';note.textContent='Amazon Primeは月額/年額をプランから選べます。'}
       else{note.style.display='none'}
     };
     tabs.appendChild(t);
@@ -6575,10 +6577,12 @@ function buildQItems(cat){
         item.plans.forEach(plan=>{
           const opt=document.createElement('div');
           opt.className='plan-opt';
-          opt.innerHTML=`<span class="plan-opt-lbl">${plan.label}</span><span class="plan-opt-prc">¥${plan.price.toLocaleString()} / ${item.freq}</span>`;
+          const planFreqLabel = plan.label.includes('年額') ? '年額' : item.freq;
+          opt.innerHTML=`<span class="plan-opt-lbl">${plan.label}</span><span class="plan-opt-prc">¥${plan.price.toLocaleString()} / ${planFreqLabel}</span>`;
           opt.onclick=()=>{
-            gaEvent('quick_add_tap', { service_name: item.name, plan: plan.label, category: cat, freq: item.freq });
-            fillForm({name:item.name,price:plan.price,freq:item.freq},cat);
+            const planFreq = plan.label.includes('年額') ? '年額' : item.freq;
+            gaEvent('quick_add_tap', { service_name: item.name, plan: plan.label, category: cat, freq: planFreq });
+            fillForm({name:item.name,price:plan.price,freq:planFreq},cat);
             panel.classList.remove('open'); panel.innerHTML=''; panel.dataset.item='';
           };
           panel.appendChild(opt);
