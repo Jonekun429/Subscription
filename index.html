@@ -4005,7 +4005,7 @@ async function sendPasswordReset(){
 }
 
 async function submitAuth(){
-  if(!window._fbAuth || !window._fbFns) return;
+  if(!window._fbAuth || !window._fbFns){ showToast('Firebase未初期化。ページを再読み込みしてください'); return; }
   const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
   if(!email || !password){ _showAuthError('empty'); return; }
@@ -4324,11 +4324,11 @@ function _showAuthError(code){
   if(!msg) return;
   const el = document.getElementById('auth-error');
 
-  // no-account / already-exists はボタン付きエラーに
+  // no-account / already-exists / email-already-in-use はボタン付きエラーに
   if(code === 'no-account'){
     el.innerHTML = `${msg}<br><button onclick="switchAuthTab('signup')" style="margin-top:8px;font-size:12px;font-weight:700;color:var(--p);background:none;border:none;cursor:pointer;text-decoration:underline">新規登録はこちら →</button>`;
-  } else if(code === 'already-exists'){
-    el.innerHTML = `${msg}<br><button onclick="switchAuthTab('login')" style="margin-top:8px;font-size:12px;font-weight:700;color:var(--p);background:none;border:none;cursor:pointer;text-decoration:underline">ログインはこちら →</button>`;
+  } else if(code === 'already-exists' || code === 'auth/email-already-in-use'){
+    el.innerHTML = `このメールアドレスは登録済みです。<br><button onclick="switchAuthTab('login')" style="margin-top:8px;font-size:12px;font-weight:700;color:var(--p);background:none;border:none;cursor:pointer;text-decoration:underline">ログインはこちら →</button>`;
   } else {
     el.textContent = msg;
   }
