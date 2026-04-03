@@ -7224,6 +7224,27 @@ function _processImportFile(file){
       showDialog({icon:'',title:'読み込みエラー',msg:'インポートできるデータが見つかりませんでした。',buttons:[{label:'OK',cls:'ok'}]});
       return;
     }
+    // 無料会員の件数制限チェック（インポート前にブロック）
+    if(!_isSupporterMember && imported.length > FREE_LIMIT){
+      showDialog({
+        icon:'📋',
+        title:'インポートできません',
+        msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.8;margin-bottom:14px">
+          インポートデータは<strong style="color:var(--tx)">${imported.length}件</strong>ですが、<br>
+          無料会員は<strong style="color:var(--tx)">${FREE_LIMIT}件まで</strong>の登録となります。
+        </div>
+        <div style="background:var(--pl);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
+          <strong>応援会員</strong>になると登録数が無制限になり、<br>すべてのデータをインポートできます。
+        </div>`,
+        buttons:[
+          {label:'応援会員になる', cls:'ok', onClick:()=>{ setTimeout(_showPlanModal, 200); }},
+          {label:'閉じる', cls:'cancel'}
+        ],
+        btnColumn: true
+      });
+      gaEvent('csv_import_blocked', { imported_count: imported.length, limit: FREE_LIMIT });
+      return;
+    }
     showDialog({
       icon:`<span style='color:var(--p)'><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></span>`,
       title:`${imported.length}件をインポート`,
@@ -7234,10 +7255,6 @@ function _processImportFile(file){
           subs = imported; await save(); closeSettings(); goto('dashboard');
           gaEvent('csv_import', { count: imported.length });
           showToast(`${imported.length}件をインポートしました`);
-          // 件数超過チェック
-          if(!_isSupporterMember && subs.length > FREE_LIMIT){
-            setTimeout(_showLimitPopup, 800);
-          }
         }}
       ]
     });
