@@ -1778,6 +1778,40 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </div>
 </div>
 
+<!-- 会員種別選択ポップアップ（未ログインユーザー用） -->
+<div class="dlg-ov hidden" id="member-type-ov" onclick="if(event.target===this)_closeMemberType()">
+  <div class="dlg" style="max-width:340px;padding:28px 22px 22px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--pl);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--bd)">
+      <img src="https://jonekun429.github.io/Subscription/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+    </div>
+    <div style="font-size:19px;font-weight:800;margin-bottom:4px">Sublyをはじめる</div>
+    <div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:16px">ご希望のプランを選んでください</div>
+    <!-- 無料会員 -->
+    <div onclick="_closeMemberType();setTimeout(()=>{openAuthModal('signup')},200)" style="background:var(--card);border:1.5px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--ts)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--tx)">無料会員ではじめる</div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-top:2px">6件まで登録・グラフ・カレンダー</div>
+      </div>
+      <span style="color:var(--ts);font-size:16px">›</span>
+    </div>
+    <!-- 応援会員 -->
+    <div onclick="_closeMemberType();setTimeout(_showPlanModal,200)" style="background:var(--pl);border:1.5px solid var(--p);border-radius:12px;padding:14px 16px;margin-bottom:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--pd)">応援会員ではじめる</div>
+        <div style="font-size:11px;color:var(--pd);line-height:1.5;margin-top:2px">登録無制限・グループ機能・¥200〜/月</div>
+      </div>
+      <span style="color:var(--pd);font-size:16px">›</span>
+    </div>
+    <button onclick="_closeMemberType();setTimeout(()=>{openAuthModal('login')},200)" style="background:none;border:none;font-size:13px;color:var(--ts);cursor:pointer;font-family:inherit;padding:6px">既にアカウントをお持ちの方はこちら</button>
+  </div>
+</div>
+
 <!-- グループ機能説明ポップアップ（応援会員/無料会員で切替） -->
 <div class="dlg-ov hidden" id="group-intro-ov" onclick="if(event.target===this)_closeGroupIntro()">
   <div class="dlg" style="max-width:340px;padding:28px 22px 22px;text-align:center">
@@ -3483,22 +3517,17 @@ async function openNicknameModal(){
 // グループメニュータップ：ログイン済みはopenGroupModal、未ログインはFreeJoinModal
 function _onGroupMenuTap(){
   const user = window._fbUser || (window._fbAuth && window._fbAuth.currentUser);
-  if(!user){
-    showToast('グループ機能にはログインが必要です');
-    setTimeout(()=> openAuthModal('login'), 300);
-    return;
-  }
   // 既にグループ加入中 → そのままグループモーダル
-  if(_groupId){
+  if(user && _groupId){
     openGroupModal();
     return;
   }
-  // 応援会員 → グループ説明 →「はじめる」
-  if(_isSupporterMember){
+  // 応援会員（ログイン済み）→ グループ説明 →「はじめる」
+  if(user && _isSupporterMember){
     _showGroupIntro(true);
     return;
   }
-  // 無料会員 → グループ説明 → 応援会員誘導
+  // 未ログイン or 無料会員 → グループ説明 → 応援会員誘導
   _showGroupIntro(false);
 }
 
@@ -3518,6 +3547,15 @@ function _showGroupIntro(isSupporter){
 }
 function _closeGroupIntro(){
   document.getElementById('group-intro-ov').classList.add('hidden');
+}
+
+// 会員種別選択ポップアップ
+function _showMemberTypeSelect(){
+  document.getElementById('member-type-ov').classList.remove('hidden');
+  gaEvent('member_type_select_shown', {});
+}
+function _closeMemberType(){
+  document.getElementById('member-type-ov').classList.add('hidden');
 }
 
 function _openFreeJoinModal(){
@@ -4429,12 +4467,18 @@ function openAuthModal(tab){
   const user = window._fbUser;
   if(user && !tab){
     logoutFirebase();
-  } else {
+  } else if(tab){
+    // 直接タブ指定（login/signup）→ 従来通り認証画面を表示
     _dismissNewBadge();
     closeHdrop();
-    switchAuthTab(tab || 'login');
+    switchAuthTab(tab);
     document.getElementById('auth-ov').classList.remove('hidden');
-    gaEvent('auth_modal_open', {});
+    gaEvent('auth_modal_open', { tab: tab });
+  } else {
+    // 未ログイン＋タブ指定なし → 会員種別選択を表示
+    _dismissNewBadge();
+    closeHdrop();
+    _showMemberTypeSelect();
   }
 }
 
