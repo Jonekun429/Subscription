@@ -1750,6 +1750,63 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </div>
 </div>
 
+<!-- 件数制限ポップアップ -->
+<div class="dlg-ov hidden" id="limit-popup-ov" onclick="if(event.target===this)_closeLimitPopup()">
+  <div class="dlg" style="max-width:360px;padding:28px 22px 22px;text-align:center;max-height:90vh;overflow-y:auto">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--pl);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--bd)">
+      <img src="https://jonekun429.github.io/subly-for-Family/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--ts);margin-bottom:4px">無料プランは<span id="limit-num-label">6</span>件まで登録できます</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">もっと管理しませんか？</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px">
+      <div style="flex:1;max-width:180px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),#E8A04A)"></div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--ts)" id="limit-count-label">6 / 6 件</div>
+    </div>
+    <div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:16px">
+      <span id="limit-count-num">6</span>件以上のサブスクをお持ちの方は<br>
+      <strong style="color:var(--tx)">平均より多く</strong>契約されています。<br>しっかり管理して見直してみませんか？
+    </div>
+    <!-- 応援会員メリット -->
+    <div style="background:var(--pl);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:left">
+      <div style="font-size:12px;font-weight:700;color:var(--pd);margin-bottom:8px">応援会員になると</div>
+      <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx);line-height:1.6;padding:3px 0"><div style="width:20px;height:20px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><div>登録数が<strong>無制限</strong>に</div></div>
+      <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx);line-height:1.6;padding:3px 0"><div style="width:20px;height:20px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div><strong>グループ機能</strong>で家族や仕事仲間と共有</div></div>
+      <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx);line-height:1.6;padding:3px 0"><div style="width:20px;height:20px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><div>会費以上のコスト見直しに<strong>つながるかもしれません</strong></div></div>
+    </div>
+    <!-- プラン紹介 -->
+    <div style="font-size:12px;font-weight:700;color:var(--ts);margin-bottom:8px">応援の気持ちでプランを選べます</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <div style="flex:1;background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center"><div style="font-size:16px;margin-bottom:2px">🌰</div><div style="font-size:10px;font-weight:700">¥200/月</div><div style="font-size:9px;color:var(--ts)">どんぐり</div></div>
+      <div style="flex:1;background:var(--pl);border-radius:10px;padding:8px 4px;text-align:center;border:1.5px solid var(--p)"><div style="font-size:16px;margin-bottom:2px">🥜</div><div style="font-size:10px;font-weight:700;color:var(--pd)">¥500/月</div><div style="font-size:9px;color:var(--pd)">くるみ</div></div>
+      <div style="flex:1;background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center"><div style="font-size:16px;margin-bottom:2px">🍁</div><div style="font-size:10px;font-weight:700">¥800/月</div><div style="font-size:9px;color:var(--ts)">もみじ</div></div>
+      <div style="flex:1;background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center"><div style="font-size:16px;margin-bottom:2px">🌳</div><div style="font-size:10px;font-weight:700">¥1,000/月</div><div style="font-size:9px;color:var(--ts)">もりのき</div></div>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:4px;background:#FFF8EE;border:1px solid #F5D9A8;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#8B6914;margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#8B6914"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>2週間は無料でお試しできます</div>
+    <button onclick="_closeLimitPopup();setTimeout(_showPlanModal,200)" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:8px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;box-shadow:0 4px 12px rgba(92,142,132,.3)">応援会員になる</button>
+    <button onclick="_closeLimitPopup()" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:var(--bg);color:var(--ts)">今は見送る</button>
+  </div>
+</div>
+
+<!-- グループ制限ポップアップ -->
+<div class="dlg-ov hidden" id="group-limit-ov" onclick="if(event.target===this)_closeGroupLimitPopup()">
+  <div class="dlg" style="max-width:340px;padding:28px 22px 22px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--pl);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--bd)">
+      <img src="https://jonekun429.github.io/subly-for-Family/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+    </div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">グループ機能を使うには</div>
+    <div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:16px">グループ機能は<strong style="color:var(--tx)">応援会員限定</strong>の機能です。<br>さまざまなシーンで活用できます。</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;text-align:left">
+      <div style="background:var(--pl);border-radius:10px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:var(--pd);margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--pd)" style="vertical-align:middle;margin-right:2px"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg> 家族</div><div style="font-size:11px;color:var(--ts);line-height:1.5">家計の固定費を<br>家族で見える化</div></div>
+      <div style="background:#FFF8EE;border-radius:10px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:#8B6914;margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#8B6914" style="vertical-align:middle;margin-right:2px"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> カップル</div><div style="font-size:11px;color:var(--ts);line-height:1.5">共有サブスクを<br>ふたりで管理</div></div>
+      <div style="background:#EDE7F6;border-radius:10px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:#5E35B1;margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#5E35B1" style="vertical-align:middle;margin-right:2px"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> 仕事・部署</div><div style="font-size:11px;color:var(--ts);line-height:1.5">チームの固定費を<br>まとめて把握</div></div>
+      <div style="background:#E3F2FD;border-radius:10px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:#1565C0;margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#1565C0" style="vertical-align:middle;margin-right:2px"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> シェアハウス</div><div style="font-size:11px;color:var(--ts);line-height:1.5">共有のサービスを<br>みんなで管理</div></div>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:4px;background:#FFF8EE;border:1px solid #F5D9A8;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#8B6914;margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#8B6914"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>2週間は無料でお試しできます</div>
+    <button onclick="_closeGroupLimitPopup();setTimeout(_showPlanModal,200)" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:8px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;box-shadow:0 4px 12px rgba(92,142,132,.3)">応援会員になる</button>
+    <button onclick="_closeGroupLimitPopup()" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:var(--bg);color:var(--ts)">閉じる</button>
+  </div>
+</div>
+
 <!-- 応援会員プラン誘導ポップアップ -->
 <div class="nudge-ov hidden" id="pro-nudge-ov" onclick="if(event.target===this)closeProNudge()">
   <div class="nudge">
@@ -2246,6 +2303,8 @@ let inclOt = false;
 let chartMode = 'month'; // 'month' or 'year'
 let satOpen=true;
 const MAX=200;
+const FREE_LIMIT=6; // 無料会員の登録上限（GA4平均を基に調整）
+let _isSupporterMember = false; // 応援会員フラグ（将来Stripe連携）
 const today=new Date();
 calYear=today.getFullYear(); calMonth=today.getMonth();
 
@@ -3318,12 +3377,17 @@ async function openNicknameModal(){
 // グループメニュータップ：ログイン済みはopenGroupModal、未ログインはFreeJoinModal
 function _onGroupMenuTap(){
   const user = window._fbUser || (window._fbAuth && window._fbAuth.currentUser);
-  if(user){
-    openGroupModal();
-  } else {
+  if(!user){
     showToast('グループ機能にはログインが必要です');
     setTimeout(()=> openAuthModal('login'), 300);
+    return;
   }
+  // 応援会員でなければグループ制限ポップアップ
+  if(!_isSupporterMember && !_groupId){
+    _showGroupLimitPopup();
+    return;
+  }
+  openGroupModal();
 }
 
 function _openFreeJoinModal(){
@@ -6418,6 +6482,7 @@ async function submitForm(){
   if(!name){ showAlert('','サービス名を入力してください','サービス名は必須です'); return}
   if(!price){ showAlert('','金額を入力してください','月額や年額などの金額を入力してください'); return}
   if(!date){ showAlert('','次回支払日を入力してください','次の支払い予定日を入力してください'); return}
+  if(!_isSupporterMember && subs.length>=FREE_LIMIT && !editId){ _showLimitPopup(); return; }
   if(subs.length>=MAX&&!editId){ showAlert('','登録上限です',`登録できるサブスクは${MAX}件までです`); return}
 
   const isEdit=!!editId;
@@ -6555,6 +6620,54 @@ function toggleUrlBtn(){
   const name=document.getElementById('f-name').value.trim();
   const searchBtn=document.getElementById('url-search-btn');
   if(searchBtn) searchBtn.style.display=(!v && name)?'block':'none';
+}
+
+// 三点メニュー開閉
+// 件数制限ポップアップ
+function _showLimitPopup(){
+  document.getElementById('limit-count-label').textContent = FREE_LIMIT + ' / ' + FREE_LIMIT + ' 件';
+  document.getElementById('limit-count-num').textContent = FREE_LIMIT;
+  document.getElementById('limit-popup-ov').classList.remove('hidden');
+  gaEvent('limit_popup_shown', { limit: FREE_LIMIT, current: subs.length });
+}
+function _closeLimitPopup(){
+  document.getElementById('limit-popup-ov').classList.add('hidden');
+}
+
+// グループ制限ポップアップ
+function _showGroupLimitPopup(){
+  document.getElementById('group-limit-ov').classList.remove('hidden');
+  gaEvent('group_limit_popup_shown', {});
+}
+function _closeGroupLimitPopup(){
+  document.getElementById('group-limit-ov').classList.add('hidden');
+}
+
+// 応援会員プラン選択モーダル（将来Stripe連携）
+function _showPlanModal(){
+  const user = window._fbUser;
+  if(!user){
+    // 未ログイン → まずアカウント登録が必要
+    showDialog({
+      icon:'',
+      title:'アカウント登録が必要です',
+      msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
+        応援会員になるにはアカウント登録が必要です。<br>メールアドレスとパスワードで<br>かんたんに登録できます。
+      </div>
+      <div style="background:var(--pl);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
+        登録後に応援プランをお選びいただけます。<br>アカウント登録自体は<strong>無料</strong>です。
+      </div>`,
+      buttons:[
+        {label:'アカウント登録へ', cls:'ok', onClick:()=>{ openAuthModal('signup'); }},
+        {label:'閉じる', cls:'cancel'}
+      ],
+      btnColumn: true
+    });
+  } else {
+    // ログイン済み → プラン選択（将来Stripe連携）
+    showToast('応援会員プランは準備中です。もうしばらくお待ちください。');
+  }
+  gaEvent('plan_modal_shown', { logged_in: !!user });
 }
 
 // 三点メニュー開閉
