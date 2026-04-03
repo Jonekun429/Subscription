@@ -447,6 +447,11 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .act-menu button{display:block;width:100%;text-align:left;padding:10px 16px;font-size:13px;font-weight:600;font-family:inherit;border:none;background:none;cursor:pointer;color:var(--tx);border-bottom:1px solid var(--bd)}
 .act-menu button:last-child{border-bottom:none}
 .act-menu button.danger{color:var(--dn)}
+/* プラン選択カード */
+.ps-card{transition:all .2s}.ps-card:active{transform:scale(.97)}
+.ps-card.selected{border-color:var(--p)!important;box-shadow:0 4px 16px rgba(92,142,132,.25)!important}
+.ps-card .ps-radio{transition:all .2s}
+.ps-card.selected .ps-radio{border-color:var(--p)!important;background:var(--p)!important}
 .empty{text-align:center;padding:36px 16px;color:var(--ts);font-size:15px;line-height:2}
 
 /* ── 追加フォーム ── */
@@ -1804,6 +1809,85 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div style="display:inline-flex;align-items:center;gap:4px;background:#FFF8EE;border:1px solid #F5D9A8;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#8B6914;margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#8B6914"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>2週間は無料でお試しできます</div>
     <button onclick="_closeGroupLimitPopup();setTimeout(_showPlanModal,200)" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:8px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;box-shadow:0 4px 12px rgba(92,142,132,.3)">応援会員になる</button>
     <button onclick="_closeGroupLimitPopup()" style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:var(--bg);color:var(--ts)">閉じる</button>
+  </div>
+</div>
+
+<!-- プラン選択画面 -->
+<div class="dlg-ov hidden" id="plan-select-ov" style="overflow-y:auto;padding:0;align-items:flex-start;justify-content:center">
+  <div style="width:100%;max-width:440px;margin:0 auto;background:var(--bg);min-height:100vh">
+    <!-- ヘッダー -->
+    <div style="background:linear-gradient(135deg,var(--p),var(--pd));padding:28px 20px 24px;text-align:center;position:relative">
+      <button onclick="_closePlanModal()" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);border:none;cursor:pointer;font-size:14px;color:#fff">✕</button>
+      <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(255,255,255,.3)">
+        <img src="https://jonekun429.github.io/subly-for-Family/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+      </div>
+      <div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px">応援会員になりませんか？</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.7">すべての基本機能は無料で使えます。<br>応援会費でSublyの開発を支えてください。</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:rgba(255,255,255,.2);border-radius:20px;padding:5px 16px;font-size:13px;font-weight:700;color:#fff">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>
+        2週間トライアル無料
+      </div>
+    </div>
+    <div style="padding:16px 16px 100px">
+      <!-- 比較表 -->
+      <div style="background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--bd);margin-bottom:16px;box-shadow:var(--sh)">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg)">
+          <div style="padding:8px 6px;font-size:11px;font-weight:700;text-align:center;color:var(--ts)"></div>
+          <div style="padding:8px 6px;font-size:11px;font-weight:700;text-align:center;color:var(--ts)">無料会員</div>
+          <div style="padding:8px 6px;font-size:11px;font-weight:700;text-align:center;color:#fff;background:var(--p)">応援会員</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:8px 6px;font-size:11px;font-weight:600;padding-left:12px">アカウント作成</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700">&#10003;</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">&#10003;</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:8px 6px;font-size:11px;font-weight:600;padding-left:12px">サブスク登録</div><div style="padding:8px 6px;text-align:center;font-size:11px">6件まで</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700;font-size:11px;background:rgba(92,142,132,.04)">無制限</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:8px 6px;font-size:11px;font-weight:600;padding-left:12px">グループ機能</div><div style="padding:8px 6px;text-align:center;color:var(--bd);font-size:14px">&#10005;</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">&#10003;</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:8px 6px;font-size:11px;font-weight:600;padding-left:12px">グラフ・カレンダー</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700">&#10003;</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">&#10003;</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:8px 6px;font-size:11px;font-weight:600;padding-left:12px">クラウド同期</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700">&#10003;</div><div style="padding:8px 6px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">&#10003;</div></div>
+      </div>
+      <!-- プラン選択 -->
+      <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:10px">応援の気持ちでプランを選べます</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div class="ps-card" onclick="_selectPlan(this,'どんぐり',200)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
+          <div class="ps-radio" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);position:absolute;top:10px;left:10px"></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#F5ECD7;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px">🌰</div>
+          <div style="font-size:14px;font-weight:700">どんぐり会員</div>
+          <div style="font-size:10px;color:var(--ts);margin-bottom:6px">ちょこっと応援</div>
+          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥200<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
+        </div>
+        <div class="ps-card selected" onclick="_selectPlan(this,'くるみ',500)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid var(--p);cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
+          <div style="position:absolute;top:-8px;right:12px;background:var(--p);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px">人気</div>
+          <div class="ps-radio" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--p);background:var(--p);position:absolute;top:10px;left:10px"></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#E8F0ED;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px">🥜</div>
+          <div style="font-size:14px;font-weight:700">くるみ会員</div>
+          <div style="font-size:10px;color:var(--ts);margin-bottom:6px">しっかり応援</div>
+          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥500<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
+        </div>
+        <div class="ps-card" onclick="_selectPlan(this,'もみじ',800)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
+          <div class="ps-radio" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);position:absolute;top:10px;left:10px"></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#FDE8E0;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px">🍁</div>
+          <div style="font-size:14px;font-weight:700">もみじ会員</div>
+          <div style="font-size:10px;color:var(--ts);margin-bottom:6px">たっぷり応援</div>
+          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥800<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
+        </div>
+        <div class="ps-card" onclick="_selectPlan(this,'もりのき',1000)" style="background:var(--card);border-radius:14px;padding:16px 12px;box-shadow:var(--sh);border:2px solid transparent;cursor:pointer;text-align:center;position:relative;-webkit-tap-highlight-color:transparent">
+          <div class="ps-radio" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);position:absolute;top:10px;left:10px"></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#D4EDE8;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px">🌳</div>
+          <div style="font-size:14px;font-weight:700">もりのき会員</div>
+          <div style="font-size:10px;color:var(--ts);margin-bottom:6px">全力応援！</div>
+          <div style="font-size:20px;font-weight:800;color:var(--pd)">¥1,000<span style="font-size:12px;font-weight:600;color:var(--ts)">/月</span></div>
+        </div>
+      </div>
+      <!-- 注意書き -->
+      <div style="background:var(--card);border-radius:14px;padding:14px 18px;box-shadow:var(--sh)">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ts);line-height:1.5;padding:4px 0"><div style="width:18px;height:18px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--pd)"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg></div>2週間の無料トライアル付き</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ts);line-height:1.5;padding:4px 0"><div style="width:18px;height:18px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--pd)"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>初月は日割りなし・トライアル後に課金開始</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ts);line-height:1.5;padding:4px 0"><div style="width:18px;height:18px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--pd)"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></div>プラン変更・解約はいつでもOK</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ts);line-height:1.5;padding:4px 0"><div style="width:18px;height:18px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--pd)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>全プラン機能は同じ・応援の気持ちで選べます</div>
+      </div>
+    </div>
+    <!-- 固定CTAバー -->
+    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column;gap:8px;align-items:center;z-index:9600">
+      <button id="ps-cta-btn" onclick="_proceedPlan()" style="width:100%;max-width:440px;padding:15px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;font-size:16px;font-weight:700;font-family:inherit;border:none;border-radius:14px;cursor:pointer;box-shadow:0 4px 16px rgba(92,142,132,.3)">2週間無料で試す — くるみ会員</button>
+      <button onclick="_closePlanModal()" style="font-size:13px;color:var(--ts);background:none;border:none;cursor:pointer;font-family:inherit;padding:4px">まずは無料で使う</button>
+    </div>
   </div>
 </div>
 
@@ -6643,31 +6727,62 @@ function _closeGroupLimitPopup(){
   document.getElementById('group-limit-ov').classList.add('hidden');
 }
 
-// 応援会員プラン選択モーダル（将来Stripe連携）
+// 応援会員プラン選択モーダル
 function _showPlanModal(){
+  document.getElementById('plan-select-ov').classList.remove('hidden');
+  gaEvent('plan_modal_shown', { logged_in: !!window._fbUser });
+}
+function _closePlanModal(){
+  document.getElementById('plan-select-ov').classList.add('hidden');
+}
+let _selectedPlan = {name:'くるみ', price:500};
+function _selectPlan(el, name, price){
+  document.querySelectorAll('.ps-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  _selectedPlan = {name, price};
+  document.getElementById('ps-cta-btn').textContent = '2週間無料で試す — ' + name + '会員';
+}
+function _proceedPlan(){
+  _closePlanModal();
   const user = window._fbUser;
   if(!user){
-    // 未ログイン → まずアカウント登録が必要
-    showDialog({
-      icon:'',
-      title:'アカウント登録が必要です',
-      msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
-        応援会員になるにはアカウント登録が必要です。<br>メールアドレスとパスワードで<br>かんたんに登録できます。
-      </div>
-      <div style="background:var(--pl);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
-        登録後に応援プランをお選びいただけます。<br>アカウント登録自体は<strong>無料</strong>です。
-      </div>`,
-      buttons:[
-        {label:'アカウント登録へ', cls:'ok', onClick:()=>{ openAuthModal('signup'); }},
-        {label:'閉じる', cls:'cancel'}
-      ],
-      btnColumn: true
-    });
+    // 未ログイン → アカウント登録へ
+    setTimeout(()=>{
+      showDialog({
+        icon:'',
+        title:'アカウント登録が必要です',
+        msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
+          応援会員になるにはアカウント登録が必要です。<br>メールアドレスとパスワードで<br>かんたんに登録できます。
+        </div>
+        <div style="background:var(--pl);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--pd);line-height:1.7;text-align:left">
+          選択中：<strong>${_selectedPlan.name}会員（¥${_selectedPlan.price.toLocaleString()}/月）</strong><br>
+          登録後に決済画面に進みます。アカウント登録自体は<strong>無料</strong>です。
+        </div>`,
+        buttons:[
+          {label:'アカウント登録へ', cls:'ok', onClick:()=>{ openAuthModal('signup'); }},
+          {label:'戻る', cls:'cancel'}
+        ],
+        btnColumn: true
+      });
+    }, 200);
   } else {
-    // ログイン済み → プラン選択（将来Stripe連携）
-    showToast('応援会員プランは準備中です。もうしばらくお待ちください。');
+    // ログイン済み → 決済画面（将来Stripe）
+    setTimeout(()=>{
+      showDialog({
+        icon:'',
+        title:'決済画面（準備中）',
+        msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
+          <strong style="color:var(--tx)">${_selectedPlan.name}会員（¥${_selectedPlan.price.toLocaleString()}/月）</strong><br><br>
+          決済機能は現在準備中です。<br>もうしばらくお待ちください。
+        </div>
+        <div style="background:#FFF8EE;border:1px solid #F5D9A8;border-radius:10px;padding:10px 14px;font-size:12px;color:#8B6914;line-height:1.7;text-align:center">
+          2週間の無料トライアル付き
+        </div>`,
+        buttons:[{label:'OK', cls:'ok'}]
+      });
+    }, 200);
   }
-  gaEvent('plan_modal_shown', { logged_in: !!user });
+  gaEvent('plan_selected', { plan: _selectedPlan.name, price: _selectedPlan.price, logged_in: !!user });
 }
 
 // 三点メニュー開閉
@@ -6964,6 +7079,10 @@ function _processImportFile(file){
           subs = imported; await save(); closeSettings(); goto('dashboard');
           gaEvent('csv_import', { count: imported.length });
           showToast(`${imported.length}件をインポートしました`);
+          // 件数超過チェック
+          if(!_isSupporterMember && subs.length > FREE_LIMIT){
+            setTimeout(_showLimitPopup, 800);
+          }
         }}
       ]
     });
@@ -7146,6 +7265,10 @@ async function init(){
   if(onboarded) setTimeout(()=>checkUpcomingPayments(), 1200);
   // 応援会員プラン誘導（未ログイン・3件以上登録済みの場合）
   if(onboarded) setTimeout(()=>checkProNudge(), 2500);
+  // 起動時の件数超過チェック（CSVインポート等で6件超えている場合）
+  if(onboarded && !_isSupporterMember && subs.length > FREE_LIMIT){
+    setTimeout(_showLimitPopup, 3000);
+  }
 }
 
 /* ============================================================
