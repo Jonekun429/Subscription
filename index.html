@@ -4345,6 +4345,7 @@ async function _ensureUserDoc(user){
       const userData = {
         nickname: _nickname || user.displayName || '',
         plan: 'pro',
+        supporterPlan: _isSupporterMember ? (_selectedPlan?.name || 'free') : 'free',
         createdAt: new Date().toISOString(),
         email: user.email || ''
       };
@@ -4385,6 +4386,8 @@ async function _loadFromFirestore(uid){
     if(userSnap.exists()){
       const data = userSnap.data();
       if(data.nickname){ _nickname = data.nickname; _updateNicknameDisplay(); _updatePayerField(); }
+      // 応援会員フラグを復元
+      _isSupporterMember = !!(data.supporterPlan && data.supporterPlan !== 'free');
     }
     // サブスクデータ
     const subsSnap = await getDocs(collection(window._fbDb, 'users', uid, 'subs'));
@@ -6820,7 +6823,14 @@ async function _completeSupporterSignup(){
     // STEP1: Firebaseアカウントを作成
     const result = await window._fbFns.createUserWithEmailAndPassword(window._fbAuth, email, password);
     _nickname = nickname;
+    _isSupporterMember = true; // 応援会員フラグを先に立てる
     await _ensureUserDoc(result.user);
+    // FirestoreにsupporterPlanを更新
+    const { doc, setDoc } = window._fbFns;
+    await setDoc(doc(window._fbDb, 'users', result.user.uid), {
+      supporterPlan: _selectedPlan.name,
+      supporterPrice: _selectedPlan.price
+    }, { merge: true });
     _updateNicknameDisplay();
     _updatePayerField();
     _updateAuthUI(result.user);
