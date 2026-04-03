@@ -305,6 +305,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .cal-day.today{background:linear-gradient(135deg,#E8F5F2 0%,#D4EDE8 100%)}
 .cal-day.has-ev{cursor:pointer}
 .cal-day.has-ev:active{background:var(--pl)}
+.cal-day.has-deadline{cursor:pointer}
+.cal-day.has-deadline .cal-dn{color:#C06060;font-weight:700}
 .cal-day.selected{background:var(--pl);outline:2px solid var(--p)}
 .cal-dn{font-size:13px;font-weight:700;color:var(--tx);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%}
 .cal-day.today .cal-dn{background:var(--p);color:#fff;box-shadow:0 2px 6px rgba(92,142,132,.5)}
@@ -458,8 +460,8 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
 .sec-lbl{font-size:14px;font-weight:700;color:var(--ts);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
 /* カテゴリタブ */
 .cat-tabs-wrap{margin-bottom:12px}
-.cat-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.cat-tab{padding:10px 8px;border-radius:12px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid transparent;background:var(--tab-color,var(--p));color:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;opacity:0.55}
+.cat-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.cat-tab{padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid transparent;background:var(--tab-color,var(--p));color:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;opacity:0.55}
 .cat-tab.on{opacity:1;border-color:#fff;transform:scale(1.03);box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .q-note{display:none;font-size:15px;color:var(--pd);background:var(--pl);border-radius:7px;padding:7px 10px;margin-bottom:8px;line-height:1.6}
 /* q-grid: flex+wrap でプランパネルが展開しても隣に影響しない */
@@ -1026,12 +1028,12 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       </div>
       <!-- 未ログイン時 -->
       <div id="s-auth-logged-out" class="s-row" onclick="closeSettings();setTimeout(openAuthModal,200)" style="align-items:center">
-        <div class="s-ico" style="background:#EDF4F2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#5C8E84"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        <div class="s-ico" id="s-auth-out-ico" style="background:#FFF0F0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#C06060"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
         </div>
         <div class="s-body">
           <div class="s-title">ログイン / 新規登録</div>
-          <div class="s-sub">アカウントを作成してデータを保護</div>
+          <div class="s-sub" id="s-auth-out-sub" style="color:#C06060;font-weight:600">⚠ データが保護されていません</div>
         </div>
         <span class="s-arr">›</span>
       </div>
@@ -1044,6 +1046,17 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
           <div class="s-title" id="s-nickname-display" style="color:var(--tx)">名前を設定</div>
           <div class="s-sub" id="s-plan-display">無料会員</div>
           <div class="s-sub" id="s-profile-sub" style="margin-top:1px"></div>
+        </div>
+        <span class="s-arr">›</span>
+      </div>
+      <!-- プラン変更（応援会員のみ表示） -->
+      <div id="s-plan-change-row" class="s-row" onclick="_openPlanChangeModal()" style="align-items:center;display:none">
+        <div class="s-ico" style="background:#FFF8EE">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#E8A04A"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+        </div>
+        <div class="s-body">
+          <div class="s-title">プラン変更</div>
+          <div class="s-sub">応援プランを変更・解約</div>
         </div>
         <span class="s-arr">›</span>
       </div>
@@ -1868,6 +1881,20 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   </div>
 </div>
 
+<!-- プラン変更モーダル -->
+<div class="dlg-ov hidden" id="plan-change-ov" onclick="if(event.target===this)_closePlanChange()">
+  <div class="dlg" style="max-width:360px;padding:24px 18px 20px;text-align:center;max-height:90vh;overflow-y:auto">
+    <div style="font-size:17px;font-weight:800;margin-bottom:4px">応援プランを変更</div>
+    <div style="font-size:12px;color:var(--ts);margin-bottom:14px" id="pc-current-label">現在：🥜 くるみ会員（¥500/月）</div>
+    <div id="pc-plan-list" style="margin-bottom:14px"></div>
+    <button id="pc-btn" onclick="_confirmPlanChange()" disabled style="width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:8px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;box-shadow:0 4px 12px rgba(92,142,132,.3);opacity:.5">プランを選択してください</button>
+    <button onclick="_closePlanChange()" style="width:100%;padding:10px;border:none;background:none;font-size:13px;color:var(--ts);cursor:pointer;font-family:inherit">閉じる</button>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)">
+      <button onclick="_closePlanChange();setTimeout(_startCancelFlow,200)" style="background:none;border:none;font-size:12px;color:var(--dn);cursor:pointer;font-family:inherit">応援会員を解約する</button>
+    </div>
+  </div>
+</div>
+
 <!-- プラン選択画面 -->
 <div class="dlg-ov hidden" id="plan-select-ov" style="overflow-y:auto;padding:0;align-items:flex-start;justify-content:center">
   <div style="width:100%;max-width:440px;margin:0 auto;background:var(--bg);min-height:100vh">
@@ -1987,6 +2014,18 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
     <div id="group-tab-name" style="display:none;font-size:11px;font-weight:700;color:var(--ts);letter-spacing:.5px;margin-bottom:6px"></div>
     <div id="group-dashboard-tabs" style="display:none;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
     <div id="alerts"></div>
+    <!-- アカウント登録訴求バナー（未ログイン＋3件以上） -->
+    <div id="acct-banner" style="display:none;background:var(--card);border-radius:12px;padding:12px 14px;box-shadow:var(--sh);margin-bottom:12px;border:1.5px solid var(--bd);cursor:pointer;-webkit-tap-highlight-color:transparent" onclick="document.getElementById('acct-banner').style.display='none';openAuthModal()">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#FFF8EE;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="#E8A04A"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--tx)">データを守りませんか？</div>
+          <div style="font-size:11px;color:var(--ts);line-height:1.4;margin-top:2px">機種変更やデータ消去でもサブスク情報が消えません</div>
+        </div>
+        <span style="color:var(--ts);font-size:14px;flex-shrink:0">›</span>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:4px"><button onclick="event.stopPropagation();_dismissAcctBanner()" style="background:none;border:none;font-size:10px;color:var(--ts);cursor:pointer;font-family:inherit;padding:2px 4px">閉じる</button></div>
+    </div>
     <!-- ★ PC2カラムグリッド開始 -->
     <div class="dash-grid">
     <!-- サマリカード（左ボーダーアクセント） -->
@@ -2129,7 +2168,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
       <div id="plan-panel"></div>
       <div class="q-grid" id="q-items"></div>
 
-      <button type="button" class="btn-manual-add" onclick="openManualForm(null, (document.querySelector('.cat-tab.on')||{}).textContent||null)">
+      <button type="button" class="btn-manual-add" onclick="openManualForm(null, (document.querySelector('.cat-tab.on')||{}).dataset?.cat||null)">
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;flex-shrink:0"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         自分で入力して登録
       </button>
@@ -2227,6 +2266,18 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
           ★★★ よく使う・生活に必要
         </div>
         <div class="star-row" id="stars"></div>
+      </div>
+      <!-- グループ公開トグル（グループ加入時のみ表示） -->
+      <div class="f-row" id="f-group-vis-row" style="display:none">
+        <div style="background:var(--bg);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:var(--tx)">グループに公開</div>
+            <div style="font-size:11px;color:var(--ts);line-height:1.4;margin-top:2px">オフにするとグループメンバーに<br>このサブスクは表示されません</div>
+          </div>
+          <button type="button" id="f-group-vis-toggle" onclick="_toggleGroupVis()" style="width:44px;height:24px;border-radius:12px;background:var(--p);border:none;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0">
+            <span style="position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:22px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)"></span>
+          </button>
+        </div>
       </div>
       <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">登録する</button>
       <button type="button" id="btn-pause-toggle" onclick="togglePauseFromForm()" style="display:none;width:100%;padding:13px;background:var(--bg);color:var(--ts);border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg> 休止にする</button>
@@ -2445,6 +2496,11 @@ let satOpen=true;
 const MAX=200;
 const FREE_LIMIT=6; // 無料会員の登録上限（GA4平均を基に調整）
 let _isSupporterMember = false; // 応援会員フラグ（将来Stripe連携）
+let _supporterPlanName = ''; // プラン名（どんぐり/くるみ等）
+let _supporterPlanPrice = 0;
+const PLAN_EMOJI = {どんぐり:'🌰',くるみ:'🥜',もみじ:'🍁',もりのき:'🌳'};
+function _getPlanLabel(){ return _supporterPlanName ? (PLAN_EMOJI[_supporterPlanName]||'') + ' ' + _supporterPlanName + '会員' : '無料会員'; }
+function _getPlanLabelShort(){ return _supporterPlanName ? (PLAN_EMOJI[_supporterPlanName]||'') + ' ' + _supporterPlanName + '会員' : '無料会員'; }
 const today=new Date();
 calYear=today.getFullYear(); calMonth=today.getMonth();
 
@@ -3552,6 +3608,39 @@ function _closeGroupIntro(){
 }
 
 // 会員種別選択ポップアップ
+// 無料会員登録後の応援会員誘導
+function _showSupporterNudge(){
+  showDialog({
+    icon:'',
+    title:'応援会員のご案内',
+    msg:`<div style="text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px">アカウント登録ありがとうございます</div>
+      <div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:14px">
+        すべての基本機能は<strong style="color:var(--tx)">無料</strong>で使えます。<br>
+        応援会員になるともっと便利に。
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--bd);margin-bottom:12px;text-align:center">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg)">
+          <div style="padding:6px;font-size:10px;font-weight:700;color:var(--ts)"></div>
+          <div style="padding:6px;font-size:10px;font-weight:700;color:var(--ts)">無料</div>
+          <div style="padding:6px;font-size:10px;font-weight:700;color:#fff;background:var(--p)">応援</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:6px;font-size:10px;font-weight:600;text-align:left;padding-left:10px">登録数</div><div style="padding:6px;font-size:10px;text-align:center">6件</div><div style="padding:6px;font-size:10px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">無制限</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:6px;font-size:10px;font-weight:600;text-align:left;padding-left:10px">グループ</div><div style="padding:6px;font-size:10px;text-align:center;color:var(--bd)">✕</div><div style="padding:6px;font-size:10px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">✓</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd)"><div style="padding:6px;font-size:10px;font-weight:600;text-align:left;padding-left:10px">グラフ</div><div style="padding:6px;font-size:10px;text-align:center;color:var(--p);font-weight:700">✓</div><div style="padding:6px;font-size:10px;text-align:center;color:var(--p);font-weight:700;background:rgba(92,142,132,.04)">✓</div></div>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:4px;background:#FFF8EE;border:1px solid #F5D9A8;border-radius:10px;padding:5px 12px;font-size:11px;font-weight:600;color:#8B6914;margin-bottom:4px">¥300〜/月・2週間無料トライアル付き</div>
+    </div>`,
+    buttons:[
+      {label:'応援会員を見る', cls:'ok', onClick:()=>{ setTimeout(_showPlanModal, 200); }},
+      {label:'まずは無料で使う', cls:'cancel'}
+    ],
+    btnColumn: true
+  });
+  gaEvent('supporter_nudge_shown', { trigger: 'signup_complete' });
+}
+
+// 会員種別選択ポップアップ
 function _showMemberTypeSelect(){
   document.getElementById('member-type-ov').classList.remove('hidden');
   gaEvent('member_type_select_shown', {});
@@ -3749,6 +3838,8 @@ window._onAuthChanged = async (user) => {
     window._fbUser = null;
     // 未ログイン時：ローカルのsubsデータは消さず保持
     _isSupporterMember = false;
+    _supporterPlanName = '';
+    _supporterPlanPrice = 0;
     _groupId = null;
     _groupData = null;
     _updateAuthUI(null);
@@ -3806,13 +3897,17 @@ function _updateAuthUI(user){
         ? `<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
         : `<span style="font-size:18px;font-weight:700">${initial}</span>`;
     }
-    if(planEl)   planEl.textContent   = _isSupporterMember ? '応援会員 ✓' : '無料会員';
-    if(hdPlanEl) hdPlanEl.textContent = _isSupporterMember ? '応援会員 ✓' : '無料会員';
+    const _pl = _getPlanLabel();
+    if(planEl)   planEl.textContent   = _isSupporterMember ? _pl + '（¥' + _supporterPlanPrice.toLocaleString() + '/月）' : '無料会員';
+    if(hdPlanEl) hdPlanEl.textContent = _pl;
     const planBadge = document.getElementById('s-auth-plan-badge');
     if(planBadge){
-      planBadge.textContent = _isSupporterMember ? '応援会員 ✓' : '無料会員';
+      planBadge.textContent = _pl;
       planBadge.style.color = _isSupporterMember ? 'var(--p)' : 'var(--ts)';
     }
+    // プラン変更行の表示制御
+    const planChangeRow = document.getElementById('s-plan-change-row');
+    if(planChangeRow) planChangeRow.style.display = _isSupporterMember ? 'flex' : 'none';
 
     // 設定画面の退会リンク：ログイン済みは通常表示
     const wdLink = document.getElementById('s-withdraw-link');
@@ -4249,21 +4344,25 @@ function _showSignupComplete(user){
   const ov = document.getElementById('auth-ov');
   const box = ov.querySelector('.auth-box') || ov.firstElementChild;
   let _proSlide = 0;
+  const isFree = !_isSupporterMember;
 
   function _renderProSlide(){
+    const planBadge = isFree
+      ? '<div style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);color:var(--ts);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:24px">無料会員</div>'
+      : '<div style="display:inline-flex;align-items:center;gap:6px;background:var(--pl);color:var(--p);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:24px">✓ ' + _getPlanLabel() + '</div>';
     const slides = [
       // スライド0：登録完了
       `<div style="text-align:center;padding:16px 0 8px">
         <div style="margin-bottom:12px;color:var(--p)"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         <div style="font-size:18px;font-weight:800;color:var(--tx);margin-bottom:6px">登録完了！</div>
-        <div style="font-size:13px;color:var(--ts);margin-bottom:20px">応援会員へようこそ</div>
+        <div style="font-size:13px;color:var(--ts);margin-bottom:20px">${isFree ? 'Sublyへようこそ' : _getPlanLabel() + 'へようこそ'}</div>
         ${user.photoURL
           ? '<img src="'+user.photoURL+'" style="width:56px;height:56px;border-radius:50%;margin-bottom:8px">'
           : '<div style="width:56px;height:56px;border-radius:50%;background:var(--p);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px">'+name.charAt(0).toUpperCase()+'</div>'
         }
         <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:4px">${name}</div>
         <div style="font-size:13px;color:var(--ts);margin-bottom:16px">${user.email || ''}</div>
-        <div style="display:inline-flex;align-items:center;gap:6px;background:var(--pl);color:var(--p);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:24px">✓ 応援会員</div>
+        ${planBadge}
       </div>`,
       // スライド1：複数端末
       `<div style="padding:24px 8px 8px">
@@ -4369,6 +4468,10 @@ function _showSignupComplete(user){
         }catch(e){ console.error('profile save error:', e); }
       }
       closeAuthModal();
+      // 無料会員なら応援会員誘導ポップアップ
+      if(isFree){
+        setTimeout(_showSupporterNudge, 500);
+      }
     }
   };
 
@@ -4432,8 +4535,10 @@ async function _loadFromFirestore(uid){
     if(userSnap.exists()){
       const data = userSnap.data();
       if(data.nickname){ _nickname = data.nickname; _updateNicknameDisplay(); _updatePayerField(); }
-      // 応援会員フラグを復元
+      // 応援会員フラグ+プラン名を復元
       _isSupporterMember = !!(data.supporterPlan && data.supporterPlan !== 'free');
+      _supporterPlanName = (data.supporterPlan && data.supporterPlan !== 'free') ? data.supporterPlan : '';
+      _supporterPlanPrice = data.supporterPrice || 0;
     }
     // サブスクデータ
     const subsSnap = await getDocs(collection(window._fbDb, 'users', uid, 'subs'));
@@ -5510,6 +5615,7 @@ function renderDashboard(){
   drawChart(cmap);
   renderSatChart(targetSubs);
   checkAlerts(targetSubs);
+  _checkAcctBanner();
 }
 
 function drawChart(obj){
@@ -5945,6 +6051,7 @@ function renderCalendar(){
 
   const lastDay=new Date(y,m+1,0).getDate();
   const events={};
+  const deadlines={}; // 解約締切日（★1のサブスク、更新日2日前）
   const calMonthStart = new Date(y, m, 1);
   const calMonthEnd   = new Date(y, m+1, 0);
   target.forEach(s=>{
@@ -5957,6 +6064,11 @@ function renderCalendar(){
     if(np.getFullYear()===y && np.getMonth()===m){
       const day = Math.min(np.getDate(), lastDay);
       (events[day]=events[day]||[]).push(s);
+      // ★1（ほぼ使っていない）のサブスクは更新日2日前を解約締切に
+      if(s.sat===1 && day > 2){
+        const dlDay = day - 2;
+        (deadlines[dlDay]=deadlines[dlDay]||[]).push({...s, _payDay:day});
+      }
     }
   });
 
@@ -5991,12 +6103,15 @@ function renderCalendar(){
     const dow=new Date(y,m,d).getDay();
     const isToday=(y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate());
     const evs=events[d]||[];
+    const dls=deadlines[d]||[];
     const hasEv=evs.length>0;
+    const hasDl=dls.length>0;
 
     const cell=document.createElement('div');
     let cls='cal-day';
     if(isToday)cls+=' today';
     if(hasEv)cls+=' has-ev';
+    if(hasDl)cls+=' has-deadline';
     cell.className=cls;
 
     const dn=document.createElement('div');
@@ -6047,7 +6162,15 @@ function renderCalendar(){
           cell.appendChild(amtEl);
         }
       }
-      cell.onclick=()=>showCalDetail(y,m,d,evs);
+      cell.onclick=()=>showCalDetail(y,m,d,evs,dls);
+    } else if(hasDl){
+      // 解約締切のみの日
+      const dlChip=document.createElement('div');
+      dlChip.className='cal-chip';
+      dlChip.style.cssText='background:#FFF0F0;color:#C06060;font-size:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:1px 3px;border-radius:3px;line-height:1.2;margin-top:1px';
+      dlChip.textContent='⚠️'+dls[0].name;
+      cell.appendChild(dlChip);
+      cell.onclick=()=>showCalDetail(y,m,d,[],dls);
     }
     grid.appendChild(cell);
   }
@@ -6062,11 +6185,12 @@ function renderCalendar(){
 
 }
 
-function showCalDetail(y,m,d,evs){
+function showCalDetail(y,m,d,evs,dls){
+  dls = dls || [];
   const DOW=['日','月','火','水','木','金','土'];
   const dow=new Date(y,m,d).getDay();
   const dayTotal=evs.reduce((a,sub)=>a+sub.price,0);
-  gaEvent('calendar_day_tap', { date: `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, event_count: evs.length });
+  gaEvent('calendar_day_tap', { date: `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, event_count: evs.length, deadline_count: dls.length });
 
   const sheet=document.getElementById('cal-sheet');
   const body=document.getElementById('cal-sheet-body');
@@ -6075,6 +6199,21 @@ function showCalDetail(y,m,d,evs){
     <div class="cal-detail-title">${m+1}月${d}日（${DOW[dow]}）${dayTotal>0?' · ¥'+dayTotal.toLocaleString():''}</div>
     <button class="cal-detail-close" onclick="closeCalSheet()">✕</button>
   </div>`;
+
+  // 解約締切カード
+  dls.forEach(s=>{
+    const row=document.createElement('div');
+    row.className='cal-detail-row';
+    row.style.cssText='background:#FFF0F0;border:1px solid #F5C5C5';
+    row.innerHTML=`
+      <div class="cal-detail-ico" style="background:#FFF0F0;font-size:18px">⚠️</div>
+      <div class="cal-detail-info">
+        <div class="cal-detail-name" style="color:#C06060">${s.name} — 解約締切</div>
+        <div class="cal-detail-amt" style="color:#C06060">更新日 ${m+1}/${s._payDay} の2日前 · 満足度★1</div>
+        <div style="margin-top:4px"><a href="#" onclick="searchCancelUrl('${s.name.replace(/'/g,"\\'")}');event.preventDefault();event.stopPropagation()" style="color:#C06060;font-size:11px;font-weight:600;text-decoration:underline">解約方法を確認 →</a></div>
+      </div>`;
+    body.appendChild(row);
+  });
 
   evs.forEach(s=>{
     const ci=catMap[s.cat]||catMap['その他'];
@@ -6388,7 +6527,7 @@ function renderList(){
     row.innerHTML=`
       <div class="sub-icon" style="background:${ci.color}20">${ci.icon(ci.color,20)}</div>
       <div class="sub-body">
-        <div class="sub-name">${s.name}${s.canceled?'<span class="sub-canceled-badge">解約済</span>':s.paused?' <span style="font-size:11px;font-weight:500;color:var(--ts);letter-spacing:.3px">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span>`:''}
+        <div class="sub-name">${s.groupPublic===false&&_groupId?'<span style="font-size:11px;color:var(--ts);margin-right:2px" title="グループ非公開">🔒</span>':''}${s.name}${s.canceled?'<span class="sub-canceled-badge">解約済</span>':s.paused?' <span style="font-size:11px;font-weight:500;color:var(--ts);letter-spacing:.3px">休止中</span>':''}${campaign?`<span class="saving-badge" onclick="showSavingHint(findCampaign('${s.name.replace(/'/g,"\\'")}'),'${s.name.replace(/'/g,"\\'")}');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span>`:''}
         </div>
         <div class="sub-meta">
           <span class="badge" style="background:${ci.color}">${s.cat}</span>
@@ -6507,12 +6646,14 @@ function buildQuickAdd(){
 
   // カテゴリ表示順（使いやすい順）
   const CAT_ORDER=['動画・配信','音楽','仕事・ツール','通信費','健康・フィットネス','ゲーム','電子書籍・雑誌','金融・年会費','習い事','保険','ローン・家賃','その他'];
+  const CAT_SHORT={'健康・フィットネス':'健康','電子書籍・雑誌':'書籍・雑誌'};
   const orderedCats=CAT_ORDER.filter(c=>qData[c]);
 
   orderedCats.forEach((cat,i)=>{
     const color=(catMap[cat]||catMap['その他']).color;
     const t=document.createElement('button');
-    t.type='button';t.className='cat-tab'+(i===0?' on':'');t.textContent=cat;
+    t.type='button';t.className='cat-tab'+(i===0?' on':'');t.textContent=CAT_SHORT[cat]||cat;
+    t.dataset.cat=cat;
     t.style.setProperty('--tab-color',color);
     t.onclick=()=>{
       gaEvent('quick_cat_tap', { category: cat });
@@ -6675,7 +6816,7 @@ async function submitForm(){
   const isEdit=!!editId;
   if(isEdit){
     const idx=subs.findIndex(s=>s.id===editId);
-    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl};
+    if(idx>=0)subs[idx]={...subs[idx],name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl,groupPublic:_groupVisPublic};
     editId=null;
     document.getElementById('btn-submit').textContent='登録する';
     document.getElementById('btn-cancel').style.display='none';
@@ -6696,7 +6837,7 @@ async function submitForm(){
     });
     showToast(window._fbUser ? '更新しました（クラウド保存済み）' : '更新しました（自動保存済み）');
   } else {
-    subs.push({id:Date.now(),name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl,paused:false});
+    subs.push({id:Date.now(),name,cat,price,freq,date,memo,payment,payer,sat,cancelUrl,paused:false,groupPublic:_groupVisPublic});
     await save();
 
     gaEvent('subscription_added', {
@@ -6725,12 +6866,14 @@ async function submitForm(){
           resetForm();
           backToStep1();
           setTimeout(()=>checkNudge(), 400);
+          setTimeout(()=>_checkAcctToast(), 600);
         }},
         {label:'ホームへ', cls:'cancel', onClick:()=>{
           resetForm();
           backToStep1();
           goto('dashboard');
           setTimeout(()=>checkNudge(), 400);
+          setTimeout(()=>_checkAcctPopup(), 800);
         }}
       ]
     });
@@ -6750,6 +6893,10 @@ function resetForm(){
   document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('f-payer').value='';
   document.getElementById('f-payment').value='';
+  // グループ公開トグルのリセット
+  _groupVisPublic = true;
+  _updateGroupVisToggle();
+  document.getElementById('f-group-vis-row').style.display = _groupId ? '' : 'none';
   // 必須項目の背景色リセット
   document.querySelectorAll('.f-required').forEach(el=>{
     el.classList.remove('f-filled');
@@ -6797,6 +6944,10 @@ function editSub(id){
     pauseBtn.style.display='block';
     pauseBtn.textContent = s.paused ? '▶ 再開する' : '⏸ 休止にする';
     pauseBtn.style.color = s.paused ? 'var(--p)' : 'var(--ts)';
+    // グループ公開トグル
+    _groupVisPublic = s.groupPublic !== false; // デフォルトtrue
+    _updateGroupVisToggle();
+    document.getElementById('f-group-vis-row').style.display = _groupId ? '' : 'none';
     window.scrollTo(0,0);
   },50);
 }
@@ -6810,6 +6961,251 @@ function toggleUrlBtn(){
 }
 
 // 三点メニュー開閉
+// 件数制限ポップアップ
+// ============================================================
+//   アカウント登録メリット訴求（段階的アプローチ）
+// ============================================================
+// A案: ダッシュボードバナー
+async function _checkAcctBanner(){
+  if(window._fbUser) return; // ログイン済みは不要
+  if(subs.length < 3) return;
+  const dismissed = await Store.get('acctBannerDismissed');
+  if(dismissed){
+    // 1週間後にリマインド
+    const ts = parseInt(dismissed);
+    if(ts && Date.now() - ts < 7*24*60*60*1000) return;
+  }
+  document.getElementById('acct-banner').style.display = 'block';
+}
+async function _dismissAcctBanner(){
+  document.getElementById('acct-banner').style.display = 'none';
+  await Store.set('acctBannerDismissed', String(Date.now()));
+  gaEvent('acct_banner_dismissed', {});
+}
+
+// B案: 登録完了トースト（3件/5件/10件の節目）
+function _checkAcctToast(){
+  if(window._fbUser) return;
+  const count = subs.length;
+  if(count !== 3 && count !== 5 && count !== 10) return;
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--tx);color:#fff;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;max-width:360px;width:calc(100% - 28px);z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:fadeUp .3s ease';
+  el.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#E8A04A" style="flex-shrink:0"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg><div style="flex:1;font-size:12px;line-height:1.4"><strong>'+count+'件登録しました！</strong><br><span style="opacity:.8">アカウント登録でデータをバックアップ</span></div><button onclick="this.parentElement.remove();openAuthModal()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:5px 10px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">登録</button>';
+  document.body.appendChild(el);
+  setTimeout(()=>{ if(el.parentElement) el.remove(); }, 6000);
+  gaEvent('acct_toast_shown', { count: count });
+}
+
+// D案: ポップアップ（5件登録後に1回だけ）
+async function _checkAcctPopup(){
+  if(window._fbUser) return;
+  if(subs.length !== 5) return;
+  const dismissed = await Store.get('acctPopupDismissed5');
+  if(dismissed) return;
+  await Store.set('acctPopupDismissed5', '1');
+  showDialog({
+    icon:'',
+    title:'データを守りませんか？',
+    msg:'<div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:#FFF8EE;display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><svg width="24" height="24" viewBox="0 0 24 24" fill="#E8A04A"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div><div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:14px"><strong style="color:var(--tx)">5件</strong>のサブスクを登録しました。<br>アカウント登録するとデータが安全です。</div><div style="background:var(--bg);border-radius:10px;padding:12px 14px;text-align:left;font-size:12px;color:var(--tx);line-height:1.7"><div style="display:flex;align-items:center;gap:6px;padding:2px 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--pd)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span><strong>機種変更</strong>してもデータが消えない</span></div><div style="display:flex;align-items:center;gap:6px;padding:2px 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--pd)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span><strong>PC・スマホ</strong>どちらからでもアクセス</span></div><div style="display:flex;align-items:center;gap:6px;padding:2px 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--pd)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>ブラウザの<strong>データ消去</strong>でも安心</span></div></div><div style="font-size:11px;color:var(--ts);margin-top:10px">アカウント登録は<strong style="color:var(--tx)">無料</strong>です</div></div>',
+    buttons:[
+      {label:'アカウント登録する', cls:'ok', onClick:()=>{ openAuthModal(); }},
+      {label:'あとで', cls:'cancel'}
+    ],
+    btnColumn: true
+  });
+  gaEvent('acct_popup_shown', { count: 5 });
+}
+
+// ============================================================
+//   グループ公開トグル
+// ============================================================
+let _groupVisPublic = true;
+function _toggleGroupVis(){
+  _groupVisPublic = !_groupVisPublic;
+  _updateGroupVisToggle();
+}
+function _updateGroupVisToggle(){
+  const btn = document.getElementById('f-group-vis-toggle');
+  if(!btn) return;
+  const knob = btn.querySelector('span');
+  if(_groupVisPublic){
+    btn.style.background = 'var(--p)';
+    knob.style.left = '22px';
+  } else {
+    btn.style.background = 'var(--bd)';
+    knob.style.left = '2px';
+  }
+}
+
+// ============================================================
+//   プラン変更・解約
+// ============================================================
+const PLAN_LIST = [
+  {name:'どんぐり', emoji:'🌰', price:300, desc:'ちょこっと応援'},
+  {name:'くるみ',   emoji:'🥜', price:500, desc:'しっかり応援'},
+  {name:'もみじ',   emoji:'🍁', price:800, desc:'たっぷり応援'},
+  {name:'もりのき', emoji:'🌳', price:1000, desc:'全力応援！'}
+];
+let _pcSelected = null;
+
+function _openPlanChangeModal(){
+  closeSettings();
+  _pcSelected = null;
+  const list = document.getElementById('pc-plan-list');
+  list.innerHTML = '';
+  document.getElementById('pc-current-label').textContent = '現在：' + _getPlanLabel() + '（¥' + _supporterPlanPrice.toLocaleString() + '/月）';
+  const btn = document.getElementById('pc-btn');
+  btn.textContent = 'プランを選択してください';
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+
+  PLAN_LIST.forEach(p => {
+    const isCurrent = p.name === _supporterPlanName;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid ' + (isCurrent ? 'var(--p)' : 'var(--bd)') + ';border-radius:12px;margin-bottom:8px;cursor:pointer;background:' + (isCurrent ? 'var(--pl)' : 'var(--card)') + ';transition:all .15s;-webkit-tap-highlight-color:transparent';
+    row.innerHTML = `
+      <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${isCurrent?'var(--p)':'var(--bd)'};${isCurrent?'background:var(--p)':''}; flex-shrink:0" class="pc-radio"></div>
+      <span style="font-size:22px">${p.emoji}</span>
+      <div style="flex:1"><div style="font-size:14px;font-weight:700;color:${isCurrent?'var(--pd)':'var(--tx)'}">${p.name}会員${isCurrent?' <span style=\"font-size:10px;font-weight:600;color:var(--pd);background:rgba(92,142,132,.15);padding:1px 8px;border-radius:10px\">現在</span>':''}</div></div>
+      <div style="font-size:14px;font-weight:700;color:${isCurrent?'var(--pd)':'var(--ts)'}">¥${p.price.toLocaleString()}/月</div>`;
+    if(!isCurrent){
+      row.onclick = () => {
+        list.querySelectorAll('div[style]').forEach(r => { r.style.borderColor='var(--bd)'; r.style.background='var(--card)'; const radio=r.querySelector('.pc-radio'); if(radio&&!r.dataset.current){radio.style.borderColor='var(--bd)';radio.style.background='';} });
+        // 現在のプランのスタイル復元
+        list.querySelectorAll('[data-current]').forEach(r => { r.style.borderColor='var(--p)'; r.style.background='var(--pl)'; });
+        row.style.borderColor='var(--p)';
+        row.style.background='var(--pl)';
+        row.querySelector('.pc-radio').style.borderColor='var(--p)';
+        row.querySelector('.pc-radio').style.background='var(--p)';
+        _pcSelected = p;
+        btn.textContent = p.emoji + ' ' + p.name + '会員に変更する';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      };
+    } else {
+      row.dataset.current = '1';
+      row.onclick = () => {
+        _pcSelected = null;
+        list.querySelectorAll('div[style]').forEach(r => { if(!r.dataset.current){r.style.borderColor='var(--bd)';r.style.background='var(--card)';const radio=r.querySelector('.pc-radio');if(radio){radio.style.borderColor='var(--bd)';radio.style.background='';}} });
+        btn.textContent = 'プランを選択してください';
+        btn.disabled = true;
+        btn.style.opacity = '.5';
+      };
+    }
+    list.appendChild(row);
+  });
+  setTimeout(()=>document.getElementById('plan-change-ov').classList.remove('hidden'), 200);
+  gaEvent('plan_change_modal_open', { current_plan: _supporterPlanName });
+}
+function _closePlanChange(){
+  document.getElementById('plan-change-ov').classList.add('hidden');
+}
+
+async function _confirmPlanChange(){
+  if(!_pcSelected) return;
+  const oldPlan = _supporterPlanName;
+  const newPlan = _pcSelected;
+  _closePlanChange();
+  setTimeout(()=>{
+    showDialog({
+      icon: newPlan.emoji,
+      title: newPlan.name + '会員に変更',
+      msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.8;margin-bottom:10px">
+        ${PLAN_EMOJI[oldPlan]||''} ${oldPlan}会員（¥${_supporterPlanPrice.toLocaleString()}/月）<br>　↓<br>
+        ${newPlan.emoji} ${newPlan.name}会員（¥${newPlan.price.toLocaleString()}/月）<br><br>
+        次回更新日から新しい金額が適用されます。
+      </div>`,
+      buttons:[
+        {label:'変更を確定する', cls:'ok', onClick: async ()=>{
+          // Firestore更新
+          try{
+            if(window._fbUser && window._fbDb && window._fbFns){
+              const { doc, setDoc } = window._fbFns;
+              await setDoc(doc(window._fbDb, 'users', window._fbUser.uid), {
+                supporterPlan: newPlan.name,
+                supporterPrice: newPlan.price
+              }, { merge: true });
+            }
+            _supporterPlanName = newPlan.name;
+            _supporterPlanPrice = newPlan.price;
+            _updateAuthUI(window._fbUser);
+            showToast(newPlan.emoji + ' ' + newPlan.name + '会員に変更しました');
+            gaEvent('plan_changed', { from: oldPlan, to: newPlan.name, price: newPlan.price });
+          }catch(e){
+            showToast('エラー: ' + e.message);
+          }
+        }},
+        {label:'キャンセル', cls:'cancel'}
+      ],
+      btnColumn: true
+    });
+  }, 200);
+}
+
+// 応援会員解約フロー
+function _startCancelFlow(){
+  // グループ加入中チェック
+  if(_groupId){
+    showDialog({
+      icon:'⚠️',
+      title:'グループに参加中です',
+      msg:'応援会員を解約するには、先にグループから退出してください。',
+      buttons:[
+        {label:'グループ設定を開く', cls:'ok', onClick:()=>{ setTimeout(openGroupModal, 200); }},
+        {label:'閉じる', cls:'cancel'}
+      ],
+      btnColumn: true
+    });
+    return;
+  }
+  // 件数超過チェック
+  const overCount = subs.length > FREE_LIMIT ? subs.length - FREE_LIMIT : 0;
+  const overMsg = overCount > 0
+    ? `<div style="background:#FFF0F0;border:1px solid #F5C5C5;border-radius:10px;padding:10px 14px;font-size:12px;color:#C06060;line-height:1.7;margin-bottom:10px;text-align:left">
+        ⚠ 現在${subs.length}件登録中です。解約後は無料プラン（${FREE_LIMIT}件まで）になるため、新規登録はできなくなります。既存データは保持されます。
+      </div>`
+    : '';
+  showDialog({
+    icon:'',
+    title:'応援会員を解約しますか？',
+    msg:`<div style="text-align:center;font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:10px">
+      現在：${_getPlanLabel()}（¥${_supporterPlanPrice.toLocaleString()}/月）<br><br>
+      解約すると次回更新日以降、<br>無料会員に戻ります。
+    </div>
+    ${overMsg}
+    <div style="background:var(--bg);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--ts);line-height:1.7;text-align:left">
+      ・グラフ・カレンダーは引き続き使えます<br>
+      ・データは削除されません<br>
+      ・グループ機能は使えなくなります<br>
+      ・登録は${FREE_LIMIT}件までに制限されます
+    </div>`,
+    buttons:[
+      {label:'解約する', cls:'cancel', onClick: async ()=>{
+        try{
+          if(window._fbUser && window._fbDb && window._fbFns){
+            const { doc, setDoc } = window._fbFns;
+            await setDoc(doc(window._fbDb, 'users', window._fbUser.uid), {
+              supporterPlan: 'free',
+              supporterPrice: 0
+            }, { merge: true });
+          }
+          _isSupporterMember = false;
+          _supporterPlanName = '';
+          _supporterPlanPrice = 0;
+          _updateAuthUI(window._fbUser);
+          showToast('応援会員を解約しました');
+          gaEvent('supporter_cancelled', {});
+        }catch(e){
+          showToast('エラー: ' + e.message);
+        }
+      }},
+      {label:'やめておく', cls:'ok'}
+    ],
+    btnColumn: true
+  });
+  gaEvent('cancel_flow_start', { current_plan: _supporterPlanName, subs_count: subs.length });
+}
+
 // 件数制限ポップアップ
 function _showLimitPopup(){
   document.getElementById('limit-count-label').textContent = FREE_LIMIT + ' / ' + FREE_LIMIT + ' 件';
@@ -6877,7 +7273,9 @@ async function _completeSupporterSignup(){
     // STEP1: Firebaseアカウントを作成
     const result = await window._fbFns.createUserWithEmailAndPassword(window._fbAuth, email, password);
     _nickname = nickname;
-    _isSupporterMember = true; // 応援会員フラグを先に立てる
+    _isSupporterMember = true;
+    _supporterPlanName = _selectedPlan.name;
+    _supporterPlanPrice = _selectedPlan.price;
     await _ensureUserDoc(result.user);
     // FirestoreにsupporterPlanを更新
     const { doc, setDoc } = window._fbFns;
