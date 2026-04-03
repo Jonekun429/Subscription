@@ -156,7 +156,7 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;background:var(--bg);color:
   transform:translateX(-100%);transition:transform .28s cubic-bezier(.32,1,.23,1);
   padding-top:max(env(safe-area-inset-top),0px)}
 .hdrop.open{transform:translateX(0)}
-.hdrop-inner{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,16px)}
+.hdrop-inner{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px);overscroll-behavior:contain}
 /* ドロワーヘッダー */
 .hdrop-header{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:12px}
 .hdrop-logo{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px}
@@ -6606,6 +6606,7 @@ function renderList(){
           <div class="act-menu">
             <button onclick="togglePause(${s.id});event.stopPropagation()">${pauseLabel}</button>
             <button onclick="cancelSub(${s.id});event.stopPropagation()">解約済みにする</button>
+            ${_groupId ? `<button onclick="_toggleGroupPublic(${s.id});event.stopPropagation()">${s.groupPublic===false?'👁 グループに公開する':'🔒 グループに非公開にする'}</button>` : ''}
             <button class="danger" onclick="delSub(${s.id});event.stopPropagation()">削除</button>
           </div>
         </div>`;
@@ -7031,6 +7032,18 @@ async function _checkAcctPopup(){
     btnColumn: true
   });
   gaEvent('acct_popup_shown', { count: 5 });
+}
+
+// グループ公開/非公開の切替（明細一覧から）
+async function _toggleGroupPublic(id){
+  const s = subs.find(x=>x.id===id);
+  if(!s) return;
+  const wasPublic = s.groupPublic !== false;
+  s.groupPublic = !wasPublic;
+  await save();
+  renderList();
+  showToast(wasPublic ? '🔒 「'+s.name+'」をグループに非公開にしました' : '👁 「'+s.name+'」をグループに公開しました');
+  gaEvent('group_visibility_toggled', { name: s.name, public: !wasPublic });
 }
 
 // ============================================================
